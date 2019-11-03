@@ -67,9 +67,9 @@ DEPEND="
 		dev-java/icedtea-bin:${SLOT}
 		dev-java/openjdk:${SLOT}
 		dev-java/icedtea:${SLOT}
-		dev-java/openjdk-bin:$((SLOT-1))
+		dev-java/openjdk-bin:$((SLOT-1))[gentoo-vm]
 		dev-java/icedtea-bin:$((SLOT-1))
-		dev-java/openjdk:$((SLOT-1))
+		dev-java/openjdk:$((SLOT-1))[gentoo-vm]
 		dev-java/icedtea:$((SLOT-1))
 	)
 "
