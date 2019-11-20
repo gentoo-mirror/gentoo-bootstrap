@@ -11,7 +11,7 @@ SRC_URI="mirror://gnu/classpath/${MY_P}.tar.gz"
 HOMEPAGE="https://www.gnu.org/software/classpath"
 
 LICENSE="GPL-2-with-linking-exception"
-SLOT="bootstrap"
+SLOT="0.93"
 KEYWORDS="amd64"
 
 DEPEND="sys-libs/zlib
@@ -25,6 +25,7 @@ S=${WORKDIR}/${MY_P}
 
 src_configure() {
 	export JAVAC="${EPREFIX}/usr/bin/jikes"
+	export BOOTCLASSPATH="none"
 	econf \
 		--disable-Werror \
 		--disable-gmp \
@@ -34,7 +35,9 @@ src_configure() {
 		--disable-dssi \
 		--disable-alsa \
 		--disable-gjdoc \
+		--prefix="${EPREFIX}"/usr/${PN}-${SLOT} \
 		--bindir="${EPREFIX}"/usr/libexec/${PN} \
+		--with-glibj-dir="${EPREFIX}"/usr/${PN}-${SLOT}/share/classpath \
 		--includedir="${EPREFIX}"/usr/include/classpath
 }
 
