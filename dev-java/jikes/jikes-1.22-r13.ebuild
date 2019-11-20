@@ -1,6 +1,8 @@
 # Copyright 1999-2016 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
+EAPI=7
+
 inherit flag-o-matic eutils
 
 DESCRIPTION="IBM's open source, high performance Java compiler"
