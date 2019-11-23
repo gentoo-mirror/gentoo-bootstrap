@@ -1,6 +1,11 @@
 # Copyright 1999-2006 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
+EAPI=6
+
+# depend on bootstrap slot
+JAVA_ANT_DISABLE_ANT_CORE_DEP=true
+
 inherit eutils java-pkg-2 java-ant-2
 
 #MY_PN=${PN##*-}
@@ -12,11 +17,11 @@ LICENSE="EPL-1.0"
 KEYWORDS="amd64"
 SLOT="3.2"
 
-RDEPEND=">=virtual/jre-1.4"
+RDEPEND="virtual/jre:1.4"
 
 DEPEND="${RDEPEND}
-	>=virtual/jdk-1.4
-	dev-java/ant-core"
+	virtual/jdk:1.4
+	dev-java/ant-core:bootstrap"
 
 src_unpack() {
 	unpack ${A}
