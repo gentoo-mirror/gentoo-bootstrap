@@ -18,7 +18,7 @@ SRC_URI="http://archive.apache.org/dist/ant/source/apache-ant-${PV}-src.tar.bz2"
 LICENSE="Apache-2.0"
 SLOT="bootstrap"
 KEYWORDS="amd64"
-IUSE=""
+IUSE="doc"
 
 DEPEND="
 	virtual/jdk:1.4
@@ -37,8 +37,6 @@ src_prepare() {
 
 src_compile() {
 	export BOOTJAVAC_OPTS="-nowarn"
-	export JAVA_HOME="${EPREFIX}/usr/lib/jvm/jamvm-1.5"
-
 	export ANT_OPTS="-Dbuild.compiler=jikes"
 
 	./build.sh || die "build failed"
@@ -60,7 +58,6 @@ src_install() {
 	dosym /usr/share/${PN}/bin /usr/share/ant/bin
 
 	insinto /usr/share/${PN}
-	dosym /usr/share/${PN}/etc /usr/share/ant/etc
 
 	echo "ANT_HOME=\"${EPREFIX}/usr/share/ant\"" > "${T}/20ant"
 	doenvd "${T}/20ant" || die "failed to install env.d file"
