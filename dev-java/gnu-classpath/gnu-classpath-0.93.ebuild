@@ -35,9 +35,8 @@ src_configure() {
 		--disable-dssi \
 		--disable-alsa \
 		--disable-gjdoc \
-		--prefix="${EPREFIX}"/usr/${PN}-${SLOT} \
 		--bindir="${EPREFIX}"/usr/libexec/${PN} \
-		--with-glibj-dir="${EPREFIX}"/usr/${PN}-${SLOT}/share/classpath \
+		--with-glibj-dir="${EPREFIX}"/usr/share/classpath \
 		--includedir="${EPREFIX}"/usr/include/classpath
 }
 

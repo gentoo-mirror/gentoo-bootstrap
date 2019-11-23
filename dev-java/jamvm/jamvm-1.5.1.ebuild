@@ -22,10 +22,14 @@ src_unpack() {
 	unpack ${A}
 }
 
-CLASSPATH_DIR="${EPREFIX}/usr/gnu-classpath-${CLASSPATH_SLOT}"
+src_prepare() {
+	rm -v lib/classes.zip || die
+
+	default
+}
 
 src_configure() {
-	export JAVAC="${EPREFIX}/usr/bin/jikes"
+	export JAVAC="${EPREFIX}/usr/bin/jikes-bin"
 	epatch "${FILESDIR}/classes-location.patch"
 	eautoreconf
 
@@ -40,7 +44,7 @@ src_configure() {
 		--prefix=/usr/${PN} \
 		--datadir=/usr/share \
 		--bindir=/usr/bin \
-		--with-classpath-install-dir=${CLASSPATH_DIR} \
+		--with-classpath-install-dir="${EPREFIX}/usr" \
 		|| die "configure failed."
 }
 
