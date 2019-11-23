@@ -39,7 +39,7 @@ src_compile() {
 
 	# recompile with ecj.jar made in first step, to get dist/ecj.jar
 	export CLASSPATH=/usr/share/classpath/glibj.zip
-	ant ${ant_flags} -lib ecj.jar -f compilejdtcore.xml compile $(use_doc) || die "Failed to rebuild with ecj"
+	ant ${ant_flags} -lib ecj.jar -f compilejdtcore.xml compile || die "Failed to rebuild with ecj"
 }
 
 src_install() {
