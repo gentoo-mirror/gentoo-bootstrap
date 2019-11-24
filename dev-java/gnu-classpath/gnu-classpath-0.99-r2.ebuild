@@ -69,4 +69,5 @@ src_install() {
 	dodoc AUTHORS BUGS ChangeLog* HACKING NEWS README THANKYOU TODO
 	java-pkg_regjar /usr/share/classpath/glibj.zip
 	java-pkg_regjar /usr/share/classpath/tools.zip
+	dosym /usr/libexec/gnu-classpath/gjavah /usr/bin/gjavah
 }
