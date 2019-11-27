@@ -7,4 +7,4 @@ DESCRIPTION="Virtual for Java Development Kit (JDK)"
 SLOT="1.4"
 KEYWORDS="amd64"
 
-RDEPEND="dev-java/jamvm:1.5"
+RDEPEND="dev-java/jamvm:bootstrap"

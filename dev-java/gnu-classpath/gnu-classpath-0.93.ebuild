@@ -11,7 +11,7 @@ SRC_URI="mirror://gnu/classpath/${MY_P}.tar.gz"
 HOMEPAGE="https://www.gnu.org/software/classpath"
 
 LICENSE="GPL-2-with-linking-exception"
-SLOT="0.93"
+SLOT="bootstrap"
 KEYWORDS="amd64"
 
 DEPEND="sys-libs/zlib

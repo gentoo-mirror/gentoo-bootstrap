@@ -25,7 +25,8 @@ DEPEND="
 	!dev-java/ant-core:0
 "
 
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	virtual/jre:1.4"
 
 S="${WORKDIR}/${MY_P}"
 

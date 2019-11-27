@@ -11,7 +11,7 @@ SRC_URI="mirror://gnu/classpath/${MY_P}.tar.gz"
 HOMEPAGE="https://www.gnu.org/software/classpath"
 
 LICENSE="GPL-2-with-linking-exception"
-SLOT="0.93"
+SLOT="bootstrap"
 KEYWORDS="amd64"
 
 IUSE=""
@@ -23,10 +23,10 @@ RDEPEND=""
 DEPEND="app-arch/zip
 		dev-java/eclipse-ecj:3.2
 		>=dev-java/java-config-2.1.11
-		>=virtual/jdk-1.4
+		virtual/jdk:1.4
 		${RDEPEND}"
 
-RDEPEND=">=virtual/jre-1.4
+RDEPEND="virtual/jre:1.4
 	${RDEPEND}"
 
 S=${WORKDIR}/${MY_P}

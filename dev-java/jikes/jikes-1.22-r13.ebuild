@@ -19,7 +19,7 @@ src_unpack() {
 }
 
 src_configure() {
-	epatch "${FILESDIR}"/deprecated.patch
+	eapply -p0 "${FILESDIR}"/deprecated.patch
 	econf || die "configure problem"
 
 	default

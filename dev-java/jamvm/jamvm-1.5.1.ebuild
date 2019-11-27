@@ -10,10 +10,10 @@ HOMEPAGE="http://jamvm.sourceforge.net/"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
-SLOT="1.5"
+SLOT="bootstrap"
 KEYWORDS="amd64"
 
-CLASSPATH_SLOT="0.93"
+CLASSPATH_SLOT="bootstrap"
 DEPEND="dev-java/gnu-classpath:${CLASSPATH_SLOT}"
 
 RDEPEND="${DEPEND}"
@@ -41,9 +41,9 @@ src_configure() {
 	econf --enable-ffi \
 		--disable-int-caching \
 		--enable-runtime-reloc-checks \
-		--prefix=/usr/${PN} \
-		--datadir=/usr/share \
-		--bindir=/usr/bin \
+		--prefix="${EPREFIX}"/usr/${PN} \
+		--datadir="${EPREFIX}"/usr/share \
+		--bindir="${EPREFIX}"/usr/bin \
 		--with-classpath-install-dir="${EPREFIX}/usr" \
 		|| die "configure failed."
 }
