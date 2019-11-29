@@ -31,6 +31,7 @@ src_prepare() {
 src_configure() {
 	export JAVAC="${EPREFIX}/usr/bin/jikes-bin"
 	epatch "${FILESDIR}/classes-location.patch"
+        sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/dll.c || die "Sed failed!"
 	eautoreconf
 
 	filter-flags "-fomit-frame-pointer"

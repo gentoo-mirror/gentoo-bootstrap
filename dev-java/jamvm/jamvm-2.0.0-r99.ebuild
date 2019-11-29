@@ -29,6 +29,9 @@ PATCHES=(
 src_prepare() {
 	# without this patch, classes.zip is not found at runtime
 	epatch "${PATCHES[@]}"
+
+	sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/classlib/gnuclasspath/dll.c || die "Sed failed!"
+
 	eautoreconf
 
 	# These come precompiled.
