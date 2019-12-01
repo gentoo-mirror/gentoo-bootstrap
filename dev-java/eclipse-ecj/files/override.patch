@@ -1,0 +1,1520 @@
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/BaseAnnotationProcessorManager.java  2019-12-01 12:34:50.959008402 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/BaseAnnotationProcessorManager.java  2019-12-01 12:35:01.569286429 +0000
+@@ -74,7 +74,6 @@
+ 		throw new UnsupportedOperationException();
+ 	}
+ 
+-	@Override
+ 	public List<ProcessorInfo> getDiscoveredProcessors() {
+ 	        return _processors;
+ 	}
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/BaseProcessingEnvImpl.java	2019-12-01 12:58:55.796781065 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/BaseProcessingEnvImpl.java	2019-12-01 12:59:19.357396333 +0000
+@@ -86,27 +86,22 @@
+ 		return result;
+ 	}
+ 
+-	@Override
+ 	public Elements getElementUtils() {
+ 		return _elementUtils;
+ 	}
+ 
+-	@Override
+ 	public Filer getFiler() {
+ 		return _filer;
+ 	}
+ 
+-	@Override
+ 	public Messager getMessager() {
+ 		return _messager;
+ 	}
+ 	
+-	@Override
+ 	public Map<String, String> getOptions() {
+ 		return _processorOptions;
+ 	}
+ 
+-	@Override
+ 	public Types getTypeUtils() {
+ 		return _typeUtils;
+ 	}
+@@ -115,7 +110,6 @@
+ 		return _compiler.lookupEnvironment;
+ 	}
+ 
+-	@Override
+ 	public SourceVersion getSourceVersion() {
+ 		if (this._compiler.options.sourceLevel <= ClassFileConstants.JDK1_5) {
+ 			return SourceVersion.RELEASE_5;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchAnnotationProcessorManager.java	2019-12-01 13:04:05.564774101 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchAnnotationProcessorManager.java	2019-12-01 13:04:21.745191398 +0000
+@@ -104,7 +104,6 @@
+ 		}
+ 	}
+ 
+-	@Override
+ 	public ProcessorInfo discoverNextProcessor() {
+ 		if (null != _setProcessors) {
+ 			// If setProcessors() was called, use that list until it's empty and then stop.
+@@ -208,7 +207,6 @@
+ 		return location;
+ 	}
+ 
+-	@Override
+ 	public void reportProcessorException(Processor p, Exception e) {
+ 		// TODO: if (verbose) report the processor
+ 		throw new AbortCompilation(null, e);
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchFilerImpl.java	2019-12-01 14:08:46.543034317 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchFilerImpl.java	2019-12-01 14:09:03.793453848 +0000
+@@ -61,7 +61,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Filer#createClassFile(java.lang.CharSequence, javax.lang.model.element.Element[])
+ 	 */
+-	@Override
+ 	public JavaFileObject createClassFile(CharSequence name,
+ 			Element... originatingElements) throws IOException {
+ 		JavaFileObject jfo = _fileManager.getJavaFileForOutput(
+@@ -78,7 +77,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Filer#createResource(javax.tools.JavaFileManager.Location, java.lang.CharSequence, java.lang.CharSequence, javax.lang.model.element.Element[])
+ 	 */
+-	@Override
+ 	public FileObject createResource(Location location, CharSequence pkg,
+ 			CharSequence relativeName, Element... originatingElements)
+ 			throws IOException {
+@@ -130,7 +128,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Filer#createSourceFile(java.lang.CharSequence, javax.lang.model.element.Element[])
+ 	 */
+-	@Override
+ 	public JavaFileObject createSourceFile(CharSequence name,
+ 			Element... originatingElements) throws IOException {
+ 		JavaFileObject jfo = _fileManager.getJavaFileForOutput(
+@@ -148,7 +145,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Filer#getResource(javax.tools.JavaFileManager.Location, java.lang.CharSequence, java.lang.CharSequence)
+ 	 */
+-	@Override
+ 	public FileObject getResource(Location location, CharSequence pkg,
+ 			CharSequence relativeName) throws IOException {
+ 		validateName(relativeName);
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchMessagerImpl.java	2019-12-01 14:11:28.826984125 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchMessagerImpl.java	2019-12-01 14:11:49.007475771 +0000
+@@ -37,7 +37,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic.Kind, java.lang.CharSequence)
+ 	 */
+-	@Override
+ 	public void printMessage(Kind kind, CharSequence msg) {
+ 		printMessage(kind, msg, null, null, null);
+ 	}
+@@ -45,7 +44,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic.Kind, java.lang.CharSequence, javax.lang.model.element.Element)
+ 	 */
+-	@Override
+ 	public void printMessage(Kind kind, CharSequence msg, Element e) {
+ 		printMessage(kind, msg, e, null, null);
+ 	}
+@@ -53,7 +51,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic.Kind, java.lang.CharSequence, javax.lang.model.element.Element, javax.lang.model.element.AnnotationMirror)
+ 	 */
+-	@Override
+ 	public void printMessage(Kind kind, CharSequence msg, Element e,
+ 			AnnotationMirror a) {
+ 		printMessage(kind, msg, e, a, null);
+@@ -63,7 +60,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.annotation.processing.Messager#printMessage(javax.tools.Diagnostic.Kind, java.lang.CharSequence, javax.lang.model.element.Element, javax.lang.model.element.AnnotationMirror, javax.lang.model.element.AnnotationValue)
+ 	 */
+-	@Override
+ 	public void printMessage(Kind kind, CharSequence msg, Element e,
+ 			AnnotationMirror a, AnnotationValue v) {
+ 		if (kind == Kind.ERROR) {
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchProcessingEnvImpl.java	2019-12-01 14:14:01.710711297 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/BatchProcessingEnvImpl.java	2019-12-01 14:14:13.621001904 +0000
+@@ -136,7 +136,6 @@
+ 		return _fileManager;
+ 	}
+ 
+-	@Override
+ 	public Locale getLocale() {
+ 		return _compilerOwner.compilerLocale;
+ 	}
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/dispatch/RoundEnvImpl.java	2019-12-01 14:17:58.156486874 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/dispatch/RoundEnvImpl.java	2019-12-01 14:18:20.987045248 +0000
+@@ -109,7 +109,6 @@
+ 		return Collections.unmodifiableSet(_annoToUnit.getKeySet());
+ 	}
+ 
+-	@Override
+ 	public boolean errorRaised()
+ 	{
+ 		return _processingEnv.errorRaised();
+@@ -121,7 +120,6 @@
+ 	 * annotation, include those elements that inherit the annotation from their superclasses.
+ 	 * Note that {@link java.lang.annotation.Inherited} only applies to classes (i.e. TypeElements).
+ 	 */
+-	@Override
+ 	public Set<? extends Element> getElementsAnnotatedWith(TypeElement a)
+ 	{
+ 		if (a.getKind() != ElementKind.ANNOTATION_TYPE) {
+@@ -183,7 +181,6 @@
+ 		return false;
+ 	}
+ 	
+-	@Override
+ 	public Set<? extends Element> getElementsAnnotatedWith(Class<? extends Annotation> a)
+ 	{
+ 		String canonicalName = a.getCanonicalName();
+@@ -195,7 +192,6 @@
+ 		return getElementsAnnotatedWith(annoType);
+ 	}
+ 
+-	@Override
+ 	public Set<? extends Element> getRootElements()
+ 	{
+ 		if (_units == null) {
+@@ -228,7 +224,6 @@
+ 		return _rootElements;
+ 	}
+ 
+-	@Override
+ 	public boolean processingOver()
+ 	{
+ 		return _isLastRound;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/AnnotationMirrorImpl.java	2019-12-01 14:20:23.920053903 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/AnnotationMirrorImpl.java	2019-12-01 14:20:38.680415375 +0000
+@@ -176,7 +176,6 @@
+ 	 * <p>
+ 	 * @see java.lang.reflect.InvocationHandler#invoke(java.lang.Object, java.lang.reflect.Method, java.lang.Object[])
+ 	 */
+-	@Override
+ 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
+ 	{
+ 		if (this._binding == null) return null;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/AnnotationValueImpl.java	2019-12-01 14:22:19.182877912 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/AnnotationValueImpl.java	2019-12-01 14:22:27.373078688 +0000
+@@ -203,7 +203,6 @@
+ 	}
+ 
+ 	@SuppressWarnings("unchecked") // Need to cast Object _value to a List<AnnotationValue>
+-	@Override
+ 	public <R, P> R accept(AnnotationValueVisitor<R, P> v, P p) {
+ 		switch (_kind) {
+ 		case TypeIds.T_boolean:
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/ArrayTypeImpl.java	2019-12-01 14:24:55.376709359 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/ArrayTypeImpl.java	2019-12-01 14:25:09.307051323 +0000
+@@ -32,7 +32,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.ArrayType#getComponentType()
+ 	 */
+-	@Override
+ 	public TypeMirror getComponentType() {
+ 		return _env.getFactory().newTypeMirror(((ArrayBinding)_binding).elementsType());
+ 	}
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/DeclaredTypeImpl.java	2019-12-01 14:26:51.729566838 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/DeclaredTypeImpl.java	2019-12-01 14:27:06.689934447 +0000
+@@ -54,13 +54,11 @@
+ 		_elementKindHint = elementKindHint;
+ 	}
+ 
+-	@Override
+ 	public Element asElement() {
+ 		// The JDT compiler does not distinguish between type elements and declared types
+ 		return _env.getFactory().newElement((ReferenceBinding)_binding, _elementKindHint);
+ 	}
+ 
+-	@Override
+ 	public TypeMirror getEnclosingType() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		ReferenceBinding enclosingType = binding.enclosingType();
+@@ -75,7 +73,6 @@
+ 	 * @see javax.lang.model.type.DeclaredType#getTypeArguments()
+ 	 * @see javax.lang.model.element.TypeElement#getTypeParameters().
+ 	 */
+-	@Override
+ 	public List<? extends TypeMirror> getTypeArguments() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		if (binding.isParameterizedType()) {
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/ElementImpl.java	2019-12-01 14:28:47.782229923 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/ElementImpl.java	2019-12-01 14:29:42.983475223 +0000
+@@ -45,13 +45,11 @@
+ 		_binding = binding;
+ 	}
+ 
+-	@Override
+ 	public TypeMirror asType() {
+ 		return _env.getFactory().newTypeMirror(_binding);
+ 	}
+ 
+ 	@SuppressWarnings("unchecked") // for cast of newProxyInstance() to A
+-	@Override
+ 	public <A extends Annotation> A getAnnotation(Class<A> annotationClass) {
+ 		AnnotationBinding[] annoInstances = getAnnotationBindings();
+ 		if( annoInstances == null || annoInstances.length == 0 || annotationClass == null ) 
+@@ -88,19 +86,16 @@
+ 	 */
+ 	protected abstract AnnotationBinding[] getAnnotationBindings();
+ 
+-	@Override
+ 	public List<? extends AnnotationMirror> getAnnotationMirrors() {
+ 		return _env.getFactory().getAnnotationMirrors(getAnnotationBindings());
+ 	}
+ 
+-	@Override
+ 	public Set<Modifier> getModifiers() {
+ 		// Most subclasses implement this; this default is appropriate for 
+ 		// PackageElement and TypeParameterElement.
+ 		return Collections.emptySet();
+ 	}
+ 
+-	@Override
+ 	public Name getSimpleName() {
+ 		return new NameImpl(_binding.shortReadableName());
+ 	}
+@@ -134,7 +129,6 @@
+ 		return _binding.toString();
+ 	}
+ 
+-	@Override
+ 	public String getFileName() {
+ 		// Subclasses should override and return something of value
+ 		return null;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/ElementsImpl.java	2019-12-01 14:34:27.719920061 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/ElementsImpl.java	2019-12-01 14:35:40.291568219 +0000
+@@ -81,7 +81,6 @@
+ 	 * and the annotation is on a class: e.g., annotations are not inherited for interfaces, methods,
+ 	 * or fields.
+ 	 */
+-	@Override
+ 	public List<? extends AnnotationMirror> getAllAnnotationMirrors(Element e) {
+ 		// if e is a class, walk up its superclass hierarchy looking for @Inherited annotations not already in the list
+ 		if (e.getKind() == ElementKind.CLASS && e instanceof TypeElementImpl) {
+@@ -132,7 +131,6 @@
+ 	 * superinterfaces, that are not hidden by a name collision.</li>
+ 	 * </ul>
+ 	 */
+-	@Override
+ 	public List<? extends Element> getAllMembers(TypeElement type) {
+ 		if (null == type || !(type instanceof TypeElementImpl)) {
+ 			return Collections.emptyList();
+@@ -251,7 +249,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#getBinaryName(javax.lang.model.element.TypeElement)
+ 	 */
+-	@Override
+ 	public Name getBinaryName(TypeElement type) {
+ 		TypeElementImpl typeElementImpl = (TypeElementImpl) type;
+ 		ReferenceBinding referenceBinding = (ReferenceBinding) typeElementImpl._binding;
+@@ -262,7 +259,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#getConstantExpression(java.lang.Object)
+ 	 */
+-	@Override
+ 	public String getConstantExpression(Object value) {
+ 		if (!(value instanceof Integer)
+ 				&& !(value instanceof Byte)
+@@ -312,7 +308,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#getDocComment(javax.lang.model.element.Element)
+ 	 */
+-	@Override
+ 	public String getDocComment(Element e) {
+ 		char[] unparsed = getUnparsedDocComment(e);
+ 		return formatJavadoc(unparsed);
+@@ -539,7 +534,6 @@
+ 	 *         returns the explicitly set values.
+ 	 * @see javax.lang.model.util.Elements#getElementValuesWithDefaults(javax.lang.model.element.AnnotationMirror)
+ 	 */
+-	@Override
+ 	public Map<? extends ExecutableElement, ? extends AnnotationValue> getElementValuesWithDefaults(
+ 			AnnotationMirror a) {
+ 		return ((AnnotationMirrorImpl)a).getElementValuesWithDefaults();
+@@ -548,12 +542,10 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#getName(java.lang.CharSequence)
+ 	 */
+-	@Override
+ 	public Name getName(CharSequence cs) {
+ 		return new NameImpl(cs);
+ 	}
+ 
+-	@Override
+ 	public PackageElement getPackageElement(CharSequence name) {
+ 		LookupEnvironment le = _env.getLookupEnvironment();
+ 		if (name.length() == 0) {
+@@ -567,7 +559,6 @@
+ 		return new PackageElementImpl(_env, packageBinding);
+ 	}
+ 
+-	@Override
+ 	public PackageElement getPackageOf(Element type) {
+ 		switch(type.getKind()) {
+ 			case ANNOTATION_TYPE :
+@@ -608,7 +599,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#getTypeElement(java.lang.CharSequence)
+ 	 */
+-	@Override
+ 	public TypeElement getTypeElement(CharSequence name) {
+ 		LookupEnvironment le = _env.getLookupEnvironment();
+ 		final char[][] compoundName = CharOperation.splitOn('.', name.toString().toCharArray());
+@@ -648,7 +638,6 @@
+ 	 * See JLS 8.3 (for hiding of fields), 8.4.8.2 (hiding of class methods), and 8.5 (for hiding of member types).
+ 	 * @see javax.lang.model.util.Elements#hides(javax.lang.model.element.Element, javax.lang.model.element.Element)
+ 	 */
+-	@Override
+ 	public boolean hides(Element hider, Element hidden) {
+ 		if (hidden == null) {
+ 			// required by API spec
+@@ -660,7 +649,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#isDeprecated(javax.lang.model.element.Element)
+ 	 */
+-	@Override
+ 	public boolean isDeprecated(Element e) {
+ 		if (!(e instanceof ElementImpl)) {
+ 			return false;
+@@ -672,7 +660,6 @@
+ 	 * See JLS 8.4.8.1 for discussion of hiding of methods
+ 	 * @see javax.lang.model.util.Elements#overrides(javax.lang.model.element.ExecutableElement, javax.lang.model.element.ExecutableElement, javax.lang.model.element.TypeElement)
+ 	 */
+-	@Override
+ 	public boolean overrides(ExecutableElement overrider, ExecutableElement overridden,
+ 			TypeElement type) {
+ 		if (overridden == null || type == null) {
+@@ -684,7 +671,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.util.Elements#printElements(java.io.Writer, javax.lang.model.element.Element[])
+ 	 */
+-	@Override
+ 	public void printElements(Writer w, Element... elements) {
+ 		String lineSeparator = System.getProperty("line.separator"); //$NON-NLS-1$
+ 		for (Element element : elements) {
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/ExecutableElementImpl.java	2019-12-01 15:19:12.781625098 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/ExecutableElementImpl.java	2019-12-01 15:20:28.683410532 +0000
+@@ -53,7 +53,6 @@
+ 		super(env, binding);
+ 	}
+ 
+-	@Override
+ 	public <R, P> R accept(ElementVisitor<R, P> v, P p)
+ 	{
+ 		return v.visitExecutable(this, p);
+@@ -65,7 +64,6 @@
+ 		return ((MethodBinding)_binding).getAnnotations();
+ 	}
+ 
+-	@Override
+ 	public AnnotationValue getDefaultValue() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		Object defaultValue = binding.getDefaultValue();
+@@ -73,12 +71,10 @@
+ 		return null;
+ 	}
+ 	
+-	@Override
+ 	public List<? extends Element> getEnclosedElements() {
+ 		return Collections.emptyList();
+ 	}
+ 
+-	@Override
+ 	public Element getEnclosingElement() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		if (null == binding.declaringClass) {
+@@ -96,7 +92,6 @@
+ 		return new String(name);
+ 	}
+ 
+-	@Override
+ 	public ElementKind getKind() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		if (binding.isConstructor()) {
+@@ -129,7 +124,6 @@
+ 		return _env.getFactory().newPackageElement(binding.declaringClass.fPackage);
+ 	}
+ 
+-	@Override
+ 	public List<? extends VariableElement> getParameters() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		int length = binding.parameters == null ? 0 : binding.parameters.length;
+@@ -193,7 +187,6 @@
+ 		return Collections.emptyList();
+ 	}
+ 
+-	@Override
+ 	public TypeMirror getReturnType() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		if (binding.returnType == null) {
+@@ -211,7 +204,6 @@
+ 		return _name;
+ 	}
+ 	
+-	@Override
+ 	public List<? extends TypeMirror> getThrownTypes() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		if (binding.thrownExceptions.length == 0) {
+@@ -224,7 +216,6 @@
+ 		return list;
+ 	}
+ 
+-	@Override
+ 	public List<? extends TypeParameterElement> getTypeParameters() {
+ 		MethodBinding binding = (MethodBinding)_binding;
+ 		TypeVariableBinding[] variables = binding.typeVariables();
+@@ -267,7 +258,6 @@
+ 		return null != hiderBinding.declaringClass.findSuperTypeOriginatingFrom(hiddenBinding.declaringClass); 
+ 	}
+ 
+-	@Override
+ 	public boolean isVarArgs() {
+ 		return ((MethodBinding) _binding).isVarargs();
+ 	}
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/ExecutableTypeImpl.java	2019-12-01 15:22:26.596186509 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/ExecutableTypeImpl.java	2019-12-01 15:22:45.146623488 +0000
+@@ -40,7 +40,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.ExecutableType#getParameterTypes()
+ 	 */
+-	@Override
+ 	public List<? extends TypeMirror> getParameterTypes() {
+ 		MethodBinding binding = (MethodBinding) this._binding;
+ 		TypeBinding[] parameters = binding.parameters;
+@@ -72,7 +71,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.ExecutableType#getReturnType()
+ 	 */
+-	@Override
+ 	public TypeMirror getReturnType() {
+ 		return _env.getFactory().newTypeMirror(((MethodBinding) this._binding).returnType);
+ 	}
+@@ -80,7 +78,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.ExecutableType#getThrownTypes()
+ 	 */
+-	@Override
+ 	public List<? extends TypeMirror> getThrownTypes() {
+ 		ArrayList<TypeMirror> list = new ArrayList<TypeMirror>();
+ 		ReferenceBinding[] thrownExceptions = ((MethodBinding) this._binding).thrownExceptions;
+@@ -95,7 +92,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.ExecutableType#getTypeVariables()
+ 	 */
+-	@Override
+ 	public List<? extends TypeVariable> getTypeVariables() {
+ 		ArrayList<TypeVariable> list = new ArrayList<TypeVariable>();
+ 		TypeVariableBinding[] typeVariables = ((MethodBinding) this._binding).typeVariables();
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/NameImpl.java	2019-12-01 15:24:31.269124637 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/NameImpl.java	2019-12-01 15:24:52.689629752 +0000
+@@ -41,7 +41,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.element.Name#contentEquals(java.lang.CharSequence)
+ 	 */
+-	@Override
+ 	public boolean contentEquals(CharSequence cs) {
+ 		return _name.equals(cs.toString());
+ 	}
+@@ -49,7 +48,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see java.lang.CharSequence#charAt(int)
+ 	 */
+-	@Override
+ 	public char charAt(int index) {
+ 		return _name.charAt(index);
+ 	}
+@@ -57,7 +55,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see java.lang.CharSequence#length()
+ 	 */
+-	@Override
+ 	public int length() {
+ 		return _name.length();
+ 	}
+@@ -65,7 +62,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see java.lang.CharSequence#subSequence(int, int)
+ 	 */
+-	@Override
+ 	public CharSequence subSequence(int start, int end) {
+ 		return _name.subSequence(start, end);
+ 	}
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/NoTypeImpl.java	2019-12-01 15:26:31.901970400 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/NoTypeImpl.java	2019-12-01 15:26:42.482220122 +0000
+@@ -33,7 +33,6 @@
+ 		_kind = kind;
+ 	}
+ 
+-	@Override
+ 	public <R, P> R accept(TypeVisitor<R, P> v, P p)
+ 	{
+ 		switch(this.getKind())
+@@ -45,7 +44,6 @@
+ 		}
+ 	}
+ 
+-	@Override
+ 	public TypeKind getKind()
+ 	{
+ 		return _kind;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/PackageElementImpl.java	2019-12-01 15:28:09.464273914 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/PackageElementImpl.java	2019-12-01 15:28:46.485148461 +0000
+@@ -42,7 +42,6 @@
+ 		super(env, binding);
+ 	}
+ 	
+-	@Override
+ 	public <R, P> R accept(ElementVisitor<R, P> v, P p)
+ 	{
+ 		return v.visitPackage(this, p);
+@@ -61,7 +60,6 @@
+ 		return annotations;
+ 	}
+ 
+-	@Override
+ 	public List<? extends Element> getEnclosedElements() {
+ 		PackageBinding binding = (PackageBinding)_binding;
+ 		LookupEnvironment environment = binding.environment;
+@@ -84,13 +82,11 @@
+ 		return Collections.unmodifiableList(list);
+ 	}
+ 
+-	@Override
+ 	public Element getEnclosingElement() {
+ 		// packages have no enclosing element
+ 		return null;
+ 	}
+ 
+-	@Override
+ 	public ElementKind getKind() {
+ 		return ElementKind.PACKAGE;
+ 	}
+@@ -111,12 +107,10 @@
+ 		return new NameImpl(compoundName[length - 1]);
+ 	}
+ 
+-	@Override
+ 	public Name getQualifiedName() {
+ 		return new NameImpl(CharOperation.concatWith(((PackageBinding)_binding).compoundName, '.'));
+ 	}
+ 
+-	@Override
+ 	public boolean isUnnamed() {
+ 		PackageBinding binding = (PackageBinding)_binding;
+ 		return binding.compoundName == CharOperation.NO_CHAR_CHAR;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/TypeElementImpl.java	2019-12-01 15:30:38.817803604 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/TypeElementImpl.java	2019-12-01 15:31:24.688888474 +0000
+@@ -54,7 +54,6 @@
+ 		_kindHint = kindHint;
+ 	}
+ 	
+-	@Override
+ 	public <R, P> R accept(ElementVisitor<R, P> v, P p)
+ 	{
+ 		return v.visitType(this, p);
+@@ -66,7 +65,6 @@
+ 		return ((ReferenceBinding)_binding).getAnnotations();
+ 	}
+ 
+-	@Override
+ 	public List<? extends Element> getEnclosedElements() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		List<Element> enclosed = new ArrayList<Element>(binding.fieldCount() + binding.methods().length);
+@@ -88,7 +86,6 @@
+ 		return Collections.unmodifiableList(enclosed);
+ 	}
+ 
+-	@Override
+ 	public Element getEnclosingElement() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		ReferenceBinding enclosingType = binding.enclosingType();
+@@ -109,7 +106,6 @@
+ 		return new String(name);
+ 	}
+ 	
+-	@Override
+ 	public List<? extends TypeMirror> getInterfaces() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		if (null == binding.superInterfaces() || binding.superInterfaces().length == 0) {
+@@ -130,7 +126,6 @@
+ 		return Collections.unmodifiableList(interfaces);
+ 	}
+ 
+-	@Override
+ 	public ElementKind getKind() {
+ 		if (null != _kindHint) {
+ 			return _kindHint;
+@@ -166,7 +161,6 @@
+ 		return Factory.getModifiers(modifiers, getKind(), refBinding.isBinaryBinding());
+ 	}
+ 
+-	@Override
+ 	public NestingKind getNestingKind() {
+ 		ReferenceBinding refBinding = (ReferenceBinding)_binding;
+ 		if (refBinding.isAnonymousType()) {
+@@ -186,7 +180,6 @@
+ 		return _env.getFactory().newPackageElement((PackageBinding)binding.fPackage);
+ 	}
+ 
+-	@Override
+ 	public Name getQualifiedName() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		char[] qName;
+@@ -211,7 +204,6 @@
+ 		return new NameImpl(binding.sourceName());
+ 	}
+ 
+-	@Override
+ 	public TypeMirror getSuperclass() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		ReferenceBinding superBinding = binding.superclass();
+@@ -222,7 +214,6 @@
+ 		return _env.getFactory().newTypeMirror(superBinding);
+ 	}
+ 	
+-	@Override
+ 	public List<? extends TypeParameterElement> getTypeParameters() {
+ 		ReferenceBinding binding = (ReferenceBinding)_binding;
+ 		TypeVariableBinding[] variables = binding.typeVariables();
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/TypeMirrorImpl.java	2019-12-01 15:33:00.961166540 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/TypeMirrorImpl.java	2019-12-01 15:33:12.551440904 +0000
+@@ -42,7 +42,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.TypeMirror#accept(javax.lang.model.type.TypeVisitor, java.lang.Object)
+ 	 */
+-	@Override
+ 	public <R, P> R accept(TypeVisitor<R, P> v, P p) {
+ 		return v.visit(this, p);
+ 	}
+@@ -50,7 +49,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.TypeMirror#getKind()
+ 	 */
+-	@Override
+ 	public TypeKind getKind() {
+ 		switch (_binding.kind()) {
+ 		// case Binding.TYPE: 
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/TypeParameterElementImpl.java	2012-09-14 18:22:38.000000000 +0100
++++ b/org/eclipse/jdt/internal/compiler/apt/model/TypeParameterElementImpl.java	2019-12-01 15:35:53.895262560 +0000
+@@ -51,7 +51,6 @@
+ 		_declaringElement = _env.getFactory().newElement(binding.declaringElement);
+ 	}
+ 
+-	@Override
+ 	public List<? extends TypeMirror> getBounds()
+ 	{
+ 		if (null == _bounds) {
+@@ -114,13 +113,11 @@
+ 		return Collections.unmodifiableList(typeBounds);
+ 	}
+ 
+-	@Override
+ 	public Element getGenericElement()
+ 	{
+ 		return _declaringElement;
+ 	}
+ 
+-	@Override
+ 	public <R, P> R accept(ElementVisitor<R, P> v, P p)
+ 	{
+ 		return v.visitTypeParameter(this, p);
+@@ -142,7 +139,6 @@
+ 	 * Always return an empty list; type parameters do not enclose other elements.
+ 	 * @see javax.lang.model.element.Element#getEnclosedElements()
+ 	 */
+-	@Override
+ 	public List<? extends Element> getEnclosedElements()
+ 	{
+ 		return Collections.emptyList();
+@@ -153,13 +149,11 @@
+ 	 * Always return null.
+ 	 * @see javax.lang.model.element.Element#getEnclosingElement()
+ 	 */
+-	@Override
+ 	public Element getEnclosingElement()
+ 	{
+ 		return getGenericElement();
+ 	}
+ 
+-	@Override
+ 	public ElementKind getKind()
+ 	{
+ 		return ElementKind.TYPE_PARAMETER;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/TypeVariableImpl.java	2019-12-01 16:06:01.007895366 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/TypeVariableImpl.java	2019-12-01 16:06:15.848247567 +0000
+@@ -33,7 +33,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.TypeVariable#asElement()
+ 	 */
+-	@Override
+ 	public Element asElement() {
+ 		return _env.getFactory().newElement(this._binding);
+ 	}
+@@ -41,7 +40,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.TypeVariable#getLowerBound()
+ 	 */
+-	@Override
+ 	public TypeMirror getLowerBound() {
+ 		// TODO might be more complex than this
+ 		return this._env.getFactory().getNullType();
+@@ -50,7 +48,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.TypeVariable#getUpperBound()
+ 	 */
+-	@Override
+ 	public TypeMirror getUpperBound() {
+ 		TypeVariableBinding typeVariableBinding = (TypeVariableBinding) this._binding;
+ 		TypeBinding firstBound = typeVariableBinding.firstBound;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/TypesImpl.java	2019-12-01 16:08:54.922024805 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/TypesImpl.java	2019-12-01 16:10:40.364530539 +0000
+@@ -60,7 +60,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#asElement(javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public Element asElement(TypeMirror t) {
+         switch(t.getKind()) {
+             case DECLARED :
+@@ -75,7 +74,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#asMemberOf(javax.lang.model.type.DeclaredType, javax.lang.model.element.Element)
+      */
+-    @Override
+     public TypeMirror asMemberOf(DeclaredType containing, Element element) {
+ //        throw new UnsupportedOperationException("NYI: TypesImpl.asMemberOf(" + containing + ", " + element + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+     	ElementImpl elementImpl = (ElementImpl) element;
+@@ -141,7 +139,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#capture(javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public TypeMirror capture(TypeMirror t) {
+         throw new UnsupportedOperationException("NYI: TypesImpl.capture(...)"); //$NON-NLS-1$
+     }
+@@ -149,7 +146,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#contains(javax.lang.model.type.TypeMirror, javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public boolean contains(TypeMirror t1, TypeMirror t2) {
+     	switch(t1.getKind()) {
+     		case EXECUTABLE :
+@@ -171,7 +167,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#directSupertypes(javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public List<? extends TypeMirror> directSupertypes(TypeMirror t) {
+         switch(t.getKind()) {
+             case PACKAGE :
+@@ -200,7 +195,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#erasure(javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public TypeMirror erasure(TypeMirror t) {
+     	TypeMirrorImpl typeMirrorImpl = (TypeMirrorImpl) t;
+     	Binding binding = typeMirrorImpl._binding;
+@@ -220,7 +214,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#getArrayType(javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public ArrayType getArrayType(TypeMirror componentType) {
+         TypeMirrorImpl typeMirrorImpl = (TypeMirrorImpl) componentType;
+         TypeBinding typeBinding = (TypeBinding) typeMirrorImpl._binding;
+@@ -233,7 +226,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#getDeclaredType(javax.lang.model.element.TypeElement, javax.lang.model.type.TypeMirror[])
+      */
+-    @Override
+     public DeclaredType getDeclaredType(TypeElement typeElem, TypeMirror... typeArgs) {
+         int typeArgsLength = typeArgs.length;
+         TypeElementImpl typeElementImpl = (TypeElementImpl) typeElem;
+@@ -265,7 +257,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#getDeclaredType(javax.lang.model.type.DeclaredType, javax.lang.model.element.TypeElement, javax.lang.model.type.TypeMirror[])
+      */
+-    @Override
+     public DeclaredType getDeclaredType(DeclaredType containing, TypeElement typeElem,
+             TypeMirror... typeArgs) {
+         int typeArgsLength = typeArgs.length;
+@@ -298,7 +289,6 @@
+                 this._env.getLookupEnvironment().createParameterizedType(referenceBinding, typeArguments, enclosingType));
+     }
+ 
+-    @Override
+     public NoType getNoType(TypeKind kind) {
+         return _env.getFactory().getNoType(kind);
+     }
+@@ -306,7 +296,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#getNullType()
+      */
+-    @Override
+     public NullType getNullType() {
+         return _env.getFactory().getNullType();
+     }
+@@ -314,7 +303,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#getPrimitiveType(javax.lang.model.type.TypeKind)
+      */
+-    @Override
+     public PrimitiveType getPrimitiveType(TypeKind kind) {
+         return _env.getFactory().getPrimitiveType(kind);
+     }
+@@ -322,7 +310,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#getWildcardType(javax.lang.model.type.TypeMirror, javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public WildcardType getWildcardType(TypeMirror extendsBound, TypeMirror superBound) {
+         if (extendsBound != null && superBound != null) {
+             throw new IllegalArgumentException("Extends and super bounds cannot be set at the same time"); //$NON-NLS-1$
+@@ -359,7 +346,6 @@
+     /**
+      * @return true if a value of type t1 can be assigned to a variable of type t2, i.e., t2 = t1.
+      */
+-    @Override
+     public boolean isAssignable(TypeMirror t1, TypeMirror t2) {
+         if (!(t1 instanceof TypeMirrorImpl) || !(t2 instanceof TypeMirrorImpl)) {
+             return false;
+@@ -381,7 +367,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#isSameType(javax.lang.model.type.TypeMirror, javax.lang.model.type.TypeMirror)
+      */
+-    @Override
+     public boolean isSameType(TypeMirror t1, TypeMirror t2) {
+     	if (t1.getKind() == TypeKind.WILDCARD || t2.getKind() == TypeKind.WILDCARD) {
+             // Wildcard types are never equal, according to the spec of this method
+@@ -401,7 +386,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#isSubsignature(javax.lang.model.type.ExecutableType, javax.lang.model.type.ExecutableType)
+      */
+-    @Override
+     public boolean isSubsignature(ExecutableType m1, ExecutableType m2) {
+ 		MethodBinding methodBinding1 = (MethodBinding) ((ExecutableTypeImpl) m1)._binding;
+ 		MethodBinding methodBinding2 = (MethodBinding) ((ExecutableTypeImpl) m2)._binding;
+@@ -413,7 +397,6 @@
+     /**
+      * @return true if t1 is a subtype of t2, or if t1 == t2.
+      */
+-    @Override
+     public boolean isSubtype(TypeMirror t1, TypeMirror t2) {
+     	if (t1 instanceof NoTypeImpl) {
+     		if (t2 instanceof NoTypeImpl) {
+@@ -450,7 +433,6 @@
+         return ((TypeBinding)b1).isCompatibleWith((TypeBinding)b2);
+     }
+ 
+-    @Override
+     public PrimitiveType unboxedType(TypeMirror t) {
+         if (!(((TypeMirrorImpl)t)._binding instanceof ReferenceBinding)) {
+             // Not an unboxable type - could be primitive, array, not a type at all, etc.
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/VariableElementImpl.java	2019-12-01 16:12:14.416769049 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/VariableElementImpl.java	2019-12-01 16:12:37.467328579 +0000
+@@ -49,7 +49,6 @@
+ 		super(env, binding);
+ 	}
+ 	
+-	@Override
+ 	public <R, P> R accept(ElementVisitor<R, P> v, P p)
+ 	{
+ 		return v.visitVariable(this, p);
+@@ -61,7 +60,6 @@
+ 		return ((VariableBinding)_binding).getAnnotations();
+ 	}
+ 
+-	@Override
+ 	public Object getConstantValue() {
+ 		VariableBinding variableBinding = (VariableBinding) _binding;
+ 		Constant constant = variableBinding.constant();
+@@ -90,12 +88,10 @@
+ 		return null;
+ 	}
+ 	
+-	@Override
+ 	public List<? extends Element> getEnclosedElements() {
+ 		return Collections.emptyList();
+ 	}
+ 
+-	@Override
+ 	public Element getEnclosingElement() {
+ 		if (_binding instanceof FieldBinding) {
+ 			return _env.getFactory().newElement(((FieldBinding)_binding).declaringClass);
+@@ -108,7 +104,6 @@
+ 		return null;
+ 	}
+ 
+-	@Override
+ 	public ElementKind getKind() {
+ 		if (_binding instanceof FieldBinding) {
+ 			if (((FieldBinding)_binding).declaringClass.isEnum()) {
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/WildcardTypeImpl.java	2019-12-01 16:14:03.279411652 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/WildcardTypeImpl.java	2019-12-01 16:14:15.919718503 +0000
+@@ -33,7 +33,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.WildcardType#getExtendsBound()
+ 	 */
+-	@Override
+ 	public TypeMirror getExtendsBound() {
+ 		WildcardBinding wildcardBinding = (WildcardBinding) this._binding;
+ 		if (wildcardBinding.boundKind != Wildcard.EXTENDS) return null;
+@@ -52,7 +51,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.lang.model.type.WildcardType#getSuperBound()
+ 	 */
+-	@Override
+ 	public TypeMirror getSuperBound() {
+ 		WildcardBinding wildcardBinding = (WildcardBinding) this._binding;
+ 		if (wildcardBinding.boundKind != Wildcard.SUPER) return null;
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/AnnotationValueImpl.java	2019-12-01 16:15:53.372084286 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/AnnotationValueImpl.java	2019-12-01 16:16:04.032343086 +0000
+@@ -236,7 +236,6 @@
+ 		}
+ 	}
+ 
+-	@Override
+ 	public Object getValue() {
+ 		return _value;
+ 	}
+--
+--- a/org/eclipse/jdt/internal/compiler/apt/model/TypesImpl.java	2019-12-01 16:17:28.294388776 +0000
++++ b/org/eclipse/jdt/internal/compiler/apt/model/TypesImpl.java	2019-12-01 16:17:41.104699792 +0000
+@@ -128,7 +128,6 @@
+     /* (non-Javadoc)
+      * @see javax.lang.model.util.Types#boxedClass(javax.lang.model.type.PrimitiveType)
+      */
+-    @Override
+     public TypeElement boxedClass(PrimitiveType p) {
+         PrimitiveTypeImpl primitiveTypeImpl = (PrimitiveTypeImpl) p;
+         BaseTypeBinding baseTypeBinding = (BaseTypeBinding)primitiveTypeImpl._binding;
+--
+--- a/org/eclipse/jdt/internal/compiler/tool/ArchiveFileObject.java	2019-12-01 16:19:13.396940564 +0000
++++ b/org/eclipse/jdt/internal/compiler/tool/ArchiveFileObject.java	2019-12-01 16:20:24.448665712 +0000
+@@ -51,7 +51,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileObject#getAccessLevel()
+ 	 */
+-	@Override
+ 	public Modifier getAccessLevel() {
+ 		// cannot express multiple modifier
+ 		if (getKind() != Kind.CLASS) {
+@@ -84,7 +83,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileObject#getKind()
+ 	 */
+-	@Override
+ 	public Kind getKind() {
+ 		String name = this.entryName.toLowerCase();
+ 		if (name.endsWith(Kind.CLASS.extension)) {
+@@ -100,7 +98,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileObject#getNestingKind()
+ 	 */
+-	@Override
+ 	public NestingKind getNestingKind() {
+ 		switch(getKind()) {
+ 			case SOURCE :
+@@ -135,7 +132,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileObject#isNameCompatible(java.lang.String, javax.tools.JavaFileObject.Kind)
+ 	 */
+-	@Override
+ 	public boolean isNameCompatible(String simpleName, Kind kind) {
+ 		return this.zipEntry.getName().endsWith(simpleName + kind.extension);
+ 	}
+@@ -143,7 +139,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#delete()
+ 	 */
+-	@Override
+ 	public boolean delete() {
+ 		throw new UnsupportedOperationException();
+ 	}
+@@ -160,7 +155,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#getCharContent(boolean)
+ 	 */
+-	@Override
+ 	public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+ 		if (getKind() == Kind.SOURCE) {
+ 			return Util.getCharContents(this, ignoreEncodingErrors, org.eclipse.jdt.internal.compiler.util.Util.getZipEntryByteContent(this.zipEntry, this.zipFile), this.charset.name());
+@@ -171,7 +165,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#getLastModified()
+ 	 */
+-	@Override
+ 	public long getLastModified() {
+ 		return this.zipEntry.getTime(); // looks the closest from the last modification
+ 	}
+@@ -179,7 +172,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#getName()
+ 	 */
+-	@Override
+ 	public String getName() {
+ 		return this.zipEntry.getName();
+ 	}
+@@ -187,7 +179,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#openInputStream()
+ 	 */
+-	@Override
+ 	public InputStream openInputStream() throws IOException {
+ 		return this.zipFile.getInputStream(this.zipEntry);
+ 	}
+@@ -195,7 +186,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#openOutputStream()
+ 	 */
+-	@Override
+ 	public OutputStream openOutputStream() throws IOException {
+ 		throw new UnsupportedOperationException();
+ 	}
+@@ -203,7 +193,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#openReader(boolean)
+ 	 */
+-	@Override
+ 	public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
+ 		throw new UnsupportedOperationException();
+ 	}
+@@ -211,7 +200,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#openWriter()
+ 	 */
+-	@Override
+ 	public Writer openWriter() throws IOException {
+ 		throw new UnsupportedOperationException();
+ 	}
+@@ -219,7 +207,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.FileObject#toUri()
+ 	 */
+-	@Override
+ 	public URI toUri() {
+ 		try {
+ 			return new URI("jar:" + this.file.toURI().getPath() + "!" + this.zipEntry.getName()); //$NON-NLS-1$//$NON-NLS-2$
+--
+--- a/org/eclipse/jdt/internal/compiler/tool/EclipseCompiler.java	2019-12-01 16:22:06.371140524 +0000
++++ b/org/eclipse/jdt/internal/compiler/tool/EclipseCompiler.java	2019-12-01 16:22:53.012273076 +0000
+@@ -64,7 +64,6 @@
+ 	 *
+ 	 * @see javax.tools.Tool#getSourceVersions()
+ 	 */
+-	@Override
+ 	public Set<SourceVersion> getSourceVersions() {
+ 		return EclipseCompiler.SupportedSourceVersions;
+ 	}
+@@ -74,7 +73,6 @@
+ 	 * @see javax.tools.JavaCompiler#getStandardFileManager(javax.tools.DiagnosticListener,
+ 	 *      java.util.Locale, java.nio.charset.Charset)
+ 	 */
+-	@Override
+ 	public StandardJavaFileManager getStandardFileManager(DiagnosticListener<? super JavaFileObject> someDiagnosticListener, Locale locale, Charset charset) {
+ 		this.diagnosticListener = someDiagnosticListener;
+ 		return new EclipseFileManager(locale, charset);
+@@ -86,7 +84,6 @@
+ 	 *      javax.tools.JavaFileManager, javax.tools.DiagnosticListener,
+ 	 *      java.lang.Iterable, java.lang.Iterable, java.lang.Iterable)
+ 	 */
+-	@Override
+ 	@SuppressWarnings("unchecked")
+ 	public CompilationTask getTask(Writer out, JavaFileManager fileManager, DiagnosticListener<? super JavaFileObject> someDiagnosticListener, Iterable<String> options, Iterable<String> classes, Iterable<? extends JavaFileObject> compilationUnits) {
+ 		PrintWriter writerOut = null;
+@@ -176,7 +173,6 @@
+ 
+ 		return new CompilationTask() {
+ 			private boolean hasRun = false;
+-			@Override
+ 			public Boolean call() {
+ 				// set up compiler with passed options
+ 				if (this.hasRun) {
+@@ -186,11 +182,9 @@
+ 				this.hasRun = true;
+ 				return value;
+ 			}
+-			@Override
+ 			public void setLocale(Locale locale) {
+ 				eclipseCompiler2.setLocale(locale);
+ 			}
+-			@Override
+ 			public void setProcessors(Iterable<? extends Processor> processors) {
+ 				ArrayList<Processor> temp = new ArrayList<Processor>();
+ 				for (Processor processor : processors) {
+@@ -207,7 +201,6 @@
+ 	 *
+ 	 * @see javax.tools.OptionChecker#isSupportedOption(java.lang.String)
+ 	 */
+-	@Override
+ 	public int isSupportedOption(String option) {
+ 		return Options.processOptions(option);
+ 	}
+@@ -218,7 +211,6 @@
+ 	 * @see javax.tools.Tool#run(java.io.InputStream, java.io.OutputStream,
+ 	 *      java.io.OutputStream, java.lang.String[])
+ 	 */
+-	@Override
+ 	public int run(InputStream in, OutputStream out, OutputStream err, String... arguments) {
+ 		boolean succeed = new Main(new PrintWriter(new OutputStreamWriter(out)), new PrintWriter(new OutputStreamWriter(err)), true/*systemExit*/, null/*options*/, null/*progress*/).compile(arguments);
+ 		return succeed ? 0 : -1;
+--
+--- a/org/eclipse/jdt/internal/compiler/tool/EclipseCompilerImpl.java	2019-12-01 16:24:38.964845947 +0000
++++ b/org/eclipse/jdt/internal/compiler/tool/EclipseCompilerImpl.java	2019-12-01 16:27:04.798387478 +0000
+@@ -140,11 +140,9 @@
+ 	public IErrorHandlingPolicy getHandlingPolicy() {
+ 		// passes the initial set of files to the batch oracle (to avoid finding more than once the same units when case insensitive match)
+ 		return new IErrorHandlingPolicy() {
+-			@Override
+ 			public boolean proceedOnErrors() {
+ 				return false; // stop if there are some errors
+ 			}
+-			@Override
+ 			public boolean stopOnFirstError() {
+ 				return false;
+ 			}
+@@ -169,19 +167,15 @@
+ 				DiagnosticListener<? super JavaFileObject> diagListener = EclipseCompilerImpl.this.diagnosticListener;
+ 				if (diagListener != null) {
+ 					diagListener.report(new Diagnostic<JavaFileObject>() {
+-						@Override
+ 						public String getCode() {
+ 							return Integer.toString(problemId);
+ 						}
+-						@Override
+ 						public long getColumnNumber() {
+ 							return columnNumber;
+ 						}
+-						@Override
+ 						public long getEndPosition() {
+ 							return endPosition;
+ 						}
+-						@Override
+ 						public Kind getKind() {
+ 							if ((severity & ProblemSeverities.Error) != 0) {
+ 								return Diagnostic.Kind.ERROR;
+@@ -194,22 +188,18 @@
+ 							}
+ 							return Diagnostic.Kind.OTHER;
+ 						}
+-						@Override
+ 						public long getLineNumber() {
+ 							return lineNumber;
+ 						}
+-						@Override
+ 						public String getMessage(Locale locale) {
+ 							if (locale != null) {
+ 								setLocale(locale);
+ 							}
+ 							return getLocalizedMessage(problemId, problemArguments);
+ 						}
+-						@Override
+ 						public long getPosition() {
+ 							return startPosition;
+ 						}
+-						@Override
+ 						public JavaFileObject getSource() {
+ 							File f = new File(new String(originatingFileName));
+ 							if (f.exists()) {
+@@ -217,7 +207,6 @@
+ 							}
+ 							return null;
+ 						}
+-						@Override
+ 						public long getStartPosition() {
+ 							return startPosition;
+ 						}
+@@ -241,19 +230,15 @@
+ 				DiagnosticListener<? super JavaFileObject> diagListener = EclipseCompilerImpl.this.diagnosticListener;
+ 				if (diagListener != null) {
+ 					diagListener.report(new Diagnostic<JavaFileObject>() {
+-						@Override
+ 						public String getCode() {
+ 							return Integer.toString(problemId);
+ 						}
+-						@Override
+ 						public long getColumnNumber() {
+ 							return columnNumber;
+ 						}
+-						@Override
+ 						public long getEndPosition() {
+ 							return endPosition;
+ 						}
+-						@Override
+ 						public Kind getKind() {
+ 							if ((severity & ProblemSeverities.Error) != 0) {
+ 								return Diagnostic.Kind.ERROR;
+@@ -266,22 +251,18 @@
+ 							}
+ 							return Diagnostic.Kind.OTHER;
+ 						}
+-						@Override
+ 						public long getLineNumber() {
+ 							return lineNumber;
+ 						}
+-						@Override
+ 						public String getMessage(Locale locale) {
+ 							if (locale != null) {
+ 								setLocale(locale);
+ 							}
+ 							return getLocalizedMessage(problemId, problemArguments);
+ 						}
+-						@Override
+ 						public long getPosition() {
+ 							return startPosition;
+ 						}
+-						@Override
+ 						public JavaFileObject getSource() {
+ 							File f = new File(new String(originatingFileName));
+ 							if (f.exists()) {
+@@ -289,7 +270,6 @@
+ 							}
+ 							return null;
+ 						}
+-						@Override
+ 						public long getStartPosition() {
+ 							return startPosition;
+ 						}
+@@ -496,25 +476,21 @@
+ 			final CategorizedProblem problem = (CategorizedProblem) iterator.next();
+ 			if (this.diagnosticListener != null) {
+ 				this.diagnosticListener.report(new Diagnostic<JavaFileObject>() {
+-					@Override
+ 					public String getCode() {
+ 						return null;
+ 					}
+-					@Override
+ 					public long getColumnNumber() {
+ 						if (problem instanceof DefaultProblem) {
+ 							return ((DefaultProblem) problem).column;
+ 						}
+ 						return Diagnostic.NOPOS;
+ 					}
+-					@Override
+ 					public long getEndPosition() {
+ 						if (problem instanceof DefaultProblem) {
+ 							return ((DefaultProblem) problem).getSourceEnd();
+ 						}
+ 						return Diagnostic.NOPOS;
+ 					}
+-					@Override
+ 					public Kind getKind() {
+ 						if (problem.isError()) {
+ 							return Diagnostic.Kind.ERROR;
+@@ -524,25 +500,21 @@
+ 						}
+ 						return Diagnostic.Kind.OTHER;
+ 					}
+-					@Override
+ 					public long getLineNumber() {
+ 						if (problem instanceof DefaultProblem) {
+ 							return ((DefaultProblem) problem).getSourceLineNumber();
+ 						}
+ 						return Diagnostic.NOPOS;
+ 					}
+-					@Override
+ 					public String getMessage(Locale locale) {
+ 						return problem.getMessage();
+ 					}
+-					@Override
+ 					public long getPosition() {
+ 						if (problem instanceof DefaultProblem) {
+ 							return ((DefaultProblem) problem).getSourceStart();
+ 						}
+ 						return Diagnostic.NOPOS;
+ 					}
+-					@Override
+ 					public JavaFileObject getSource() {
+ 						if (problem instanceof DefaultProblem) {
+ 							File f = new File(new String(((DefaultProblem) problem).getOriginatingFileName()));
+@@ -553,7 +525,6 @@
+ 						}
+ 						return null;
+ 					}
+-					@Override
+ 					public long getStartPosition() {
+ 						return getPosition();
+ 					}
+--
+--- a/org/eclipse/jdt/internal/compiler/tool/EclipseFileManager.java	2019-12-01 16:28:42.290755196 +0000
++++ b/org/eclipse/jdt/internal/compiler/tool/EclipseFileManager.java	2019-12-01 16:33:35.707908367 +0000
+@@ -126,7 +126,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#close()
+ 	 */
+-	@Override
+ 	public void close() throws IOException {
+ 		this.locations = null;
+ 		for (Archive archive : this.archivesCache.values()) {
+@@ -212,7 +211,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#flush()
+ 	 */
+-	@Override
+ 	public void flush() throws IOException {
+ 		for (Archive archive : this.archivesCache.values()) {
+ 			archive.flush();
+@@ -247,7 +245,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#getClassLoader(javax.tools.JavaFileManager.Location)
+ 	 */
+-	@Override
+ 	public ClassLoader getClassLoader(Location location) {
+ 		Iterable<? extends File> files = getLocation(location);
+ 		if (files == null) {
+@@ -380,7 +377,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#getFileForInput(javax.tools.JavaFileManager.Location, java.lang.String, java.lang.String)
+ 	 */
+-	@Override
+ 	public FileObject getFileForInput(Location location, String packageName, String relativeName) throws IOException {
+ 		Iterable<? extends File> files = getLocation(location);
+ 		if (files == null) {
+@@ -412,7 +408,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#getFileForOutput(javax.tools.JavaFileManager.Location, java.lang.String, java.lang.String, javax.tools.FileObject)
+ 	 */
+-	@Override
+ 	public FileObject getFileForOutput(Location location, String packageName, String relativeName, FileObject sibling)
+ 			throws IOException {
+ 		Iterable<? extends File> files = getLocation(location);
+@@ -433,7 +428,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#getJavaFileForInput(javax.tools.JavaFileManager.Location, java.lang.String, javax.tools.JavaFileObject.Kind)
+ 	 */
+-	@Override
+ 	public JavaFileObject getJavaFileForInput(Location location, String className, Kind kind) throws IOException {
+ 		if (kind != Kind.CLASS && kind != Kind.SOURCE) {
+ 			throw new IllegalArgumentException("Invalid kind : " + kind);//$NON-NLS-1$
+@@ -469,7 +463,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#getJavaFileForOutput(javax.tools.JavaFileManager.Location, java.lang.String, javax.tools.JavaFileObject.Kind, javax.tools.FileObject)
+ 	 */
+-	@Override
+ 	public JavaFileObject getJavaFileForOutput(Location location, String className, Kind kind, FileObject sibling)
+ 			throws IOException {
+ 		if (kind != Kind.CLASS && kind != Kind.SOURCE) {
+@@ -524,7 +517,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#getJavaFileObjects(java.io.File[])
+ 	 */
+-	@Override
+ 	public Iterable<? extends JavaFileObject> getJavaFileObjects(File... files) {
+ 		return getJavaFileObjectsFromFiles(Arrays.asList(files));
+ 	}
+@@ -532,7 +524,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#getJavaFileObjects(java.lang.String[])
+ 	 */
+-	@Override
+ 	public Iterable<? extends JavaFileObject> getJavaFileObjects(String... names) {
+ 		return getJavaFileObjectsFromStrings(Arrays.asList(names));
+ 	}
+@@ -540,7 +531,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#getJavaFileObjectsFromFiles(java.lang.Iterable)
+ 	 */
+-	@Override
+ 	public Iterable<? extends JavaFileObject> getJavaFileObjectsFromFiles(Iterable<? extends File> files) {
+ 		ArrayList<JavaFileObject> javaFileArrayList = new ArrayList<JavaFileObject>();
+ 		for (File f : files) {
+@@ -552,7 +542,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#getJavaFileObjectsFromStrings(java.lang.Iterable)
+ 	 */
+-	@Override
+ 	public Iterable<? extends JavaFileObject> getJavaFileObjectsFromStrings(Iterable<String> names) {
+ 		ArrayList<File> files = new ArrayList<File>();
+ 		for (String name : names) {
+@@ -579,7 +568,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#getLocation(javax.tools.JavaFileManager.Location)
+ 	 */
+-	@Override
+ 	public Iterable<? extends File> getLocation(Location location) {
+ 		if (this.locations == null) return null;
+ 		return this.locations.get(location.getName());
+@@ -601,7 +589,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#handleOption(java.lang.String, java.util.Iterator)
+ 	 */
+-	@Override
+ 	public boolean handleOption(String current, Iterator<String> remaining) {
+ 		try {
+ 			if ("-bootclasspath".equals(current)) {//$NON-NLS-1$
+@@ -731,7 +718,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#hasLocation(javax.tools.JavaFileManager.Location)
+ 	 */
+-	@Override
+ 	public boolean hasLocation(Location location) {
+ 		return this.locations != null && this.locations.containsKey(location.getName());
+ 	}
+@@ -739,7 +725,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#inferBinaryName(javax.tools.JavaFileManager.Location, javax.tools.JavaFileObject)
+ 	 */
+-	@Override
+ 	public String inferBinaryName(Location location, JavaFileObject file) {
+ 		String name = file.getName();
+ 		JavaFileObject javaFileObject = null;
+@@ -766,7 +751,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#isSameFile(javax.tools.FileObject, javax.tools.FileObject)
+ 	 */
+-	@Override
+ 	public boolean isSameFile(FileObject fileObject1, FileObject fileObject2) {
+ 		// EclipseFileManager creates only EcliseFileObject
+ 		if (!(fileObject1 instanceof EclipseFileObject)) throw new IllegalArgumentException("Unsupported file object class : " + fileObject1.getClass());//$NON-NLS-1$
+@@ -776,7 +760,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.OptionChecker#isSupportedOption(java.lang.String)
+ 	 */
+-	@Override
+ 	public int isSupportedOption(String option) {
+ 		return Options.processOptionsFileManager(option);
+ 	}
+@@ -784,7 +767,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.JavaFileManager#list(javax.tools.JavaFileManager.Location, java.lang.String, java.util.Set, boolean)
+ 	 */
+-	@Override
+ 	public Iterable<JavaFileObject> list(Location location, String packageName, Set<Kind> kinds, boolean recurse)
+ 			throws IOException {
+ 		
+@@ -831,7 +813,6 @@
+ 	/* (non-Javadoc)
+ 	 * @see javax.tools.StandardJavaFileManager#setLocation(javax.tools.JavaFileManager.Location, java.lang.Iterable)
+ 	 */
+-	@Override
+ 	public void setLocation(Location location, Iterable<? extends File> path) throws IOException {
+ 		if (path != null) {
+ 			if (location.isOutputLocation()) {
