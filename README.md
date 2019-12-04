@@ -1,6 +1,6 @@
 ## Bootstrapping OpenJDK 8
 
-```
+```sh
 sudo emerge -a1v =dev-java/gnu-classpath-0.93
 sudo emerge -a1v =dev-java/jamvm-1.5.1
 sudo emerge -a1v =dev-java/gnu-classpath-0.99-r2
@@ -12,12 +12,12 @@ sudo emerge -a dev-java/openjdk:8 # This will be installed form the main Gentoo 
 ```
 
 ## Bootstrapping OpenJDK 11
-```
+```sh
 sudo emerge -a1v dev-java/openjdk:9
 sudo emerge -a1v dev-java/openjdk:10
 sudo emerge -a1v dev-java/openjdk:11
 ```
 At this point you can remove this overlay and install OpenJDK from main tree:
-```
+```sh
 sudo emerge -a dev-java/openjdk:11
 ```
