@@ -169,8 +169,7 @@ pkg_setup() {
 	icedtea_check_requirements
 
 	JAVA_PKG_WANT_BUILD_VM="
-		icedtea-7 	icedtea-6
-		gcj-jdk jamvm-bootstrap"
+		jamvm-bootstrap	icedtea-7	gcj-jdk"
 	JAVA_PKG_WANT_SOURCE="1.5"
 	JAVA_PKG_WANT_TARGET="1.5"
 
