@@ -6,8 +6,8 @@ sudo emerge -a1v =dev-java/jamvm-1.5.1
 sudo emerge -a1v =dev-java/gnu-classpath-0.99-r2
 sudo emerge -a1v =dev-java/jamvm-2.0.0-r99
 sudo emerge -a1v =dev-java/eclipse-ecj-4.2.1
-sudo emerge -a1v =dev-java/jamvm-2.0.0-r100
-sudo emerge -a1v dev-java/icedtea:7
+sudo emerge -a1v =dev-java/jamvm-2.0.0-r100 # Rebuild jamvm, so that it picks up new ecj
+sudo emerge -a1v dev-java/icedtea:7 # This icedtea will use jamvm, so a bit slowish (hotspot failed to build)
 sudo emerge -a dev-java/openjdk:8 # This will be installed form the main Gentoo portage tree
 ```
 
