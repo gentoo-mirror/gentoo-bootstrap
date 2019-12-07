@@ -6,7 +6,7 @@ EAPI=5
 inherit eutils java-pkg-2 java-vm-2 multilib git-r3
 
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
-EGIT_REPO_URI="git://git.savannah.gnu.org/classpath.git"
+EGIT_REPO_URI="https://git.savannah.gnu.org/git/classpath.git"
 EGIT_COMMIT="e7c13ee0cf2005206fbec0eca677f8cf66d5a103"
 HOMEPAGE="https://www.gnu.org/software/classpath"
 
