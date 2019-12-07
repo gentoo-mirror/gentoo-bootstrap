@@ -7,7 +7,7 @@ EAPI=6
 JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 # rewriting build.xml files for the testcases has no reason atm
 JAVA_PKG_BSFIX_ALL=no
-inherit eutils java-pkg-2 java-ant-2
+inherit eutils java-pkg-2 java-vm-2 java-ant-2
 
 MY_P="apache-ant-${PV}"
 
@@ -20,9 +20,9 @@ SLOT="bootstrap"
 KEYWORDS="amd64"
 IUSE="doc"
 
-RDEPEND="dev-java/jamvm:1.5"
-DEPEND="${RDEPEND}
+RDEPEND="dev-java/jamvm:1.5
 	!dev-java/ant-core:0"
+DEPEND="${RDEPEND}"
 
 
 S="${WORKDIR}/${MY_P}"
