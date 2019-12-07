@@ -7,4 +7,6 @@ DESCRIPTION="Virtual for Java Development Kit (JDK)"
 SLOT="${PV}"
 KEYWORDS="amd64"
 
-RDEPEND="dev-java/jamvm:1.5"
+RDEPEND="dev-java/jamvm:2.0
+         dev-java/eclipse-ecj:3.2
+         dev-java/gnu-classpath:0.99"

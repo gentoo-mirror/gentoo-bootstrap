@@ -4,7 +4,9 @@
 EAPI="7"
 
 DESCRIPTION="Virtual for Java Development Kit (JDK)"
-SLOT="1.6"
+SLOT="${PV}"
 KEYWORDS="amd64"
 
-RDEPEND=">=dev-java/jamvm-2.0.0-r99:bootstrap"
+RDEPEND="dev-java/jamvm:2.0-3
+         dev-java/eclipse-ecj:4.2
+         dev-java/gnu-classpath:0.99-devel"

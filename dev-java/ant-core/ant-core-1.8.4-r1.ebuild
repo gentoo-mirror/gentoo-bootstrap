@@ -20,13 +20,9 @@ SLOT="bootstrap"
 KEYWORDS="amd64"
 IUSE="doc"
 
-DEPEND="
-	virtual/jdk:1.4
-	!dev-java/ant-core:0
-"
+RDEPEND="dev-java/jamvm:1.5"
+DEPEND="${RDEPEND}"
 
-RDEPEND="${DEPEND}
-	virtual/jre:1.4"
 
 S="${WORKDIR}/${MY_P}"
 
@@ -34,6 +30,15 @@ src_prepare() {
 	sed -i -e 's/depends="jars,test-jar"/depends="jars"/' build.xml || die "Sed failed!"
 
 	default
+}
+
+pkg_setup() {
+	JAVA_PKG_WANT_BUILD_VM="jamvm-1.5"
+	JAVA_PKG_WANT_SOURCE="1.4"
+	JAVA_PKG_WANT_TARGET="1.4"
+
+	java-vm-2_pkg_setup
+	java-pkg-2_pkg_setup
 }
 
 src_compile() {

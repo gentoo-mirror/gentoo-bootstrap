@@ -10,11 +10,10 @@ HOMEPAGE="http://jamvm.sourceforge.net/"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
-SLOT="bootstrap"
+SLOT="1.5"
 KEYWORDS="amd64"
 
-CLASSPATH_SLOT="bootstrap"
-DEPEND="dev-java/gnu-classpath:${CLASSPATH_SLOT}"
+DEPEND="dev-java/gnu-classpath:0.93"
 
 RDEPEND="${DEPEND}"
 
@@ -65,4 +64,5 @@ src_install() {
 	dodir ${bindir}
 	dosym /usr/bin/jamvm ${bindir}/java
 	dosym /usr/bin/jikes ${bindir}/javac
+	dosym /usr/bin/fastjar ${bindir}/jar
 }

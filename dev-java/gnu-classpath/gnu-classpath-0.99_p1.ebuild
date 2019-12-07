@@ -6,12 +6,12 @@ EAPI=5
 inherit eutils java-pkg-2 java-vm-2 multilib git-r3
 
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
-EGIT_REPO_URI="https://git.savannah.gnu.org/git/classpath.git"
+EGIT_REPO_URI="git://git.savannah.gnu.org/classpath.git"
 EGIT_COMMIT="e7c13ee0cf2005206fbec0eca677f8cf66d5a103"
 HOMEPAGE="https://www.gnu.org/software/classpath"
 
 LICENSE="GPL-2-with-linking-exception"
-SLOT="bootstrap"
+SLOT="0.99-devel"
 KEYWORDS="amd64"
 
 IUSE=""
@@ -19,23 +19,22 @@ REQUIRED_USE=""
 
 RDEPEND=""
 
-# java-config >2.1.11 needed for ecj version globbing
 DEPEND="app-arch/zip
 		dev-java/eclipse-ecj:3.2
 		>=dev-java/java-config-2.1.11
-		>=virtual/jdk-1.4
-		>=dev-java/gnu-classpath-0.99-r2:bootstrap
+		virtual/jdk:1.5
 		${RDEPEND}"
 
-RDEPEND=">=virtual/jre-1.4
-	${RDEPEND}"
+RDEPEND="${DEPEND}
+	virtual/jre:1.5"
 
 S=${WORKDIR}/${P}
 
 pkg_setup() {
-	JAVA_PKG_WANT_BUILD_VM="jamvm-bootstrap"
+	JAVA_PKG_WANT_BUILD_VM="jamvm-2.0"
 	JAVA_PKG_WANT_SOURCE="1.5"
 	JAVA_PKG_WANT_TARGET="1.5"
+
 	java-vm-2_pkg_setup
 	java-pkg-2_pkg_setup
 }
@@ -67,8 +66,11 @@ src_configure() {
 		--enable-jni \
 		--disable-dependency-tracking \
 		--disable-plugin \
-		--bindir="${EPREFIX}"/usr/libexec/${PN} \
-		--includedir="${EPREFIX}"/usr/include/classpath \
+		--disable-examples \
+		--prefix="${EPREFIX}/usr/$(get_libdir)/classpath-0.99-devel" \
+		--with-glibj-dir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99-devel/share/classpath" \
+		--datadir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99-devel" \
+		--datarootdir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99-devel/share" \
 		--with-ecj-jar=$(java-pkg_getjar --build-only ${ecj_pkg}-* ecj.jar)
 }
 
@@ -79,6 +81,7 @@ src_compile() {
 src_install() {
 	emake DESTDIR="${D}" install
 	dodoc AUTHORS BUGS ChangeLog* HACKING NEWS README THANKYOU TODO
-	java-pkg_regjar /usr/share/classpath/glibj.zip
-	java-pkg_regjar /usr/share/classpath/tools.zip
+	java-pkg_regjar "${EPREFIX}"/usr/$(get_libdir)/classpath-0.99-devel/share/classpath/glibj.zip
+	java-pkg_regjar "${EPREFIX}"/usr/$(get_libdir)/classpath-0.99-devel/classpath/tools.zip
+	dosym "${EPREFIX}"/usr/$(get_libdir)/classpath-0.99-devel/bin/gjavah "${EPREFIX}"/usr/bin/gjavah-devel
 }

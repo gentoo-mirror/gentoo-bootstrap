@@ -3,7 +3,7 @@
 
 EAPI=5
 
-inherit eutils java-pkg-2 multilib
+inherit eutils java-pkg-2 java-vm-2 multilib
 
 MY_P=${P/gnu-/}
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
@@ -11,32 +11,36 @@ SRC_URI="mirror://gnu/classpath/${MY_P}.tar.gz"
 HOMEPAGE="https://www.gnu.org/software/classpath"
 
 LICENSE="GPL-2-with-linking-exception"
-SLOT="bootstrap"
+SLOT="0.99"
 KEYWORDS="amd64"
 
 IUSE=""
 REQUIRED_USE=""
 
-RDEPEND=""
-
-# java-config >2.1.11 needed for ecj version globbing
 DEPEND="app-arch/zip
 		dev-java/eclipse-ecj:3.2
 		>=dev-java/java-config-2.1.11
-		virtual/jdk:1.4
-		${RDEPEND}"
+		dev-java/jamvm:1.5"
 
-RDEPEND="virtual/jre:1.4
-	${RDEPEND}"
+RDEPEND="${DEPEND}
+	virtual/jre:1.4"
 
 S=${WORKDIR}/${MY_P}
+
+pkg_setup() {
+	JAVA_PKG_WANT_BUILD_VM="jamvm-1.5"
+	JAVA_PKG_WANT_SOURCE="1.5"
+	JAVA_PKG_WANT_TARGET="1.5"
+
+	java-vm-2_pkg_setup
+	java-pkg-2_pkg_setup
+}
 
 src_configure() {
 	local ecj_pkg="eclipse-ecj"
 
 	# We require ecj anyway, so force it to avoid problems with bad versions of javac
 	export JAVAC="${EPREFIX}/usr/bin/ecj-3.2"
-	export JAVA="${EPREFIX}/usr/bin/java"
 	# build takes care of them itself, duplicate -source -target kills ecj
 	export JAVACFLAGS="-nowarn"
 	# build system is passing -J-Xmx768M which ecj however ignores
@@ -55,8 +59,13 @@ src_configure() {
 		--enable-jni \
 		--disable-dependency-tracking \
 		--disable-plugin \
-		--bindir="${EPREFIX}"/usr/libexec/${PN} \
-		--includedir="${EPREFIX}"/usr/include/classpath \
+		--disable-examples \
+		--prefix="${EPREFIX}/usr/$(get_libdir)/classpath-0.99" \
+		--with-glibj-dir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99/share/classpath" \
+		--datadir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99" \
+		--datarootdir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99/share" \
+		--mandir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99/share/man" \
+		--infodir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99/share/info" \
 		--with-ecj-jar=$(java-pkg_getjar --build-only ${ecj_pkg}-* ecj.jar)
 }
 
@@ -67,7 +76,7 @@ src_compile() {
 src_install() {
 	emake DESTDIR="${D}" install
 	dodoc AUTHORS BUGS ChangeLog* HACKING NEWS README THANKYOU TODO
-	java-pkg_regjar /usr/share/classpath/glibj.zip
-	java-pkg_regjar /usr/share/classpath/tools.zip
-	dosym /usr/libexec/gnu-classpath/gjavah /usr/bin/gjavah
+	java-pkg_regjar "${EPREFIX}"/usr/$(get_libdir)/classpath-0.99/share/classpath/glibj.zip
+	java-pkg_regjar "${EPREFIX}"/usr/$(get_libdir)/classpath-0.99/classpath/tools.zip
+	dosym "${EPREFIX}"/usr/$(get_libdir)/classpath-0.99/bin/gjavah "${EPREFIX}"/usr/bin/gjavah
 }

@@ -1,9 +1,9 @@
 # Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI="4"
+EAPI="6"
 
-inherit java-pkg-2
+inherit java-pkg-2 java-vm-2 
 
 MY_PN="ecj"
 DMF="R-${PV}-201209141800"
@@ -20,31 +20,31 @@ IUSE="+userland_GNU"
 COMMON_DEP="
 	app-eselect/eselect-java"
 RDEPEND="${COMMON_DEP}
-	>=virtual/jre-1.4"
-DEPEND="${COMMON_DEP}
-	>=virtual/jdk-1.6
+	dev-java/jamvm:2.0-2
+	virtual/jre:1.6"
+DEPEND="${RDEPEND}
+	virtual/jdk:1.5
 	app-arch/unzip
 	userland_GNU? ( sys-apps/findutils )"
 
 S="${WORKDIR}"
 
-JAVA_PKG_WANT_SOURCE=1.4
-JAVA_PKG_WANT_TARGET=1.4
-
-java_prepare() {
+src_prepare() {
 	# These have their own package.
 	rm -f org/eclipse/jdt/core/JDTCompilerAdapter.java || die
 	rm -fr org/eclipse/jdt/internal/antadapter || die
 
 	epatch "${FILESDIR}"/override.patch
+	default
 }
 
 pkg_setup() {
 
-	JAVA_PKG_WANT_BUILD_VM="jamvm-bootstrap"
-	JAVA_PKG_WANT_SOURCE="1.5"
-	JAVA_PKG_WANT_TARGET="1.5"
+	JAVA_PKG_WANT_BUILD_VM="jamvm-2.0-2"
+	JAVA_PKG_WANT_SOURCE="1.4"
+	JAVA_PKG_WANT_TARGET="1.4"
 
+	java-vm-2_pkg_setup
 	java-pkg-2_pkg_setup
 }
 

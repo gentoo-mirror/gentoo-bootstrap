@@ -3,19 +3,19 @@
 
 EAPI=5
 
-inherit eutils flag-o-matic multilib java-vm-2 autotools
+inherit eutils flag-o-matic multilib java-pkg-2 java-vm-2 autotools
 
 DESCRIPTION="An extremely small and specification-compliant virtual machine"
 HOMEPAGE="http://jamvm.sourceforge.net/"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
-SLOT="bootstrap"
+SLOT="2.0"
 KEYWORDS="amd64"
 IUSE="libffi"
 
-DEPEND="dev-java/gnu-classpath:bootstrap
-	dev-java/eclipse-ecj:4.2
+DEPEND="dev-java/gnu-classpath:0.99
+	dev-java/eclipse-ecj:3.2
 	libffi? ( virtual/libffi )
 	ppc64? ( virtual/libffi )
 	sparc? ( virtual/libffi )"
@@ -27,7 +27,7 @@ PATCHES=(
 )
 
 src_prepare() {
-	# without this patch, classes.zip is not found at runtime
+	# without this patch, classes-1.zip is not found at runtime
 	epatch "${PATCHES[@]}"
 
 	sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/classlib/gnuclasspath/dll.c || die "Sed failed!"
@@ -43,8 +43,18 @@ src_prepare() {
 	rm -v src/classlib/gnuclasspath/lib/classes.zip || die
 }
 
+pkg_setup() {
+	JAVA_PKG_WANT_BUILD_VM="jamvm-1.5"
+	JAVA_PKG_WANT_SOURCE="1.5"
+	JAVA_PKG_WANT_TARGET="1.5"
+
+	java-vm-2_pkg_setup
+	java-pkg-2_pkg_setup
+}
+
 src_configure() {
-	export CLASSPATH=/usr/share/classpath/glibj.zip
+	export CLASSPATH="${EPREFIX}"/usr/$(get_libdir)/classpath-0.99/share/classpath/glibj.zip
+	export JAVAC="${EPREFIX}/usr/bin/ecj-3.2"
 
 	filter-flags "-fomit-frame-pointer"
 
@@ -59,31 +69,20 @@ src_configure() {
 
 	econf ${fficonf} \
 		--disable-dependency-tracking \
-		--libdir="${EPREFIX}"/usr/$(get_libdir)/${PN} \
+		--libdir="${EPREFIX}"/usr/$(get_libdir)/${PN}-jdk \
 		--includedir="${EPREFIX}"/usr/include/${PN} \
-		--with-classpath-install-dir="${EPREFIX}/usr"
+		--with-classpath-install-dir="${EPREFIX}/usr/$(get_libdir)/classpath-0.99"
 }
 
 src_compile() {
-	export LD_LIBRARY_PATH="${EPREFIX}/usr/$(get_libdir)/classpath"
+	export LD_LIBRARY_PATH="${EPREFIX}/usr/$(get_libdir)/classpath-0.99/$(get_libdir)"
 	default
-}
-
-create_launcher() {
-	local script="${D}/${INSTALL_DIR}/bin/${1}"
-	cat > "${script}" <<-EOF
-		#!/bin/sh
-		exec /usr/bin/jamvm \
-			-Xbootclasspath/p:/usr/share/classpath/tools.zip" \
-			gnu.classpath.tools.${1}.Main "\$@"
-	EOF
-	chmod +x "${script}" || die
 }
 
 src_install() {
 	local libdir=$(get_libdir)
-	local CLASSPATH_DIR=/usr/libexec/gnu-classpath
-	local JDK_DIR=/usr/${libdir}/${PN}-jdk
+	local CLASSPATH_DIR="${EPREFIX}"/usr/${libdir}/classpath-0.99/bin
+	local JDK_DIR="${EPREFIX}"/usr/${libdir}/${PN}-jdk
 
 	emake DESTDIR="${D}" install
 
@@ -92,7 +91,9 @@ src_install() {
 	set_java_env "${FILESDIR}/${P}-env.file"
 
 	dodir ${JDK_DIR}/bin
-	dosym /usr/bin/jamvm ${JDK_DIR}/bin/java
+	mv "${ED}"usr/bin/jamvm "${ED}"usr/bin/jamvm-2.0
+	mv "${ED}"usr/share/jamvm/classes.zip "${ED}"usr/share/jamvm/classes-1.zip
+	dosym "${EPREFIX}"/usr/bin/jamvm-2.0 ${JDK_DIR}/bin/java
 	for files in ${CLASSPATH_DIR}/g*; do
 		if [ $files = "${CLASSPATH_DIR}/bin/gjdoc" ] ; then
 			dosym $files ${JDK_DIR}/bin/javadoc || die
@@ -103,17 +104,17 @@ src_install() {
 	done
 
 	dodir ${JDK_DIR}/jre/lib
-	dosym /usr/share/classpath/glibj.zip ${JDK_DIR}/jre/lib/rt.jar
+	dosym "${EPREFIX}"/usr/${libdir}/classpath-0.99/share/classpath/glibj.zip ${JDK_DIR}/jre/lib/rt.jar
 	dodir ${JDK_DIR}/lib
-	dosym "${EPREFIX}/usr/share/classpath/tools.zip" ${JDK_DIR}/lib/tools.jar
-	dosym "${EPREFIX}/usr/include/classpath" ${JDK_DIR}/include
+	dosym "${EPREFIX}"/usr/${libdir}/classpath-0.99/classpath/tools.zip ${JDK_DIR}/lib/tools.jar
+	dosym "${EPREFIX}/usr/${libdir}/classpath-0.99/include/" ${JDK_DIR}/include
 
-	local ecj_jar="$(readlink "${EPREFIX}"/usr/share/eclipse-ecj/ecj.jar)"
+	local ecj_jar="${EPREFIX}"/usr/share/eclipse-ecj-3.2/lib/ecj.jar
 	exeinto ${JDK_DIR}/bin
-	sed -e "s#@JAVA@#/usr/bin/jamvm#" \
+	sed -e "s#@JAVA@#/usr/bin/jamvm-2.0#" \
 		-e "s#@ECJ_JAR@#${ecj_jar}#" \
-		-e "s#@RT_JAR@#/usr/share/classpath/glibj.zip#" \
-		-e "s#@TOOLS_JAR@#/usr/share/classpath/tools.zip#" \
+		-e "s#@RT_JAR@#/usr/${libdir}/jamvm-jdk/jre/lib/rt.jar#" \
+		-e "s#@TOOLS_JAR@#/usr/${libdir}/jamvm-jdk/lib/tools.jar#" \
 		"${FILESDIR}"/"${P}-javac.in" | newexe - javac
 
 	local libarch="${ARCH}"
@@ -121,8 +122,6 @@ src_install() {
 	[ ${ARCH} == x86_64 ] && libarch="amd64"
 	dodir ${JDK_DIR}/jre/lib/${libarch}/client
 	dodir ${JDK_DIR}/jre/lib/${libarch}/server
-	dosym /usr/${libdir}/${PN}/libjvm.so ${JDK_DIR}/jre/lib/${libarch}/client/libjvm.so
-	dosym /usr/${libdir}/${PN}/libjvm.so ${JDK_DIR}/jre/lib/${libarch}/server/libjvm.so
 
 	# Can't use java-vm_set-pax-markings as doesn't work with symbolic links
 	# Ensure a PaX header is created.
@@ -132,5 +131,5 @@ src_install() {
 	# On x86 for heap sizes over 700MB disable SEGMEXEC and PAGEEXEC as well.
 	use x86 && pax_markings+="sp"
 
-	pax-mark ${pax_markings} "${ED}"/usr/bin/jamvm
+	pax-mark ${pax_markings} "${ED}"/usr/bin/jamvm-2.0
 }

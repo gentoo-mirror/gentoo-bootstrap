@@ -17,7 +17,7 @@ diff -Nru jamvm-2.0.0.old/src/classlib/gnuclasspath/class.c jamvm-2.0.0/src/clas
  
  #ifdef USE_ZIP
 -#define JAMVM_CLASSES INSTALL_DIR"/share/jamvm/classes.zip"
-+#define JAMVM_CLASSES PKGDATADIR"/classes-1.zip"
++#define JAMVM_CLASSES PKGDATADIR"/classes-2.zip"
  #define CLASSPATH_CLASSES CLASSPATH_INSTALL_DIR"/share/classpath/glibj.zip"
  #else
 -#define JAMVM_CLASSES INSTALL_DIR"/share/jamvm/classes"

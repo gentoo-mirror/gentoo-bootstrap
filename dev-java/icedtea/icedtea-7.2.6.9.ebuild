@@ -130,14 +130,14 @@ RDEPEND="${COMMON_DEP}
 # ca-certificates, perl and openssl are used for the cacerts keystore generation
 DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_DEPEND}
 	|| (
-		>=dev-java/jamvm-2.0.0-r100
+		dev-java/jamvm:2.0-3
 		dev-java/icedtea:7
 	)
 	app-arch/cpio
 	app-arch/unzip
 	app-arch/zip
 	app-misc/ca-certificates
-	>=dev-java/ant-core-1.8.2
+	dev-java/ant-core:bootstrap
 	dev-lang/perl
 	>=dev-libs/libxslt-1.1.26
 	!libressl? ( dev-libs/openssl )
@@ -169,7 +169,7 @@ pkg_setup() {
 	icedtea_check_requirements
 
 	JAVA_PKG_WANT_BUILD_VM="
-		jamvm-bootstrap	icedtea-7	gcj-jdk"
+		jamvm-2.0-2	icedtea-7	gcj-jdk"
 	JAVA_PKG_WANT_SOURCE="1.5"
 	JAVA_PKG_WANT_TARGET="1.5"
 

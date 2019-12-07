@@ -6,9 +6,7 @@ EAPI=6
 # depend on bootstrap slot
 JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 
-inherit eutils java-pkg-2 java-ant-2
-
-#MY_PN=${PN##*-}
+inherit eutils java-pkg-2 java-vm-2 java-ant-2
 
 DESCRIPTION="Eclipse Compiler for Java"
 HOMEPAGE="http://www.eclipse.org/"
@@ -29,6 +27,15 @@ src_unpack() {
     
 	# remove unzip, add javadoc target, put final ecj.jar and javadocs in dist/ and not ../
 	epatch "${FILESDIR}/${P}-build-gentoo.patch"
+}
+
+pkg_setup() {
+	JAVA_PKG_WANT_BUILD_VM="jamvm-1.5"
+	JAVA_PKG_WANT_SOURCE="1.4"
+	JAVA_PKG_WANT_TARGET="1.4"
+
+	java-vm-2_pkg_setup
+	java-pkg-2_pkg_setup
 }
 
 src_compile() {

@@ -66,8 +66,8 @@ LICENSE="Apache-1.1 Apache-2.0 GPL-1 GPL-2 GPL-2-with-linking-exception LGPL-2 M
 KEYWORDS="amd64 ~arm ~arm64 ~ppc64 ~x86"
 
 IUSE="+alsa cacao +cups doc examples +gtk headless-awt
-	jamvm +jbootstrap kerberos libressl nsplugin pax_kernel +pch
-	pulseaudio sctp selinux shenandoah smartcard +source +sunec test +webstart zero"
+	jamvm +jbootstrap kerberos libressl pax_kernel +pch
+	sctp selinux shenandoah smartcard +source +sunec test zero"
 
 REQUIRED_USE="gtk? ( !headless-awt )"
 
@@ -109,7 +109,6 @@ COMMON_DEP="
 # gsettings-desktop-schemas will be needed for native proxy support; PR1976
 RDEPEND="${COMMON_DEP}
 	!dev-java/icedtea:0
-	!dev-java/icedtea-web:7
 	>=gnome-base/gsettings-desktop-schemas-3.12.2
 	virtual/ttf-fonts
 	alsa? ( ${ALSA_COMMON_DEP} )
@@ -149,10 +148,6 @@ DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_
 	x11-libs/libXt
 	virtual/pkgconfig
 	pax_kernel? ( sys-apps/elfix )"
-
-PDEPEND="webstart? ( >=dev-java/icedtea-web-1.6.1:0 )
-	nsplugin? ( >=dev-java/icedtea-web-1.6.1:0[nsplugin] )
-	pulseaudio? ( dev-java/icedtea-sound )"
 
 S="${WORKDIR}"/${ICEDTEA_PKG}
 

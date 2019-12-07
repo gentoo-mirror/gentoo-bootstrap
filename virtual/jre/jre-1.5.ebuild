@@ -9,5 +9,5 @@ KEYWORDS="amd64"
 
 RDEPEND="
 	virtual/jdk:${SLOT}
-	dev-java/jamvm:1.5
+	dev-java/jamvm:2.0
 "

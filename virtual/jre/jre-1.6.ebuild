@@ -8,7 +8,5 @@ SLOT="${PV}"
 KEYWORDS="amd64"
 
 RDEPEND="
-	virtual/jdk:${SLOT}
-	>=dev-java/gnu-classpath-0.99_p1
-	>=dev-java/jamvm-2.0.0-r99:bootstrap
+	dev-java/jamvm:2.0-2
 "
