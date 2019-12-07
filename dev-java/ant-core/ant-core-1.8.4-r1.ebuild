@@ -21,7 +21,8 @@ KEYWORDS="amd64"
 IUSE="doc"
 
 RDEPEND="dev-java/jamvm:1.5"
-DEPEND="${RDEPEND}"
+DEPEND="${RDEPEND}
+	!dev-java/ant-core:0"
 
 
 S="${WORKDIR}/${MY_P}"

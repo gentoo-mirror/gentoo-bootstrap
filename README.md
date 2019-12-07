@@ -1,8 +1,12 @@
 ## Bootstrapping OpenJDK 8
 
 ```sh
-sudo emerge -a dev-java/openjdk:8
+sudo emerge -a1v =dev-java/icedtea-3.7.0
+sudo emerge -av dev-java/openjdk:8
 ```
+
+Note: you need to do it in two steps as currently ant-core:bootstrap is not co-installable
+with ant-core:0 from the Gentoo tree.
 
 ## Bootstrapping OpenJDK 11
 ```sh

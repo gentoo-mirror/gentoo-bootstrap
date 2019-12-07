@@ -309,7 +309,7 @@ src_test() {
 src_install() {
 	default
 
-	local dest="/usr/$(get_libdir)/icedtea${SLOT}"
+	local dest="${EPREFIX}/usr/$(get_libdir)/icedtea${SLOT}"
 	local ddest="${ED}${dest#/}"
 
 	if ! use alsa; then
