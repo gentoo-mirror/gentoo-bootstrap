@@ -40,6 +40,10 @@ src_configure() {
 		--includedir="${EPREFIX}"/usr/include/classpath
 }
 
+src_compile() {
+	emake DESTDIR="${D}"
+}
+
 src_install() {
 	emake DESTDIR="${D}" install
 	dodoc AUTHORS BUGS ChangeLog* HACKING NEWS README THANKYOU TODO
