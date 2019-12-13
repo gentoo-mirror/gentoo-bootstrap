@@ -344,6 +344,7 @@ src_configure() {
 }
 
 src_compile() {
+	export DISABLE_HOTSPOT_OS_VERSION_CHECK=ok
 	default
 }
 
