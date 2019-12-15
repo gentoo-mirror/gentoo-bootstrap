@@ -67,7 +67,7 @@ KEYWORDS="amd64 ~arm ~arm64 ~ppc64 ~x86"
 
 IUSE="+alsa cacao +cups doc examples +gtk headless-awt
 	jamvm +jbootstrap kerberos libressl pax_kernel +pch
-	sctp selinux shenandoah smartcard +source +sunec test zero"
+	sctp selinux shenandoah smartcard +source test zero"
 
 REQUIRED_USE="gtk? ( !headless-awt )"
 
@@ -102,8 +102,7 @@ COMMON_DEP="
 	virtual/jpeg:0=
 	kerberos? ( virtual/krb5 )
 	sctp? ( net-misc/lksctp-tools )
-	smartcard? ( sys-apps/pcsc-lite )
-	sunec? ( >=dev-libs/nss-3.16.1-r1 )"
+	smartcard? ( sys-apps/pcsc-lite )"
 
 # Gtk+ will move to COMMON_DEP in time; PR1982
 # gsettings-desktop-schemas will be needed for native proxy support; PR1976
@@ -339,7 +338,6 @@ src_configure() {
 		$(use_with pax_kernel pax "${EPREFIX}/usr/sbin/paxmark.sh") \
 		$(use_enable sctp system-sctp) \
 		$(use_enable smartcard system-pcsc) \
-		$(use_enable sunec) \
 		${zero_config} ${cacao_config} ${jamvm_config} ${hs_config}
 }
 

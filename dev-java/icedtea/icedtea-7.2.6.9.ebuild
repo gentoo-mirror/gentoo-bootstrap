@@ -59,9 +59,9 @@ SRC_URI="
 LICENSE="Apache-1.1 Apache-2.0 GPL-1 GPL-2 GPL-2-with-linking-exception LGPL-2 MPL-1.0 MPL-1.1 public-domain W3C"
 KEYWORDS="amd64"
 
-IUSE="+alsa cacao cjk +cups debug doc examples +gtk headless-awt
+IUSE="+alsa cacao +cups debug doc examples +gtk headless-awt
 	+jbootstrap kerberos libressl nss pax_kernel
-	sctp selinux smartcard source +sunec test zero"
+	sctp selinux smartcard source test zero"
 
 REQUIRED_USE="gtk? ( !headless-awt )"
 
@@ -105,8 +105,7 @@ COMMON_DEP="
 	kerberos? ( virtual/krb5 )
 	nss? ( >=dev-libs/nss-3.12.5-r1 )
 	sctp? ( net-misc/lksctp-tools )
-	smartcard? ( sys-apps/pcsc-lite )
-	sunec? ( >=dev-libs/nss-3.16.1-r1 )"
+	smartcard? ( sys-apps/pcsc-lite )"
 
 # gsettings-desktop-schemas is needed for native proxy support. #431972
 RDEPEND="${COMMON_DEP}
@@ -115,13 +114,6 @@ RDEPEND="${COMMON_DEP}
 	>=gnome-base/gsettings-desktop-schemas-3.12.2
 	media-fonts/dejavu
 	alsa? ( ${ALSA_COMMON_DEP} )
-	cjk? (
-		media-fonts/arphicfonts
-		media-fonts/baekmuk-fonts
-		media-fonts/lklug
-		media-fonts/lohit-fonts
-		media-fonts/sazanami
-	)
 	cups? ( ${CUPS_COMMON_DEP} )
 	!headless-awt? ( ${X_COMMON_DEP} )
 	selinux? ( sec-policy/selinux-java )"
@@ -285,7 +277,6 @@ src_configure() {
 		$(use_with pax_kernel pax "${EPREFIX}/usr/sbin/paxmark.sh") \
 		$(use_enable sctp system-sctp) \
 		$(use_enable smartcard system-pcsc) \
-		$(use_enable sunec) \
 		${zero_config} ${cacao_config} ${jamvm_config}
 }
 
