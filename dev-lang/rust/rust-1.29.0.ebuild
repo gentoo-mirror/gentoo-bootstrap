@@ -9,8 +9,9 @@ DESCRIPTION="Systems programming language from Mozilla"
 HOMEPAGE="https://www.rust-lang.org/"
 
 # MRUSTC_VERSION="0.9"
-EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
-EGIT_COMMIT="04e1aa5c10f5b519549bd63db073936621157212"
+EGIT_REPO_URI="https://github.com/stikonas/mrustc.git"
+# EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
+EGIT_COMMIT="3e6e406fdf50ce8cbfe54ff3a23e707758da0708"
 
 SRC_URI="
 	https://static.rust-lang.org/dist/rustc-${PV}-src.tar.xz"
@@ -18,7 +19,7 @@ SRC_URI="
 
 LICENSE="|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA"
 SLOT="stable/1.29"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 DEPEND="dev-util/cmake"
 RDEPEND=""
 
