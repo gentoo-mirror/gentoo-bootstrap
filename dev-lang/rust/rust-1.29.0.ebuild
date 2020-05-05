@@ -19,7 +19,7 @@ SRC_URI="
 
 LICENSE="|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA"
 SLOT="stable/1.29"
-KEYWORDS="amd64 arm64"
+KEYWORDS="amd64"
 DEPEND="dev-util/cmake"
 RDEPEND=""
 
@@ -62,9 +62,12 @@ src_compile() {
 
 src_install() {
 	mkdir -p "${D}/usr/bin/"
-	cp -R "${S}/run_rustc/output/prefix-s/bin/rustc" "${D}/usr/bin/rustc-${PV}" || die "Install failed!"
+	rustc_wrapper=${S}/run_rustc/output/prefix/bin/rustc
+	sed -i '/LD_LIBRARY_PATH/c\LD_LIBRARY_PATH="$d\/..\/lib\/rustlib\/x86_64-unknown-linux-gnu\/lib" $d\/rustc_binary $@' ${rustc_wrapper}
+	cp -R "${rustc_wrapper}" "${D}/usr/bin/rustc-${PV}" || die "Install failed!"
+	cp -R "${S}/run_rustc/output/prefix/bin/rustc_binary" "${D}/usr/bin/rustc_binary" || die "Install failed!"
 	cp -R "${S}/output/cargo" "${D}/usr/bin/cargo-${PV}" || die "Install failed!"
-	cp -R "${S}/run_rustc/output/prefix-s/lib" "${D}/usr" || die "Install failed!"
+	cp -R "${S}/run_rustc/output/prefix/lib" "${D}/usr" || die "Install failed!"
 	mkdir -p "${D}/etc/env.d/rust/"
 	echo /usr/bin/cargo >> "${D}/etc/env.d/rust/provider-rust-${PV}"
 }
