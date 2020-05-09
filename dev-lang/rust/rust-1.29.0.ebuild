@@ -9,9 +9,8 @@ DESCRIPTION="Systems programming language from Mozilla"
 HOMEPAGE="https://www.rust-lang.org/"
 
 # MRUSTC_VERSION="0.9"
-EGIT_REPO_URI="https://github.com/stikonas/mrustc.git"
-# EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
-EGIT_COMMIT="3e6e406fdf50ce8cbfe54ff3a23e707758da0708"
+EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
+EGIT_COMMIT="1173d1d7ae0047c3ac1aff53fbe11f5e40a9ab09"
 
 SRC_URI="
 	https://static.rust-lang.org/dist/rustc-${PV}-src.tar.xz"
