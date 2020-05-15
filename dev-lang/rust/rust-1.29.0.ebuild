@@ -32,8 +32,8 @@ IUSE="${ALL_LLVM_TARGETS[*]}"
 S=${WORKDIR}/mrustc-${MRUSTC_VERSION}
 
 src_unpack() {
-        git-r3_fetch "${EGIT_REPO_URI}" "${EGIT_COMMIT}"
-        git-r3_checkout "${EGIT_REPO_URI}" "${S}"
+	git-r3_fetch "${EGIT_REPO_URI}" "${EGIT_COMMIT}"
+	git-r3_checkout "${EGIT_REPO_URI}" "${S}"
 	unpack ${A}
 	mv rustc-${PV}-src ${S}
 }
