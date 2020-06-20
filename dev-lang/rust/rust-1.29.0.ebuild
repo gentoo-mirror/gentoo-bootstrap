@@ -65,7 +65,7 @@ src_install() {
 	sed -i '/LD_LIBRARY_PATH/c\LD_LIBRARY_PATH="$d\/..\/lib\/rustlib\/x86_64-unknown-linux-gnu\/lib" $d\/rustc_binary $@' ${rustc_wrapper}
 	cp -R "${rustc_wrapper}" "${D}/usr/bin/rustc-${PV}" || die "Install failed!"
 	cp -R "${S}/run_rustc/output/prefix/bin/rustc_binary" "${D}/usr/bin/rustc_binary" || die "Install failed!"
-	cp -R "${S}/output/cargo" "${D}/usr/bin/cargo-${PV}" || die "Install failed!"
+	cp -R "${S}/run_rustc/output/prefix/bin/cargo" "${D}/usr/bin/cargo-${PV}" || die "Install failed!"
 	cp -R "${S}/run_rustc/output/prefix/lib" "${D}/usr" || die "Install failed!"
 	mkdir -p "${D}/etc/env.d/rust/"
 	echo /usr/bin/cargo >> "${D}/etc/env.d/rust/provider-rust-${PV}"
