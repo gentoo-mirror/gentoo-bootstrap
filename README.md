@@ -1,6 +1,7 @@
 ## Bootstrapping OpenJDK 8
 
 ```sh
+# If you are on arm64, you first need to unmask app-arch/fastjar
 sudo emerge -a1v =dev-java/icedtea-3.7.0
 sudo emerge -av dev-java/openjdk:8
 sudo emerge -a --depclean # Remove old software that was used for bootstrapping
