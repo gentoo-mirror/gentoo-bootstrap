@@ -23,6 +23,11 @@ DEPEND="sys-libs/zlib
 
 S=${WORKDIR}/${MY_P}
 
+src_prepare() {
+	eapply "${FILESDIR}/classpath-aarch64-support.patch"
+	eapply_user
+}
+
 src_configure() {
 	export JAVAC="${EPREFIX}/usr/bin/jikes"
 	export BOOTCLASSPATH="none"

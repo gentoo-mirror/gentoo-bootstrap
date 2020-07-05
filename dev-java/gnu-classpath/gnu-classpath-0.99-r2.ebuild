@@ -3,7 +3,7 @@
 
 EAPI=5
 
-inherit eutils java-pkg-2 java-vm-2 multilib
+inherit epatch eutils java-pkg-2 java-vm-2 multilib
 
 MY_P=${P/gnu-/}
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
@@ -34,6 +34,10 @@ pkg_setup() {
 
 	java-vm-2_pkg_setup
 	java-pkg-2_pkg_setup
+}
+
+src_prepare() {
+	epatch "${FILESDIR}/classpath-aarch64-support.patch"
 }
 
 src_configure() {
