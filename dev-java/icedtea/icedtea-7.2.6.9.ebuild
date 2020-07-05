@@ -57,7 +57,7 @@ SRC_URI="
 	${DROP_URL}/jamvm/${JAMVM_TARBALL} -> ${JAMVM_GENTOO_TARBALL}"
 
 LICENSE="Apache-1.1 Apache-2.0 GPL-1 GPL-2 GPL-2-with-linking-exception LGPL-2 MPL-1.0 MPL-1.1 public-domain W3C"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 
 IUSE="+alsa cacao +cups debug doc examples +gtk headless-awt
 	+jbootstrap kerberos libressl nss pax_kernel

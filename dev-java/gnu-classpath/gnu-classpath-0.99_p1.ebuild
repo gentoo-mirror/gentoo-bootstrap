@@ -12,7 +12,7 @@ HOMEPAGE="https://www.gnu.org/software/classpath"
 
 LICENSE="GPL-2-with-linking-exception"
 SLOT="0.99-devel"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 
 IUSE=""
 REQUIRED_USE=""

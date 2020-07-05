@@ -11,7 +11,7 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="2.0-3"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 IUSE="libffi"
 
 DEPEND="dev-java/gnu-classpath:0.99-devel
@@ -22,8 +22,10 @@ DEPEND="dev-java/gnu-classpath:0.99-devel
 RDEPEND="${DEPEND}"
 
 PATCHES=(
-	"${FILESDIR}"/"${P}-3-classes-location.patch"
-	"${FILESDIR}"/"${P}-noexecstack.patch"
+	"${FILESDIR}/${P}-3-classes-location.patch"
+	"${FILESDIR}/${P}-noexecstack.patch"
+	"${FILESDIR}/${P}-aarch64-support.patch"
+	"${FILESDIR}/${P}-opcode-guard.patch"
 )
 
 src_prepare() {

@@ -17,7 +17,7 @@ SRC_URI="http://archive.apache.org/dist/ant/source/apache-ant-${PV}-src.tar.bz2"
 
 LICENSE="Apache-2.0"
 SLOT="bootstrap"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 IUSE="doc"
 
 RDEPEND="dev-java/jamvm:1.5

@@ -11,7 +11,7 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="1.5"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 
 DEPEND="dev-java/gnu-classpath:0.93"
 
@@ -30,6 +30,7 @@ src_prepare() {
 src_configure() {
 	export JAVAC="${EPREFIX}/usr/bin/jikes-bin"
 	epatch "${FILESDIR}/classes-location.patch"
+	epatch "${FILESDIR}/${P}-aarch64-support.patch"
         sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/dll.c || die "Sed failed!"
 	eautoreconf
 

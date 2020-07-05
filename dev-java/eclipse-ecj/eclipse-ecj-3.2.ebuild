@@ -12,7 +12,7 @@ DESCRIPTION="Eclipse Compiler for Java"
 HOMEPAGE="http://www.eclipse.org/"
 SRC_URI="${P}.tar.bz2"
 LICENSE="EPL-1.0"
-KEYWORDS="amd64"
+KEYWORDS="amd64 arm64"
 SLOT="3.2"
 
 RDEPEND="virtual/jre:1.4"
