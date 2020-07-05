@@ -198,7 +198,7 @@ src_configure() {
 		use_zero="yes"
 	fi
 
-	# Use JamVM if requested
+	# Use JamVM for bootstrap
 	use_jamvm="yes"
 
 	# Use CACAO if requested
@@ -222,7 +222,9 @@ src_configure() {
 		fi
 	fi
 
-	jamvm_config="--enable-jamvm"
+	if test "x${use_jamvm}" = "xyes"; then
+		jamvm_config="--enable-jamvm"
+	fi
 
 	# Turn on CACAO if needed (non-HS archs) or requested
 	if test "x${use_cacao}" = "xyes"; then
