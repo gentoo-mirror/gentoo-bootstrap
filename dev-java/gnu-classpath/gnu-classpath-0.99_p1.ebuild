@@ -3,7 +3,7 @@
 
 EAPI=5
 
-inherit eutils java-pkg-2 java-vm-2 multilib git-r3
+inherit epatch eutils java-pkg-2 java-vm-2 multilib git-r3
 
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
 EGIT_REPO_URI="https://git.savannah.gnu.org/git/classpath.git"
@@ -40,6 +40,7 @@ pkg_setup() {
 }
 
 src_prepare() {
+	epatch "${FILESDIR}/classpath-aarch64-support.patch"
 	sh autogen.sh
 
 	find . -name '*.java' -exec sed -i -e 's/@Override//g' {} \;
