@@ -24,7 +24,7 @@ SRC_URI="
 "
 
 LICENSE="GPL-2"
-KEYWORDS="~amd64 ~arm64"
+KEYWORDS="amd64 arm64"
 IUSE="alsa debug cups doc examples gentoo-vm headless-awt +jbootstrap nsplugin +pch selinux source +webstart"
 
 COMMON_DEPEND="
