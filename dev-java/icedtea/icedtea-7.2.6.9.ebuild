@@ -3,14 +3,10 @@
 # $Id$
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
 
-# *********************************************************
-# * IF YOU CHANGE THIS EBUILD, CHANGE ICEDTEA-6.* AS WELL *
-# *********************************************************
-
 EAPI="6"
 SLOT="7"
 
-inherit check-reqs gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator virtualx
+inherit autotools check-reqs eutils gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator virtualx
 
 ICEDTEA_VER=$(get_version_component_range 2-4)
 ICEDTEA_BRANCH=$(get_version_component_range 2-3)
@@ -171,6 +167,13 @@ pkg_setup() {
 
 src_unpack() {
 	unpack ${SRC_PKG}
+
+	cp "${FILESDIR}/jamvm-1.6.0-aarch64-support.patch" "${S}/patches/jamvm"
+	cp "${FILESDIR}/jamvm-1.6.0-opcode-guard.patch" "${S}/patches/jamvm"
+
+	cd "${S}"
+	eapply "${FILESDIR}/additional_patches.patch"
+	eautoreconf
 }
 
 src_configure() {

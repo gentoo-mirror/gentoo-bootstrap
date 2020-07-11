@@ -1,0 +1,13 @@
+--- a/Makefile.am 2020-07-11 13:44:32.099191644 +0100
++++ b/Makefile.am 2020-07-11 13:45:23.436056479 +0100
+@@ -408,7 +408,9 @@
+ 	patches/jamvm/pr2172-tempdir.patch \
+ 	patches/jamvm/noexecstack.patch \
+ 	patches/jamvm/pr2665.patch \
+-	patches/jamvm/pr3134-unsafe_methods.patch
++	patches/jamvm/pr3134-unsafe_methods.patch \
++	patches/jamvm/jamvm-1.6.0-aarch64-support.patch \
++	patches/jamvm/jamvm-1.6.0-opcode-guard.patch
+ endif
+ 
+ if ENABLE_NSS
