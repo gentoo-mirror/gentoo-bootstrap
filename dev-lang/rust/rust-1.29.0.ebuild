@@ -3,14 +3,14 @@
 
 EAPI=7
 
-inherit flag-o-matic eutils git-r3 llvm
+inherit flag-o-matic eutils git-r3 llvm rust-toolchain
 
 DESCRIPTION="Systems programming language from Mozilla"
 HOMEPAGE="https://www.rust-lang.org/"
 
 # MRUSTC_VERSION="0.9"
 EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
-EGIT_COMMIT="1173d1d7ae0047c3ac1aff53fbe11f5e40a9ab09"
+EGIT_COMMIT="fbb5da8f43d8ebd0afaf0485a8137f868f9b809c"
 
 SRC_URI="
 	https://static.rust-lang.org/dist/rustc-${PV}-src.tar.xz"
@@ -53,16 +53,16 @@ src_configure() {
 }
 
 src_compile() {
-	emake RUSTC_TARGET=x86_64-unknown-linux-gnu -f minicargo.mk || die "compile problem"
-	emake RUSTC_TARGET=x86_64-unknown-linux-gnu -f minicargo.mk output/cargo || die "compile problem"
+	emake RUSTC_TARGET=$(rust_abi) -f minicargo.mk || die "compile problem"
+	emake RUSTC_TARGET=$(rust_abi) -f minicargo.mk output/cargo || die "compile problem"
 	cd run_rustc
-	emake RUSTC_TARGET=x86_64-unknown-linux-gnu || die "compile problem"
+	emake RUSTC_TARGET=$(rust_abi) || die "compile problem"
 }
 
 src_install() {
 	mkdir -p "${D}/usr/bin/"
 	rustc_wrapper=${S}/run_rustc/output/prefix/bin/rustc
-	sed -i '/LD_LIBRARY_PATH/c\LD_LIBRARY_PATH="$d\/..\/lib\/rustlib\/x86_64-unknown-linux-gnu\/lib" $d\/rustc_binary $@' ${rustc_wrapper}
+	sed -i '/LD_LIBRARY_PATH/c\LD_LIBRARY_PATH="$d\/..\/lib\/rustlib\/$(rust_abi)\/lib" $d\/rustc_binary $@' ${rustc_wrapper}
 	cp -R "${rustc_wrapper}" "${D}/usr/bin/rustc-${PV}" || die "Install failed!"
 	cp -R "${S}/run_rustc/output/prefix/bin/rustc_binary" "${D}/usr/bin/rustc_binary" || die "Install failed!"
 	cp -R "${S}/run_rustc/output/prefix/bin/cargo" "${D}/usr/bin/cargo-${PV}" || die "Install failed!"
