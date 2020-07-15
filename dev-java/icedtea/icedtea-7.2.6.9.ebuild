@@ -168,12 +168,8 @@ pkg_setup() {
 src_unpack() {
 	unpack ${SRC_PKG}
 
-	cp "${FILESDIR}/jamvm-1.6.0-aarch64-support.patch" "${S}/patches/jamvm"
-	cp "${FILESDIR}/jamvm-1.6.0-opcode-guard.patch" "${S}/patches/jamvm"
-
-	cd "${S}"
-	eapply "${FILESDIR}/additional_patches.patch"
-	eautoreconf
+	ln -s "${FILESDIR}/jamvm-1.6.0-aarch64-support.patch" "${S}/patches/jamvm" || die
+	ln -s "${FILESDIR}/jamvm-1.6.0-opcode-guard.patch" "${S}/patches/jamvm" || die
 }
 
 src_configure() {
@@ -187,6 +183,14 @@ src_configure() {
 
 	local cacao_config config hotspot_port jamvm_config use_cacao use_jamvm use_zero zero_config
 	local vm=$(java-pkg_get-current-vm)
+
+	# Export patches for configure
+	DISTRIBUTION_PATCHES=""
+
+	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-aarch64-support.patch "
+	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-opcode-guard.patch "
+
+	export DISTRIBUTION_PATCHES
 
 	# gcj-jdk ensures ecj is present.
 	if use jbootstrap || has "${vm}" gcj-jdk; then
