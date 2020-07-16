@@ -170,6 +170,10 @@ src_unpack() {
 
 	ln -s "${FILESDIR}/jamvm-1.6.0-aarch64-support.patch" "${S}/patches/jamvm" || die
 	ln -s "${FILESDIR}/jamvm-1.6.0-opcode-guard.patch" "${S}/patches/jamvm" || die
+	ln -s "${FILESDIR}/${PN}-jdk-musl.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}-jdk-no-soname.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}-jdk-fix-build.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}-jdk-execinfo.patch" "${S}/patches" || die
 }
 
 src_configure() {
@@ -189,6 +193,10 @@ src_configure() {
 
 	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-aarch64-support.patch "
 	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-opcode-guard.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-no-soname.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-fix-build.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-execinfo.patch "
 
 	export DISTRIBUTION_PATCHES
 
