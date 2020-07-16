@@ -184,8 +184,6 @@ src_unpack() {
 }
 
 src_prepare() {
-	ln -s "${FILESDIR}/jamvm-1.6.0-aarch64-support.patch" "${S}/patches/jamvm" || die
-	ln -s "${FILESDIR}/jamvm-1.6.0-opcode-guard.patch" "${S}/patches/jamvm" || die
 	ln -s "${FILESDIR}/${PN}-hotspot-musl.patch" patches || die
 	ln -s "${FILESDIR}/${PN}8-hotspot-noagent-musl.patch" patches || die
 	ln -s "${FILESDIR}/${PN}8-jdk-execinfo.patch" patches || die
@@ -211,8 +209,6 @@ src_configure() {
 
 	DISTRIBUTION_PATCHES=""
 
-	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-aarch64-support.patch "
-	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-opcode-guard.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-hotspot-musl.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}8-hotspot-noagent-musl.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-execinfo.patch "
