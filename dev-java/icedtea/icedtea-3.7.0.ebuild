@@ -192,6 +192,7 @@ src_prepare() {
 	ln -s "${FILESDIR}/${PN}${SLOT}-autoconf-config.patch" patches || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-gcc-triple.patch" patches || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-os_linux-remove-glibc-dependencies.patch" patches || die
 
 	eapply "${FILESDIR}/${PN}8-disable-systemtap.patch"
 	eapply_user
@@ -218,6 +219,7 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-autoconf-config.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-gcc-triple.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-os_linux-remove-glibc-dependencies.patch "
 
 	export DISTRIBUTION_PATCHES
 
