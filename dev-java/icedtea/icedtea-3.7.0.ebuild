@@ -185,12 +185,13 @@ src_unpack() {
 
 src_prepare() {
 	ln -s "${FILESDIR}/${PN}-hotspot-musl.patch" patches || die
-	ln -s "${FILESDIR}/${PN}8-hotspot-noagent-musl.patch" patches || die
-	ln -s "${FILESDIR}/${PN}8-jdk-execinfo.patch" patches || die
-	ln -s "${FILESDIR}/${PN}8-jdk-fix-libjvm-load.patch" patches || die
-	ln -s "${FILESDIR}/${PN}8-jdk-musl.patch" patches || die
-	ln -s "${FILESDIR}/${PN}8-autoconf-config.patch" patches || die
-	ln -s "${FILESDIR}/${PN}8-gcc-triple.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-noagent-musl.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-execinfo.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-fix-libjvm-load.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-musl.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-autoconf-config.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-gcc-triple.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch" patches || die
 
 	eapply "${FILESDIR}/${PN}8-disable-systemtap.patch"
 	eapply_user
@@ -210,12 +211,13 @@ src_configure() {
 	DISTRIBUTION_PATCHES=""
 
 	DISTRIBUTION_PATCHES+="patches/${PN}-hotspot-musl.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}8-hotspot-noagent-musl.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-execinfo.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-fix-libjvm-load.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-musl.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}8-autoconf-config.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}8-gcc-triple.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-noagent-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-execinfo.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-fix-libjvm-load.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-autoconf-config.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-gcc-triple.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch "
 
 	export DISTRIBUTION_PATCHES
 
