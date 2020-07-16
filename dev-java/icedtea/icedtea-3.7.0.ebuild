@@ -1,4 +1,4 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
@@ -6,7 +6,7 @@
 EAPI="6"
 SLOT="8"
 
-inherit check-reqs gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator
+inherit autotools check-reqs gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator
 
 ICEDTEA_VER=$(get_version_component_range 1-3)
 ICEDTEA_BRANCH=$(get_version_component_range 1-2)
@@ -94,7 +94,6 @@ X_DEPEND="
 # The Javascript requirement is obsolete; OpenJDK 8+ has Nashorn
 COMMON_DEP="
 	>=dev-libs/glib-2.26:2=
-	>=dev-util/systemtap-1
 	media-libs/fontconfig:1.0=
 	>=media-libs/freetype-2.5.3:2=
 	>=media-libs/lcms-2.5:2=
@@ -150,22 +149,6 @@ DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_
 
 S="${WORKDIR}"/${ICEDTEA_PKG}
 
-# @FUNCTION: get_systemtap_arch
-# @DESCRIPTION:
-# Get arch name used in /usr/share/systemtap/tapset so we can
-# install OpenJDK tapsets.
-
-get_systemtap_arch() {
-	local abi=${1-${ABI}}
-
-	case ${abi} in
-		*_fbsd) get_systemtap_arch ${abi%_fbsd} ;;
-		amd64*) echo x86_64 ;;
-		ppc*) echo powerpc ;;
-		x86*) echo i386 ;;
-		*) echo ${abi} ;;
-	esac
-}
 
 icedtea_check_requirements() {
 	local CHECKREQS_DISK_BUILD
@@ -200,6 +183,22 @@ src_unpack() {
 	unpack ${SRC_PKG}
 }
 
+src_prepare() {
+	ln -s "${FILESDIR}/jamvm-1.6.0-aarch64-support.patch" "${S}/patches/jamvm" || die
+	ln -s "${FILESDIR}/jamvm-1.6.0-opcode-guard.patch" "${S}/patches/jamvm" || die
+	ln -s "${FILESDIR}/${PN}-hotspot-musl.patch" patches || die
+	ln -s "${FILESDIR}/${PN}8-hotspot-noagent-musl.patch" patches || die
+	ln -s "${FILESDIR}/${PN}8-jdk-execinfo.patch" patches || die
+	ln -s "${FILESDIR}/${PN}8-jdk-fix-libjvm-load.patch" patches || die
+	ln -s "${FILESDIR}/${PN}8-jdk-musl.patch" patches || die
+	ln -s "${FILESDIR}/${PN}8-autoconf-config.patch" patches || die
+	ln -s "${FILESDIR}/${PN}8-gcc-triple.patch" patches || die
+
+	eapply "${FILESDIR}/${PN}8-disable-systemtap.patch"
+	eapply_user
+	eautoreconf
+}
+
 src_configure() {
 	# For bootstrap builds as the sandbox control file might not yet exist.
 	addpredict /proc/self/coredump_filter
@@ -209,6 +208,20 @@ src_configure() {
 
 	local cacao_config config hotspot_port hs_config jamvm_config use_cacao use_jamvm use_zero zero_config
 	local vm=$(java-pkg_get-current-vm)
+
+	DISTRIBUTION_PATCHES=""
+
+	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-aarch64-support.patch "
+	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-opcode-guard.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-hotspot-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}8-hotspot-noagent-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-execinfo.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-fix-libjvm-load.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}8-jdk-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}8-autoconf-config.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}8-gcc-triple.patch "
+
+	export DISTRIBUTION_PATCHES
 
 	# gcj-jdk ensures ecj is present.
 	if use jbootstrap || has "${vm}" gcj-jdk; then
@@ -355,7 +368,6 @@ src_install() {
 
 	local dest="/usr/$(get_libdir)/icedtea${SLOT}"
 	local ddest="${ED}${dest#/}"
-	local stapdest="/usr/share/systemtap/tapset/$(get_systemtap_arch)"
 
 	if ! use alsa; then
 		rm -v "${ddest}"/jre/lib/$(get_system_arch)/libjsoundalsa.* || die
@@ -370,14 +382,6 @@ src_install() {
 	fi
 
 	dosym /usr/share/doc/${PF} /usr/share/doc/${PN}${SLOT}
-
-	# Link SystemTap tapsets into SystemTap installation directory
-	mkdir -p "${ED}/${stapdest}"
-	for tapsets in "${ddest}"/tapset/*.stp; do
-		tapname=$(basename ${tapsets})
-		destname=${tapname/./-${SLOT}.}
-		dosym "${dest}"/tapset/${tapname} ${stapdest}/${destname}
-	done
 
 	# Fix the permissions.
 	find "${ddest}" \! -type l \( -perm /111 -exec chmod 755 {} \; -o -exec chmod 644 {} \; \) || die

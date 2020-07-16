@@ -1,0 +1,10 @@
+--- a/Makefile.am	2020-07-16 14:34:04.759855943 +0000
++++ b/Makefile.am	2020-07-16 14:34:29.151797650 +0000
+@@ -2941,7 +2941,6 @@
+ 	${mkinstalldirs} $(DESTDIR)${prefix}/jre/lib/$(INSTALL_ARCH_DIR)
+ 	${mkinstalldirs} $(DESTDIR)${prefix}/jre/lib/$(INSTALL_ARCH_DIR)/jli
+ 	${mkinstalldirs} $(DESTDIR)${prefix}/jre/lib/ext
+-	${mkinstalldirs} $(DESTDIR)${prefix}/tapset
+ if SPLIT_DEBUGINFO
+ 	${mkinstalldirs} $(DESTDIR)$(DEBUG_PREFIX)/$(bindir) $(DESTDIR)$(DEBUG_PREFIX)/${exec_prefix}/lib
+ 	${mkinstalldirs} $(DESTDIR)$(DEBUG_PREFIX)/${exec_prefix}/lib/$(INSTALL_ARCH_DIR)
