@@ -25,7 +25,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
-IUSE="alsa debug cups doc examples gentoo-vm headless-awt +jbootstrap nsplugin +pch selinux source +webstart"
+IUSE="debug cups doc examples gentoo-vm +jbootstrap nsplugin +pch selinux source +webstart"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -37,15 +37,13 @@ COMMON_DEPEND="
 RDEPEND="
 	${COMMON_DEPEND}
 	>=sys-apps/baselayout-java-0.1.0-r1
-	!headless-awt? (
-		x11-libs/libX11
-		x11-libs/libXext
-		x11-libs/libXi
-		x11-libs/libXrender
-		x11-libs/libXt
-		x11-libs/libXtst
-	)
-	alsa? ( media-libs/alsa-lib )
+	x11-libs/libX11
+	x11-libs/libXext
+	x11-libs/libXi
+	x11-libs/libXrender
+	x11-libs/libXt
+	x11-libs/libXtst
+	media-libs/alsa-lib
 	cups? ( net-print/cups )
 	selinux? ( sec-policy/selinux-java )
 "
@@ -186,7 +184,6 @@ src_configure() {
 			--with-milestone="fcs" # magic variable that means "release version"
 			--with-zlib=system
 			--with-native-debug-symbols=$(usex debug internal none)
-			$(usex headless-awt --disable-headful '')
 		)
 
 	# PaX breaks pch, bug #601016
@@ -219,16 +216,6 @@ src_install() {
 	local ddest="${ED%/}/${dest#/}"
 
 	cd "${S}"/build/*-release/images/jdk || die
-
-	if ! use alsa; then
-		rm -v jre/lib/libjsoundalsa.* || die
-	fi
-
-	# stupid build system does not remove that
-	if use headless-awt ; then
-		rm -fvr jre/lib/lib*{[jx]awt,splashscreen}* \
-		{,jre/}bin/policytool bin/appletviewer || die
-	fi
 
 	if ! use examples ; then
 		rm -vr demo/ || die
