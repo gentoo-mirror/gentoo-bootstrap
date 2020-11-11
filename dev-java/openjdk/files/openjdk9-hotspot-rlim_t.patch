@@ -1,0 +1,48 @@
+
+# HG changeset patch
+# User mikael
+# Date 1491957311 25200
+# Node ID 38d9b9a9c4762b42a5c16928470c73c0f632d71c
+# Parent  8ca8c24ffc52e453ed58a198b479a85c911d6da0
+Make printing of rlim_t values more portable
+
+diff -r 8ca8c24ffc52 -r 38d9b9a9c476 src/os/posix/vm/os_posix.cpp
+--- a/src/os/posix/vm/os_posix.cpp	Tue Apr 11 16:59:40 2017 -0700
++++ b/src/os/posix/vm/os_posix.cpp	Tue Apr 11 17:35:11 2017 -0700
+@@ -207,30 +207,30 @@
+   st->print(" STACK ");
+   getrlimit(RLIMIT_STACK, &rlim);
+   if (rlim.rlim_cur == RLIM_INFINITY) st->print("infinity");
+-  else st->print("%luk", rlim.rlim_cur >> 10);
++  else st->print(UINT64_FORMAT "k", u8(rlim.rlim_cur) >> 10);
+ 
+   st->print(", CORE ");
+   getrlimit(RLIMIT_CORE, &rlim);
+   if (rlim.rlim_cur == RLIM_INFINITY) st->print("infinity");
+-  else st->print("%luk", rlim.rlim_cur >> 10);
++  else st->print(UINT64_FORMAT "k", u8(rlim.rlim_cur) >> 10);
+ 
+   // Isn't there on solaris
+ #if !defined(SOLARIS) && !defined(AIX)
+   st->print(", NPROC ");
+   getrlimit(RLIMIT_NPROC, &rlim);
+   if (rlim.rlim_cur == RLIM_INFINITY) st->print("infinity");
+-  else st->print("%lu", rlim.rlim_cur);
++  else st->print(UINT64_FORMAT, u8(rlim.rlim_cur));
+ #endif
+ 
+   st->print(", NOFILE ");
+   getrlimit(RLIMIT_NOFILE, &rlim);
+   if (rlim.rlim_cur == RLIM_INFINITY) st->print("infinity");
+-  else st->print("%lu", rlim.rlim_cur);
++  else st->print(UINT64_FORMAT, u8(rlim.rlim_cur));
+ 
+   st->print(", AS ");
+   getrlimit(RLIMIT_AS, &rlim);
+   if (rlim.rlim_cur == RLIM_INFINITY) st->print("infinity");
+-  else st->print("%luk", rlim.rlim_cur >> 10);
++  else st->print(UINT64_FORMAT "k", u8(rlim.rlim_cur) >> 10);
+   st->cr();
+ }
+ 
+

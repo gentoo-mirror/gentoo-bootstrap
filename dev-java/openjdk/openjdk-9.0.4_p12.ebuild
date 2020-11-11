@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2020 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -141,11 +141,25 @@ src_prepare() {
 	chmod +x configure || die
 	local repo
 	for repo in corba hotspot jdk jaxp jaxws langtools nashorn; do
-		ln -s ../"${repo}-jdk-${MY_PV}" "${repo}" || die
+		ln -s "../${repo}-jdk-${MY_PV}" "${repo}" || die
 	done
 
 	# https://bugs.openjdk.java.net/browse/JDK-8201788
-	epatch "${FILESDIR}/bootcycle_jobs.patch"
+	eapply "${FILESDIR}/bootcycle_jobs.patch"
+
+	# conditionally apply patches for musl compatibility
+	if use elibc_musl; then
+		cd "../hotspot-jdk-${MY_PV}"
+		eapply -p2 "${FILESDIR}/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch"
+		eapply -p2 "${FILESDIR}/${PN}${SLOT}-hotspot-musl.patch"
+		eapply "${FILESDIR}/${PN}${SLOT}-hotspot-rlim_t.patch"
+		eapply "${FILESDIR}/${PN}${SLOT}-os_linux-remove-glibc-dependencies.patch"
+
+		cd "../jdk-jdk-${MY_PV}"
+		eapply -p2 "${FILESDIR}/${PN}${SLOT}-jdk-musl-build-fix-use-SIGRTMAX-rather-than-__SIGRTM.patch"
+		eapply -p1 "${FILESDIR}/${PN}${SLOT}-jdk-execinfo.patch"
+		eapply -p2 "${FILESDIR}/${PN}${SLOT}-musl-fix-libjvm-load-on-musl.patch"
+	fi
 }
 
 src_configure() {
@@ -207,12 +221,12 @@ src_install() {
 	cd "${S}"/build/*-release/images/jdk || die
 
 	if ! use alsa; then
-		rm -v jre/lib/$(get_system_arch)/libjsoundalsa.* || die
+		rm -v jre/lib/libjsoundalsa.* || die
 	fi
 
 	# stupid build system does not remove that
 	if use headless-awt ; then
-		rm -fvr jre/lib/$(get_system_arch)/lib*{[jx]awt,splashscreen}* \
+		rm -fvr jre/lib/lib*{[jx]awt,splashscreen}* \
 		{,jre/}bin/policytool bin/appletviewer || die
 	fi
 
