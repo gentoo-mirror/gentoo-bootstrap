@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2019 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -25,7 +25,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
-IUSE="debug cups doc examples gentoo-vm +jbootstrap nsplugin +pch selinux source +webstart"
+IUSE="alsa debug cups doc examples gentoo-vm headless-awt +jbootstrap nsplugin +pch selinux source +webstart"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -37,13 +37,15 @@ COMMON_DEPEND="
 RDEPEND="
 	${COMMON_DEPEND}
 	>=sys-apps/baselayout-java-0.1.0-r1
-	x11-libs/libX11
-	x11-libs/libXext
-	x11-libs/libXi
-	x11-libs/libXrender
-	x11-libs/libXt
-	x11-libs/libXtst
-	media-libs/alsa-lib
+	!headless-awt? (
+		x11-libs/libX11
+		x11-libs/libXext
+		x11-libs/libXi
+		x11-libs/libXrender
+		x11-libs/libXt
+		x11-libs/libXtst
+	)
+	alsa? ( media-libs/alsa-lib )
 	cups? ( net-print/cups )
 	selinux? ( sec-policy/selinux-java )
 "
@@ -77,7 +79,7 @@ PDEPEND="
 	nsplugin? ( >=dev-java/icedtea-web-1.6.1:0[nsplugin] )
 "
 
-S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV}"
+S="${WORKDIR}/${PN}-${PV}"
 
 # The space required to build varies wildly depending on USE flags,
 # ranging from 2GB to 16GB. This function is certainly not exact but
@@ -134,30 +136,40 @@ pkg_setup() {
 	fi
 }
 
-src_prepare() {
+src_unpack() {
 	default
-	chmod +x configure || die
+	mv -v "jdk${SLOT}u"* "${P}" || die
+
 	local repo
 	for repo in corba hotspot jdk jaxp jaxws langtools nashorn; do
-		ln -s "../${repo}-jdk-${MY_PV}" "${repo}" || die
+		mv -v "${repo}-"* "${P}/${repo}" || die
 	done
+}
+
+src_prepare() {
+	default
+
+	chmod +x configure || die
+
+    # conditionally apply patches for musl compatibility
+    if use elibc_musl; then
+        eapply "${FILESDIR}/musl/${SLOT}/build.patch"
+        eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/make-4.3.patch"
+        eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
+        eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
+    fi
+
+    # conditionally remove not compilable module (hotspot jdk.hotspot.agent)
+    # this needs libthread_db which is only provided by glibc
+    #
+    # haven't found any way to disable this module so just remove it.
+	if use elibc_musl; then
+		rm -rf "${S}"/hotspot/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
+	fi
 
 	# https://bugs.openjdk.java.net/browse/JDK-8201788
-	eapply "${FILESDIR}/bootcycle_jobs.patch"
-
-	# conditionally apply patches for musl compatibility
-	if use elibc_musl; then
-		cd "../hotspot-jdk-${MY_PV}"
-		eapply -p2 "${FILESDIR}/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch"
-		eapply -p2 "${FILESDIR}/${PN}${SLOT}-hotspot-musl.patch"
-		eapply "${FILESDIR}/${PN}${SLOT}-hotspot-rlim_t.patch"
-		eapply "${FILESDIR}/${PN}${SLOT}-os_linux-remove-glibc-dependencies.patch"
-
-		cd "../jdk-jdk-${MY_PV}"
-		eapply -p2 "${FILESDIR}/${PN}${SLOT}-jdk-musl-build-fix-use-SIGRTMAX-rather-than-__SIGRTM.patch"
-		eapply -p1 "${FILESDIR}/${PN}${SLOT}-jdk-execinfo.patch"
-		eapply -p2 "${FILESDIR}/${PN}${SLOT}-musl-fix-libjvm-load-on-musl.patch"
-	fi
+	epatch "${FILESDIR}/bootcycle_jobs.patch"
 }
 
 src_configure() {
@@ -184,6 +196,7 @@ src_configure() {
 			--with-milestone="fcs" # magic variable that means "release version"
 			--with-zlib=system
 			--with-native-debug-symbols=$(usex debug internal none)
+			$(usex headless-awt --disable-headful '')
 		)
 
 	# PaX breaks pch, bug #601016
@@ -216,6 +229,16 @@ src_install() {
 	local ddest="${ED%/}/${dest#/}"
 
 	cd "${S}"/build/*-release/images/jdk || die
+
+	if ! use alsa; then
+		rm -v jre/lib/$(get_system_arch)/libjsoundalsa.* || die
+	fi
+
+	# stupid build system does not remove that
+	if use headless-awt ; then
+		rm -fvr jre/lib/$(get_system_arch)/lib*{[jx]awt,splashscreen}* \
+		{,jre/}bin/policytool bin/appletviewer || die
+	fi
 
 	if ! use examples ; then
 		rm -vr demo/ || die
@@ -255,3 +278,4 @@ pkg_postinst() {
 		ewarn "absolute location under ${EPREFIX}/usr/$(get_libdir)/${PN}-${SLOT}."
 	fi
 }
+

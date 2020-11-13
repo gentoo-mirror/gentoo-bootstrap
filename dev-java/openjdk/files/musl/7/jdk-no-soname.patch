@@ -1,0 +1,13 @@
+diff -Naur openjdk-7.271_p01/jdk/make/common/Defs-linux.gmk openjdk-7.271_p01-copy/jdk/make/common/Defs-linux.gmk
+--- openjdk-7.271_p01/jdk/make/common/Defs-linux.gmk	2020-10-15 21:59:38.731954976 -0400
++++ openjdk-7.271_p01-copy/jdk/make/common/Defs-linux.gmk	2020-10-15 22:44:02.031941168 -0400
+@@ -371,7 +371,9 @@
+ #
+ LDFLAGS_OPT     = -Xlinker -O1
+ LDFLAGS_COMMON += -L$(LIBDIR)/$(LIBARCH)
++ifdef LIBRARY
+ LDFLAGS_COMMON += -Wl,-soname=$(LIB_PREFIX)$(LIBRARY).$(LIBRARY_SUFFIX)
++endif
+ 
+ #
+ # -static-libgcc is a gcc-3 flag to statically link libgcc, gcc-2.9x always

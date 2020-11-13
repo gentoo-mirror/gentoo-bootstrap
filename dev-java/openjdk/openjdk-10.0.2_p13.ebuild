@@ -132,6 +132,24 @@ pkg_setup() {
 
 src_prepare() {
 	default
+
+    # conditionally apply patches for musl compatibility
+    if use elibc_musl; then
+        eapply "${FILESDIR}/musl/${SLOT}/build.patch"
+        eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/make-4.3.patch"
+        eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
+        eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
+    fi
+
+    # conditionally remove not compilable module (hotspot jdk.hotspot.agent)
+    # this needs libthread_db which is only provided by glibc
+    #
+    # haven't found any way to disable this module so just remove it.
+	if use elibc_musl; then
+		rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
+	fi
+
 	chmod +x configure || die
 }
 
@@ -262,3 +280,4 @@ pkg_postinst() {
 		ewarn "absolute location under ${EPREFIX}/usr/$(get_libdir)/${PN}-${SLOT}."
 	fi
 }
+

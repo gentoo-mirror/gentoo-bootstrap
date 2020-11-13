@@ -15,7 +15,7 @@ HOMEPAGE="https://openjdk.java.net"
 SRC_URI="https://hg.${PN}.java.net/jdk-updates/jdk${SLOT}u/archive/jdk-${MY_PV}.tar.bz2 -> ${P}.tar.bz2"
 
 LICENSE="GPL-2"
-KEYWORDS="amd64 ~arm arm64 ~ppc64"
+KEYWORDS="~amd64 ~arm ~arm64 ~ppc64"
 
 IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +jbootstrap +pch selinux source systemtap"
 
@@ -65,8 +65,6 @@ DEPEND="
 	|| (
 		dev-java/openjdk-bin:${SLOT}
 		dev-java/openjdk:${SLOT}
-		dev-java/openjdk-bin:$((SLOT-1))
-		dev-java/openjdk:$((SLOT-1))
 	)
 "
 
@@ -90,7 +88,7 @@ openjdk_check_requirements() {
 pkg_pretend() {
 	openjdk_check_requirements
 	if [[ ${MERGE_TYPE} != binary ]]; then
-		has ccache ${FEATURES} && die "FEATURES=ccache doesn't work with ${PN}"
+		has ccache ${FEATURES} && die "FEATURES=ccache doesn't work with ${PN}, bug #677876"
 	fi
 }
 
@@ -98,7 +96,7 @@ pkg_setup() {
 	openjdk_check_requirements
 	java-vm-2_pkg_setup
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT} openjdk-$((SLOT-1)) openjdk-bin-$((SLOT-1))"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT}"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
@@ -133,6 +131,23 @@ pkg_setup() {
 
 src_prepare() {
 	default
+
+	# conditionally apply patches for musl compatibility
+	if use elibc_musl; then
+		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
+	fi
+
+	# conditionally remove not compilable module (hotspot jdk.hotspot.agent)
+	# this needs libthread_db which is only provided by glibc
+	#
+	# haven't found any way to disable this module so just remove it.
+	if use elibc_musl; then
+		rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
+	fi
+
 	chmod +x configure || die
 }
 
@@ -168,7 +183,6 @@ src_configure() {
 		--with-version-string="${PV%_p*}"
 		--with-version-build="${PV#*_p}"
 		--with-zlib=system
-		--disable-warnings-as-errors
 		--enable-dtrace=$(usex systemtap yes no)
 		--enable-headless-only=$(usex headless-awt yes no)
 	)
@@ -201,7 +215,7 @@ src_compile() {
 	local myemakeargs=(
 		JOBS=$(makeopts_jobs)
 		LOG=debug
-		ALL_NAMED_TESTS= # Build error
+		CFLAGS_WARNINGS_ARE_ERRORS= # No -Werror
 		$(usex doc docs '')
 		$(usex jbootstrap bootcycle-images product-images)
 	)

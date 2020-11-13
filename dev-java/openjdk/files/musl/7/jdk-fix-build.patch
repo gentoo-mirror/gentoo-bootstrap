@@ -1,0 +1,36 @@
+diff -Naur openjdk-7.271_p01/jdk/make/common/Defs-linux.gmk openjdk-7.271_p01-copy/jdk/make/common/Defs-linux.gmk
+--- openjdk-7.271_p01/jdk/make/common/Defs-linux.gmk	2020-10-15 21:59:38.731954976 -0400
++++ openjdk-7.271_p01-copy/jdk/make/common/Defs-linux.gmk	2020-10-15 22:31:27.507945080 -0400
+@@ -360,7 +360,7 @@
+ 
+ EXTRA_LIBS += -lc
+ 
+-LDFLAGS_DEFS_OPTION  = -Xlinker -z -Xlinker defs
++LDFLAGS_DEFS_OPTION  =
+ LDFLAGS_COMMON  += $(LDFLAGS_DEFS_OPTION)
+ 
+ LDFLAGS_RELRO_OPTION = -Xlinker -z -Xlinker relro
+diff -Naur openjdk-7.271_p01/jdk/make/common/shared/Defs-linux.gmk openjdk-7.271_p01-copy/jdk/make/common/shared/Defs-linux.gmk
+--- openjdk-7.271_p01/jdk/make/common/shared/Defs-linux.gmk	2020-10-15 21:59:38.743954976 -0400
++++ openjdk-7.271_p01-copy/jdk/make/common/shared/Defs-linux.gmk	2020-10-15 22:32:42.447944691 -0400
+@@ -207,8 +207,6 @@
+   if [ "`$(NM) -D -g --defined-only $1 | $(EGREP) 'SUNWprivate'`" = "" ] ; then \
+     $(ECHO) "$(MAPFILE_WARNING): File was not built with a mapfile: $1"; \
+   fi && \
+-  $(ECHO) "Library loads for: $1" && \
+-  $(LDD) $1 && \
+   $(ECHO) "RUNPATH for: $1" && \
+   ( $(READELF) -d $1 | $(EGREP) 'NEEDED|RUNPATH|RPATH' ) \
+ )
+diff -Naur openjdk-7.271_p01/jdk/make/sun/nio/cs/Makefile openjdk-7.271_p01-copy/jdk/make/sun/nio/cs/Makefile
+--- openjdk-7.271_p01/jdk/make/sun/nio/cs/Makefile	2020-10-15 21:59:38.903954975 -0400
++++ openjdk-7.271_p01-copy/jdk/make/sun/nio/cs/Makefile	2020-10-15 22:32:13.523944841 -0400
+@@ -106,7 +106,7 @@
+ 		$(GENCSDATASRC)/DoubleByte-X.java.template \
+ 		$(GENCSDATASRC)/extsbcs $(GENCSDATASRC)/dbcs
+ 	@$(prep-target)
+-	$(RM) -r $(GENCSEXT)
++	$(RM) -f "$(GENCSEXT)"/*
+ 	$(MKDIR) -p $(GENCSEXT)
+ 	$(BOOT_JAVA_CMD) -jar $(CHARSETMAPPING_JARFILE)	$(GENCSDATASRC) $(GENCSEXT) extsbcs
+ 	$(BOOT_JAVA_CMD) -jar $(CHARSETMAPPING_JARFILE) $(GENCSDATASRC) $(GENCSEXT) euctw \

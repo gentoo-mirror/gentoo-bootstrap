@@ -1,0 +1,12 @@
+diff -Naur openjdk-7.271_p01/jdk/make/common/shared/Defs-utils.gmk openjdk-7.271_p01-copy/jdk/make/common/shared/Defs-utils.gmk
+--- openjdk-7.271_p01/jdk/make/common/shared/Defs-utils.gmk	2020-10-15 21:59:38.743954976 -0400
++++ openjdk-7.271_p01-copy/jdk/make/common/shared/Defs-utils.gmk	2020-10-15 22:02:16.751954157 -0400
+@@ -104,7 +104,7 @@
+ COMM           = $(UTILS_USR_BIN_PATH)comm
+ COMPRESS       = $(UTILS_USR_BIN_PATH)compress
+ CP             = $(UTILS_COMMAND_PATH)cp
+-CPIO           = $(UTILS_COMMAND_PATH)cpio
++CPIO           = $(UTILS_USR_BIN_PATH)cpio
+ CUT            = $(UTILS_USR_BIN_PATH)cut
+ DATE           = $(UTILS_COMMAND_PATH)date
+ DF             = $(UTILS_COMMAND_PATH)df
