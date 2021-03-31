@@ -3,11 +3,12 @@ DEPEND=sys-libs/zlib app-arch/fastjar dev-java/java-config dev-java/jikes dev-li
 DESCRIPTION=Free core class libraries for use with VMs and compilers for the Java language
 EAPI=7
 HOMEPAGE=https://www.gnu.org/software/classpath
+INHERIT=eutils java-pkg-2 multilib
 IUSE=elibc_FreeBSD
 KEYWORDS=amd64 arm64
 LICENSE=GPL-2-with-linking-exception
 RDEPEND=>=dev-java/java-config-2.2.0-r3
 SLOT=0.93
 SRC_URI=mirror://gnu/classpath/classpath-0.93.tar.gz
-_eclasses_=edos2unix	33e347e171066657f91f8b0c72ec8773	eutils	2d5b3f4b315094768576b6799e4f926e	java-pkg-2	c4e6af2574fd1dc79b43a6e27af4b5fb	java-utils-2	378e4cda228ea0231a0ac283cb2ad25c	l10n	8cdd85e169b835d518bc2fd59f780d8e	multilib	d410501a125f99ffb560b0c523cd3d1e	toolchain-funcs	24921b57d6561d87cbef4916a296ada4	wrapper	4251d4c84c25f59094fd557e0063a974
+_eclasses_=edos2unix	33e347e171066657f91f8b0c72ec8773	l10n	8cdd85e169b835d518bc2fd59f780d8e	wrapper	4251d4c84c25f59094fd557e0063a974	eutils	2d5b3f4b315094768576b6799e4f926e	java-utils-2	2440f41421207d084e5e3f1fb001b34e	java-pkg-2	45c44ec10db6affb3ebee1ac72039888	multilib	d410501a125f99ffb560b0c523cd3d1e	toolchain-funcs	24921b57d6561d87cbef4916a296ada4
 _md5_=9f040920adce8f2dab598a70b63a7bdd
