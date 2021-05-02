@@ -115,6 +115,7 @@ pkg_setup() {
 
 src_prepare() {
 	default
+	eapply "${FILESDIR}/llvm-gcc10.patch"
 }
 
 src_configure() {
