@@ -212,7 +212,7 @@ src_install() {
 	# bug #689562, #689160
 	rm "${D}/etc/bash_completion.d/cargo" || die
 	rmdir "${D}"/etc{/bash_completion.d,} || die
-	dobashcomp build/tmp/dist/cargo-image/etc/bash_completion.d/cargo
+	newbashcomp src/tools/cargo/src/etc/cargo.bashcomp.sh cargo
 
 	mv "${ED}/usr/bin/rustc" "${ED}/usr/bin/rustc-${PV}" || die
 	mv "${ED}/usr/bin/rustdoc" "${ED}/usr/bin/rustdoc-${PV}" || die
