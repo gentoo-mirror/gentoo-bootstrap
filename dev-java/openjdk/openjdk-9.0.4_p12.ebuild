@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -69,7 +69,7 @@ DEPEND="
 		dev-java/icedtea:${SLOT}
 		dev-java/openjdk-bin:$((SLOT-1))[gentoo-vm]
 		dev-java/icedtea-bin:$((SLOT-1))
-		dev-java/openjdk:$((SLOT-1))[gentoo-vm]
+		dev-java/openjdk:$((SLOT-1))
 		dev-java/icedtea:$((SLOT-1))
 	)
 "
@@ -151,19 +151,19 @@ src_prepare() {
 
 	chmod +x configure || die
 
-    # conditionally apply patches for musl compatibility
-    if use elibc_musl; then
-        eapply "${FILESDIR}/musl/${SLOT}/build.patch"
-        eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
+	# conditionally apply patches for musl compatibility
+	if use elibc_musl; then
+		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/make-4.3.patch"
-        eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
-        eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
-    fi
+		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
+	fi
 
-    # conditionally remove not compilable module (hotspot jdk.hotspot.agent)
-    # this needs libthread_db which is only provided by glibc
-    #
-    # haven't found any way to disable this module so just remove it.
+	# conditionally remove not compilable module (hotspot jdk.hotspot.agent)
+	# this needs libthread_db which is only provided by glibc
+	#
+	# haven't found any way to disable this module so just remove it.
 	if use elibc_musl; then
 		rm -rf "${S}"/hotspot/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
 	fi
@@ -278,4 +278,3 @@ pkg_postinst() {
 		ewarn "absolute location under ${EPREFIX}/usr/$(get_libdir)/${PN}-${SLOT}."
 	fi
 }
-
