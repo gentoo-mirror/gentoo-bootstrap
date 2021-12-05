@@ -1,4 +1,4 @@
-# Copyright 1999-2008 Gentoo Foundation
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -23,15 +23,15 @@ src_unpack() {
 
 src_prepare() {
 	rm -v lib/classes.zip || die
+	eapply "${FILESDIR}/classes-location.patch"
+	eapply "${FILESDIR}/${P}-aarch64-support.patch"
 
 	default
 }
 
 src_configure() {
 	export JAVAC="${EPREFIX}/usr/bin/jikes-bin"
-	epatch "${FILESDIR}/classes-location.patch"
-	epatch "${FILESDIR}/${P}-aarch64-support.patch"
-        sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/dll.c || die "Sed failed!"
+	sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/dll.c || die "Sed failed!"
 	eautoreconf
 
 	filter-flags "-fomit-frame-pointer"

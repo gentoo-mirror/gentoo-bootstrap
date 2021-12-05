@@ -29,8 +29,10 @@ PATCHES=(
 )
 
 src_prepare() {
+	eapply_user
+
 	# without this patch, classes-3.zip is not found at runtime
-	epatch "${PATCHES[@]}"
+	eapply "${PATCHES[@]}"
 
 	sed -i -e "s/return CLASSPATH_INSTALL_DIR\"\/lib\/classpath\";/return CLASSPATH_INSTALL_DIR\"\/$(get_libdir)\/classpath\";/g" src/classlib/gnuclasspath/dll.c || die "Sed failed!"
 
