@@ -1,9 +1,9 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
-inherit epatch eutils java-pkg-2 java-vm-2 multilib
+inherit eutils java-pkg-2 java-vm-2 multilib
 
 MY_P=${P/gnu-/}
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
@@ -37,7 +37,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/classpath-aarch64-support.patch"
+	eapply "${FILESDIR}/classpath-aarch64-support.patch"
 }
 
 src_configure() {

@@ -1,9 +1,9 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=5
+EAPI=6
 
-inherit epatch eutils java-pkg-2 java-vm-2 multilib git-r3
+inherit eutils java-pkg-2 java-vm-2 multilib git-r3
 
 DESCRIPTION="Free core class libraries for use with VMs and compilers for the Java language"
 EGIT_REPO_URI="https://git.savannah.gnu.org/git/classpath.git"
@@ -40,7 +40,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}/classpath-aarch64-support.patch"
+	eapply "${FILESDIR}/classpath-aarch64-support.patch"
 	sh autogen.sh
 
 	find . -name '*.java' -exec sed -i -e 's/@Override//g' {} \;
@@ -49,7 +49,7 @@ src_prepare() {
 src_configure() {
 	local ecj_pkg="eclipse-ecj"
 
-        # build takes care of them itself, duplicate -source -target kills ecj
+	# build takes care of them itself, duplicate -source -target kills ecj
 	export JAVACFLAGS="-nowarn"
 	# build system is passing -J-Xmx768M which ecj however ignores
 	# this will make the ecj launcher do it (seen case where default was not enough heap)
