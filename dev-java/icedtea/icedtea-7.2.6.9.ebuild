@@ -1,4 +1,4 @@
-# Copyright 1999-2017 Gentoo Foundation
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
@@ -174,6 +174,12 @@ src_unpack() {
 	ln -s "${FILESDIR}/${PN}-jdk-no-soname.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-jdk-fix-build.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-jdk-execinfo.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-freetype.patch" "${S}/patches" || die
+}
+
+src_prepare() {
+	default
+	sed -i 's/REQUIRED_FREETYPE_VERSION = 2.2.1/REQUIRED_FREETYPE_VERSION = 2.10.1/' patches/boot/revert-6973616.patch
 }
 
 src_configure() {
@@ -197,6 +203,7 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-no-soname.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-fix-build.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-execinfo.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-freetype.patch "
 
 	export DISTRIBUTION_PATCHES
 

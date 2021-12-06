@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
@@ -129,8 +129,6 @@ RDEPEND="${COMMON_DEP}
 # Ant is no longer needed under the new build system
 DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_DEPEND}
 	|| (
-		dev-java/icedtea-bin:8
-		dev-java/icedtea-bin:7
 		dev-java/icedtea:8
 		dev-java/icedtea:7
 	)
