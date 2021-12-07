@@ -6,7 +6,7 @@
 EAPI="6"
 SLOT="8"
 
-inherit autotools check-reqs gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator
+inherit autotools check-reqs flag-o-matic gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator
 
 ICEDTEA_VER=$(get_version_component_range 1-3)
 ICEDTEA_BRANCH=$(get_version_component_range 1-2)
@@ -191,6 +191,7 @@ src_prepare() {
 	ln -s "${FILESDIR}/${PN}${SLOT}-gcc-triple.patch" patches || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch" patches || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-os_linux-remove-glibc-dependencies.patch" patches || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" "${S}/patches" || die
 
 	eapply "${FILESDIR}/${PN}8-disable-systemtap.patch"
 	eapply_user
@@ -198,6 +199,12 @@ src_prepare() {
 }
 
 src_configure() {
+	# GCC10/-fno-common handling, #723102
+	if [[ $(gcc-major-version) -ge 10 ]]; then
+		append-flags -fcommon
+		append-flags -fno-delete-null-pointer-checks -fno-lifetime-dse
+	fi
+
 	# For bootstrap builds as the sandbox control file might not yet exist.
 	addpredict /proc/self/coredump_filter
 
@@ -218,6 +225,7 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-gcc-triple.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-stop-using-obsolete-isnanf.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-os_linux-remove-glibc-dependencies.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
 
 	export DISTRIBUTION_PATCHES
 

@@ -56,7 +56,7 @@ LICENSE="Apache-1.1 Apache-2.0 GPL-1 GPL-2 GPL-2-with-linking-exception LGPL-2 M
 KEYWORDS="amd64 arm64"
 
 IUSE="+alsa cacao +cups debug doc examples +gtk headless-awt
-	+jbootstrap kerberos libressl nss pax_kernel
+	jamvm +jbootstrap kerberos libressl nss pax_kernel
 	sctp selinux smartcard source test zero"
 
 REQUIRED_USE="gtk? ( !headless-awt )"
@@ -87,7 +87,7 @@ COMMON_DEP="
 	>=dev-libs/glib-2.26:2
 	>=dev-util/systemtap-1
 	media-libs/fontconfig
-	>=media-libs/freetype-2.5.3:2=
+	>=media-libs/freetype-2.10.1:2=
 	>=media-libs/lcms-2.5
 	>=sys-libs/zlib-1.2.3:=
 	virtual/jpeg:0=
@@ -175,6 +175,9 @@ src_unpack() {
 	ln -s "${FILESDIR}/${PN}-jdk-fix-build.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-jdk-execinfo.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-freetype.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-fcommon.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-miscompile.patch" "${S}/patches" || die
 }
 
 src_prepare() {
@@ -197,13 +200,19 @@ src_configure() {
 	# Export patches for configure
 	DISTRIBUTION_PATCHES=""
 
-	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-aarch64-support.patch "
-	DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-opcode-guard.patch "
+	if use jamvm; then
+		DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-aarch64-support.patch "
+		DISTRIBUTION_PATCHES+="patches/jamvm/jamvm-1.6.0-opcode-guard.patch "
+	fi
+
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-musl.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-no-soname.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-fix-build.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-execinfo.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-freetype.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-fcommon.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-miscompile.patch "
 
 	export DISTRIBUTION_PATCHES
 
@@ -220,8 +229,10 @@ src_configure() {
 		use_zero="yes"
 	fi
 
-	# Use JamVM for bootstrap
-	use_jamvm="yes"
+	# Use JamVM if requested
+	if use jamvm; then
+		use_jamvm="yes"
+	fi
 
 	# Use CACAO if requested
 	if use cacao; then
@@ -310,6 +321,8 @@ src_compile() {
 
 	# With ant >=1.8.2 all required tasks are part of ant-core
 	export ANT_TASKS="none"
+
+	export DISABLE_HOTSPOT_OS_VERSION_CHECK=ok
 
 	emake
 }

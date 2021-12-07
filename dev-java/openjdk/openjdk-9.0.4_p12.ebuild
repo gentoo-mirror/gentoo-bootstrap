@@ -25,7 +25,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
-IUSE="alsa debug cups doc examples gentoo-vm headless-awt +jbootstrap nsplugin +pch selinux source +webstart"
+IUSE="alsa debug cups doc examples gentoo-vm headless-awt +jbootstrap +pch selinux source +webstart"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -63,12 +63,8 @@ DEPEND="
 	x11-libs/libXt
 	x11-libs/libXtst
 	|| (
-		dev-java/openjdk-bin:${SLOT}
-		dev-java/icedtea-bin:${SLOT}
 		dev-java/openjdk:${SLOT}
 		dev-java/icedtea:${SLOT}
-		dev-java/openjdk-bin:$((SLOT-1))[gentoo-vm]
-		dev-java/icedtea-bin:$((SLOT-1))
 		dev-java/openjdk:$((SLOT-1))
 		dev-java/icedtea:$((SLOT-1))
 	)
@@ -76,7 +72,6 @@ DEPEND="
 
 PDEPEND="
 	webstart? ( >=dev-java/icedtea-web-1.6.1:0 )
-	nsplugin? ( >=dev-java/icedtea-web-1.6.1:0[nsplugin] )
 "
 
 S="${WORKDIR}/${PN}-${PV}"
@@ -103,7 +98,7 @@ pkg_setup() {
 	openjdk_check_requirements
 	java-vm-2_pkg_setup
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT} icedtea-bin-$((SLOT-1)) icedtea-${SLOT} icedtea-bin-${SLOT} openjdk-$((SLOT-1)) openjdk-bin-$((SLOT-1)) icedtea-$((SLOT-1))"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} icedtea-${SLOT} openjdk-$((SLOT-1)) icedtea-$((SLOT-1))"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
@@ -149,13 +144,17 @@ src_unpack() {
 src_prepare() {
 	default
 
+	# Delete pre-built files
+	find . -name '*.jar' -type f -delete
+	find . -name '*.bin' -type f -delete
+	find . -name '*.exe' -type f -delete
+
 	chmod +x configure || die
 
 	# conditionally apply patches for musl compatibility
 	if use elibc_musl; then
 		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
-		eapply "${FILESDIR}/musl/${SLOT}/make-4.3.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
 	fi
@@ -169,7 +168,11 @@ src_prepare() {
 	fi
 
 	# https://bugs.openjdk.java.net/browse/JDK-8201788
-	epatch "${FILESDIR}/bootcycle_jobs.patch"
+	eapply "${FILESDIR}/bootcycle_jobs.patch"
+	# https://bugs.openjdk.java.net/browse/JDK-8237879
+	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/hello-class-list.patch"
 }
 
 src_configure() {
@@ -184,10 +187,12 @@ src_configure() {
 			--disable-warnings-as-errors
 			--enable-unlimited-crypto
 			--with-boot-jdk="${JDK_HOME}"
-			--with-extra-cflags="${CFLAGS}"
-			--with-extra-cxxflags="${CXXFLAGS}"
+			--with-extra-cflags="${CFLAGS} -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse"
+			--with-extra-cxxflags="${CXXFLAGS} -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse"
 			--with-extra-ldflags="${LDFLAGS}"
 			--with-giflib=system
+			--disable-hotspot-gtest
+			--disable-freetype-bundling
 			--with-jtreg=no
 			--with-jobs=1
 			--with-num-cores=1
