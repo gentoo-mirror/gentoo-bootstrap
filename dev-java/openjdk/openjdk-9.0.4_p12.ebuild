@@ -172,10 +172,17 @@ src_prepare() {
 	# https://bugs.openjdk.java.net/browse/JDK-8237879
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
-	eapply "${FILESDIR}/patches/${SLOT}/hello-class-list.patch"
 }
 
 src_configure() {
+	# Work around -fno-common ( GCC10 default ), bug #706638
+	append-flags -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse
+
+	# Strip some flags users may set, but should not. #818502
+	filter-flags -fexceptions
+
+	tc-export_build_env CC CXX PKG_CONFIG STRIP
+
 	# general build info found here:
 	#https://hg.openjdk.java.net/jdk8/jdk8/raw-file/tip/README-builds.html
 
@@ -187,8 +194,8 @@ src_configure() {
 			--disable-warnings-as-errors
 			--enable-unlimited-crypto
 			--with-boot-jdk="${JDK_HOME}"
-			--with-extra-cflags="${CFLAGS} -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse"
-			--with-extra-cxxflags="${CXXFLAGS} -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse"
+			--with-extra-cflags="${CFLAGS}"
+			--with-extra-cxxflags="${CXXFLAGS}"
 			--with-extra-ldflags="${LDFLAGS}"
 			--with-giflib=system
 			--disable-hotspot-gtest
@@ -239,7 +246,7 @@ src_install() {
 		rm -v jre/lib/$(get_system_arch)/libjsoundalsa.* || die
 	fi
 
-	# stupid build system does not remove that
+	# build system does not remove that
 	if use headless-awt ; then
 		rm -fvr jre/lib/$(get_system_arch)/lib*{[jx]awt,splashscreen}* \
 		{,jre/}bin/policytool bin/appletviewer || die

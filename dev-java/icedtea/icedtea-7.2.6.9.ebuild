@@ -178,6 +178,7 @@ src_unpack() {
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-fcommon.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-miscompile.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-aarch64-use-c++98.patch" "${S}/patches" || die
 }
 
 src_prepare() {
@@ -210,9 +211,10 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-fix-build.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-execinfo.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-freetype.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-fcommon.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-miscompile.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-aarch64-use-c++98.patch "
 
 	export DISTRIBUTION_PATCHES
 
