@@ -43,7 +43,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 SLOT="$(ver_cut 1)"
-KEYWORDS="amd64 ~arm64 ppc64 x86"
+KEYWORDS="amd64 arm64 ppc64 x86"
 IUSE="alsa debug cups doc examples headless-awt javafx +jbootstrap +pch selinux source"
 
 COMMON_DEPEND="
@@ -82,10 +82,9 @@ DEPEND="
 	x11-libs/libXt
 	x11-libs/libXtst
 	|| (
-		dev-java/openjdk-bin:${SLOT}
-		dev-java/icedtea-bin:${SLOT}
 		dev-java/openjdk:${SLOT}
 		dev-java/icedtea:${SLOT}
+		dev-java/icedtea:$((SLOT-1))
 	)
 "
 
@@ -114,7 +113,7 @@ pkg_pretend() {
 pkg_setup() {
 	openjdk_check_requirements
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT} icedtea-${SLOT} icedtea-bin-${SLOT}"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} icedtea-${SLOT} icedtea-$((SLOT-1))"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
@@ -160,7 +159,7 @@ src_prepare() {
 
 	# apply this patch here as the sources are not available unless ARCH == arm64
 	if use elibc_musl && use arm64; then
-		eapply "${FILESDIR}/patches/${PN}-${SLOT}/0003_musl_hotspot_aarch64.patch"
+		eapply "${FILESDIR}/patches/musl/${SLOT}/0003_musl_hotspot_aarch64.patch"
 	fi
 
 	chmod +x configure || die
