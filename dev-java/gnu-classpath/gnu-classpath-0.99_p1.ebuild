@@ -42,6 +42,7 @@ pkg_setup() {
 src_prepare() {
 	eapply_user
 	eapply "${FILESDIR}/classpath-aarch64-support.patch"
+
 	sh autogen.sh
 
 	find . -name '*.java' -exec sed -i -e 's/@Override//g' {} \;

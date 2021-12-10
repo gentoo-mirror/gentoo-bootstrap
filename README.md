@@ -31,6 +31,5 @@ compile JamVM 2.0.0. This serves as our second Java environment.
 
 Finally, we compile git snapshot of GNU Classpath which has a much better support for Java 1.6.
 Then we compile a slightly patched ecj-4.2. Together with JamVM 2.0.0 this will serve as
-Java environment that can bootstrap Icedtea 2 (Java 7). Unfortunately, I was only able to build
-Java 7 with JamVM as VM (which is slower), Hotspot build failed. JamVM with OpenJDK 7 classes
-can build Icedtea 3 with Hotspot VM.
+Java environment that can bootstrap Icedtea 2 (Java 7). Then we use it to build Icedtea 3
+and subsequent OpenJDK versions.

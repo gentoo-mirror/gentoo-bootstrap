@@ -23,4 +23,3 @@ diff -r 21b063d75b3e make/Main.gmk
          else
  	  $(call LogWarn, Boot cycle build disabled when cross compiling)
          endif
-
