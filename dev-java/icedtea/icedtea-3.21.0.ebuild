@@ -137,7 +137,6 @@ RDEPEND="${COMMON_DEP}
 # Ant is no longer needed under the new build system
 DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_DEPEND}
 	|| (
-		dev-java/openjdk:${SLOT}
 		dev-java/icedtea:${SLOT}
 		dev-java/icedtea:$((SLOT-1))
 	)
@@ -176,7 +175,7 @@ pkg_pretend() {
 pkg_setup() {
 	icedtea_check_requirements
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-8 icedtea-8 icedtea-7"
+	JAVA_PKG_WANT_BUILD_VM="icedtea-8 icedtea-7"
 	JAVA_PKG_WANT_SOURCE="1.5"
 	JAVA_PKG_WANT_TARGET="1.5"
 
