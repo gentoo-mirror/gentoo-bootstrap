@@ -172,6 +172,7 @@ src_prepare() {
 	# https://bugs.openjdk.java.net/browse/JDK-8237879
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
 }
 
 src_configure() {
