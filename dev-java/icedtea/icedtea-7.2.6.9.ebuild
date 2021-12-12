@@ -184,7 +184,7 @@ src_unpack() {
 
 src_prepare() {
 	default
-	sed -i 's/REQUIRED_FREETYPE_VERSION = 2.2.1/REQUIRED_FREETYPE_VERSION = 2.10.1/' patches/boot/revert-697366.patch
+	sed -i 's/REQUIRED_FREETYPE_VERSION = 2.2.1/REQUIRED_FREETYPE_VERSION = 2.10.1/' patches/boot/revert-6973616.patch
 
 	eapply "${FILESDIR}/${PN}${SLOT}-disable-systemtap.patch"
 	eautoreconf
