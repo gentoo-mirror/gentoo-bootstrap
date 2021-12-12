@@ -193,7 +193,7 @@ src_prepare() {
 	ln -s "${FILESDIR}/${PN}-os_linux-remove-glibc-dependencies.patch" patches || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" "${S}/patches" || die
 
-	eapply "${FILESDIR}/${PN}8-disable-systemtap.patch"
+	eapply "${FILESDIR}/${PN}${SLOT}-disable-systemtap.patch"
 	eapply_user
 	eautoreconf
 }
