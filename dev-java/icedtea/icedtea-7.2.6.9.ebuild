@@ -85,7 +85,6 @@ X_DEPEND="
 COMMON_DEP="
 	app-misc/mime-types
 	>=dev-libs/glib-2.26:2
-	>=dev-util/systemtap-1
 	media-libs/fontconfig
 	>=media-libs/freetype-2.10.1:2=
 	>=media-libs/lcms-2.5
@@ -156,8 +155,7 @@ pkg_pretend() {
 pkg_setup() {
 	icedtea_check_requirements
 
-	JAVA_PKG_WANT_BUILD_VM="
-		jamvm-2.0-3	icedtea-7	gcj-jdk"
+	JAVA_PKG_WANT_BUILD_VM="jamvm-2.0-3	icedtea-7"
 	JAVA_PKG_WANT_SOURCE="1.5"
 	JAVA_PKG_WANT_TARGET="1.5"
 
@@ -174,11 +172,13 @@ src_unpack() {
 	ln -s "${FILESDIR}/${PN}-jdk-no-soname.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-jdk-fix-build.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-jdk-execinfo.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}-hotspot-stop-using-obsolete-isnanf.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-freetype.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-fcommon.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-miscompile.patch" "${S}/patches" || die
-	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-aarch64-use-c++98.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-musl.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}-os_linux-remove-glibc-dependencies.patch" "${S}/patches" || die
 }
 
 src_prepare() {
@@ -210,16 +210,18 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-no-soname.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-fix-build.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-jdk-execinfo.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-hotspot-stop-using-obsolete-isnanf.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-freetype.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-fcommon.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-miscompile.patch "
-	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-aarch64-use-c++98.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-musl.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}-os_linux-remove-glibc-dependencies.patch "
 
 	export DISTRIBUTION_PATCHES
 
 	# gcj-jdk ensures ecj is present.
-	if use jbootstrap || has "${vm}" gcj-jdk; then
+	if use jbootstrap || has "${vm}" jamvm-2.0-3; then
 		use jbootstrap || einfo "bootstrap is necessary when building with ${vm}, ignoring USE=\"-jbootstrap\""
 		config+=" --enable-bootstrap"
 	else
