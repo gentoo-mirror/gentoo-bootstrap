@@ -120,6 +120,7 @@ DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_
 		dev-java/jamvm:2.0-3
 		dev-java/icedtea:7
 	)
+	sys-devel/automake:1.15
 	app-arch/cpio
 	app-arch/unzip
 	app-arch/zip
