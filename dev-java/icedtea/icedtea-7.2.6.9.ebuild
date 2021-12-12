@@ -120,7 +120,7 @@ DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_
 		dev-java/jamvm:2.0-3
 		dev-java/icedtea:7
 	)
-	sys-devel/automake:1.15
+	sys-devel/automake:1.16
 	app-arch/cpio
 	app-arch/unzip
 	app-arch/zip
@@ -187,6 +187,7 @@ src_prepare() {
 	sed -i 's/REQUIRED_FREETYPE_VERSION = 2.2.1/REQUIRED_FREETYPE_VERSION = 2.10.1/' patches/boot/revert-697366.patch
 
 	eapply "${FILESDIR}/${PN}${SLOT}-disable-systemtap.patch"
+	eautoreconf
 }
 
 src_configure() {
