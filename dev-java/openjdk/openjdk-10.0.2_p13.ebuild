@@ -149,6 +149,7 @@ src_prepare() {
 	fi
 
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
+		eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
 
 	chmod +x configure || die
 }
@@ -165,9 +166,10 @@ src_configure() {
 		--disable-ccache
 		--enable-full-docs=no
 		--with-boot-jdk="${JDK_HOME}"
-		--with-extra-cflags="${CFLAGS}"
+		--with-extra-cflags="${CFLAGS} -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse"
 		--with-extra-cxxflags="${CXXFLAGS}"
 		--with-extra-ldflags="${LDFLAGS}"
+		--disable-warnings-as-errors
 		--with-giflib=system
 		--with-lcms=system
 		--with-libjpeg=system
@@ -214,7 +216,7 @@ src_compile() {
 	emake -j1 \
 		$(usex doc docs '') \
 		$(usex jbootstrap bootcycle-images product-images) \
-		JOBS=$(makeopts_jobs) LOG=debug CFLAGS_WARNINGS_ARE_ERRORS= # No -Werror
+		JOBS=$(makeopts_jobs) LOG=debug
 }
 
 src_install() {
