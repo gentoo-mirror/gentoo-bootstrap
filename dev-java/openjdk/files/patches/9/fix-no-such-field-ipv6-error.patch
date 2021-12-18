@@ -1,0 +1,10 @@
+--- a/jdk/src/java.base/share/classes/java/net/InetAddress.java 2021-12-17 23:04:08.493326504 +0000
++++ b/jdk/src/java.base/share/classes/java/net/InetAddress.java 2021-12-17 23:04:14.313480786 +0000
+@@ -333,7 +333,6 @@
+                     }
+                 }
+         );
+-        init();
+     }
+ 
+     /**
