@@ -63,7 +63,7 @@ DEPEND="
 	x11-libs/libXtst
 	javafx? ( dev-java/openjfx:${SLOT}= )
 	|| (
-		dev-java/openjdk-bin:${SLOT}
+		dev-java/openjdk:$((SLOT-1))
 		dev-java/openjdk:${SLOT}
 	)
 "
@@ -96,7 +96,7 @@ pkg_setup() {
 	openjdk_check_requirements
 	java-vm-2_pkg_setup
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT}"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-$((SLOT-1))"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
