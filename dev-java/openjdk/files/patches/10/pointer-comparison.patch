@@ -1,0 +1,13 @@
+--- a/src/hotspot/os/linux/os_linux.cpp.orig      2021-12-18 01:55:50.855099344 +0000
++++ b/src/hotspot/os/linux/os_linux.cpp   2021-12-18 01:56:38.996375936 +0000
+@@ -2155,7 +2155,7 @@
+     }
+ 
+     p = OSContainer::cpu_cpuset_memory_nodes();
+-    if (p < 0)
++    if (p != 0)
+       st->print("cpu_memory_nodes() failed\n");
+     else {
+       st->print("cpu_memory_nodes: %s\n", p);
+
+         // This assumes all Decodes with TypePtr::NotNull are matched to nodes that
