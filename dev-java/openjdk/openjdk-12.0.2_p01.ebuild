@@ -150,9 +150,10 @@ src_prepare() {
 		rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
 	fi
 
-	chmod +x configure || die
-
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
+
+	chmod +x configure || die
 }
 
 src_configure() {
