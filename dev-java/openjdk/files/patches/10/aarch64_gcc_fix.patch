@@ -1,0 +1,11 @@
+--- a/src/hotspot/cpu/aarch64/interp_masm_aarch64.hpp  2021-12-11 00:27:36.689228241 +0000
++++ b/src/hotspot/cpu/aarch64/interp_masm_aarch64.hpp  2021-12-11 00:27:43.649215279 +0000
+@@ -39,8 +39,6 @@
+  protected:
+ 
+  protected:
+-  using MacroAssembler::call_VM_leaf_base;
+-
+   // Interpreter specific version of call_VM_base
+   using MacroAssembler::call_VM_leaf_base;
+ 
