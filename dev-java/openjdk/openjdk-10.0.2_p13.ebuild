@@ -149,7 +149,8 @@ src_prepare() {
 	fi
 
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
-		eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
 
 	chmod +x configure || die
 }
