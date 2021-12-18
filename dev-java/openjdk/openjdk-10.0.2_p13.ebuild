@@ -132,6 +132,11 @@ pkg_setup() {
 src_prepare() {
 	default
 
+	# Delete pre-built files
+	find . -name '*.jar' -type f -delete
+	find . -name '*.bin' -type f -delete
+	find . -name '*.exe' -type f -delete
+
 	# conditionally apply patches for musl compatibility
 	if use elibc_musl; then
 		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
