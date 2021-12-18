@@ -136,7 +136,6 @@ src_prepare() {
 	if use elibc_musl; then
 		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
-		eapply "${FILESDIR}/musl/${SLOT}/make-4.3.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
 	fi
@@ -148,6 +147,8 @@ src_prepare() {
 	if use elibc_musl; then
 		rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
 	fi
+
+	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 
 	chmod +x configure || die
 }
