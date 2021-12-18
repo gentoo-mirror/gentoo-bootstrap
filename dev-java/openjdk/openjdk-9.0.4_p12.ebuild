@@ -25,7 +25,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
-IUSE="alsa debug cups doc examples gentoo-vm headless-awt +jbootstrap +pch selinux source +webstart"
+IUSE="alsa debug cups doc examples gentoo-vm headless-awt +pch selinux source +webstart"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -83,7 +83,6 @@ openjdk_check_requirements() {
 	local M
 	M=2048
 	M=$(( $(usex debug 3 1) * $M ))
-	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
 	CHECKREQS_DISK_BUILD=${M}M check-reqs_pkg_${EBUILD_PHASE}
@@ -173,6 +172,7 @@ src_prepare() {
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/fix-no-such-field-ipv6-error.patch"
 }
 
 src_configure() {
@@ -232,7 +232,7 @@ src_compile() {
 		JOBS=$(makeopts_jobs)
 		LOG=debug
 		$(usex doc docs '')
-		$(usex jbootstrap bootcycle-images images)
+		images
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
