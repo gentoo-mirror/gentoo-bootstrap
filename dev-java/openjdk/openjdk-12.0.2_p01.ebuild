@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -138,7 +138,6 @@ src_prepare() {
 	if use elibc_musl; then
 		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
-		eapply "${FILESDIR}/musl/${SLOT}/make-4.3.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
 		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
 	fi
@@ -152,6 +151,8 @@ src_prepare() {
 	fi
 
 	chmod +x configure || die
+
+	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 }
 
 src_configure() {
