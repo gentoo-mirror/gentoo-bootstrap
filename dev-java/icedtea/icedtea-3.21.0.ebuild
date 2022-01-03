@@ -174,7 +174,7 @@ pkg_pretend() {
 pkg_setup() {
 	icedtea_check_requirements
 
-	JAVA_PKG_WANT_BUILD_VM="icedtea-8 icedtea-7"
+	JAVA_PKG_WANT_BUILD_VM="icedtea-$((SLOT-1)) icedtea-${SLOT}"
 	JAVA_PKG_WANT_SOURCE="1.5"
 	JAVA_PKG_WANT_TARGET="1.5"
 
