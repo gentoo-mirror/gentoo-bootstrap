@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
@@ -10,7 +10,7 @@
 EAPI=6
 SLOT="8"
 
-inherit check-reqs eapi7-ver flag-o-matic java-pkg-2 java-vm-2 multiprocessing pax-utils toolchain-funcs xdg-utils
+inherit autotools check-reqs eapi7-ver flag-o-matic java-pkg-2 java-vm-2 multiprocessing pax-utils toolchain-funcs xdg-utils
 
 ICEDTEA_VER=$(ver_cut 1-3)
 ICEDTEA_BRANCH=$(ver_cut 1-2)
@@ -100,7 +100,6 @@ X_DEPEND="
 # The Javascript requirement is obsolete; OpenJDK 8+ has Nashorn
 COMMON_DEP="
 	>=dev-libs/glib-2.26:2=
-	>=dev-util/systemtap-1
 	media-libs/fontconfig:1.0=
 	>=media-libs/freetype-2.5.3:2=
 	>=sys-libs/zlib-1.2.3
@@ -137,8 +136,8 @@ RDEPEND="${COMMON_DEP}
 # Ant is no longer needed under the new build system
 DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_DEPEND}
 	|| (
-		dev-java/icedtea:${SLOT}
 		dev-java/icedtea:$((SLOT-1))
+		dev-java/icedtea:${SLOT}
 	)
 	app-arch/cpio
 	app-arch/unzip
@@ -187,6 +186,12 @@ src_unpack() {
 	unpack ${SRC_PKG}
 }
 
+src_prepare() {
+	eapply "${FILESDIR}/${PN}${SLOT}-disable-systemtap.patch"
+	eapply_user
+	eautoreconf
+}
+
 src_configure() {
 	# GCC10/-fno-common handling, #723102
 	if [[ $(gcc-major-version) -ge 10 ]]; then
@@ -200,8 +205,26 @@ src_configure() {
 	mkdir -v gentoo_patches || die
 	cp -v "${FILESDIR}/openjdk-8-hotspot-arrayallocator.patch" gentoo_patches || die
 	cp -v "${FILESDIR}/openjdk-8-jdk-revert-improve-stub-classes.patch" gentoo_patches || die
-	export DISTRIBUTION_PATCHES="gentoo_patches//openjdk-8-hotspot-arrayallocator.patch"
-	export DISTRIBUTION_PATCHES="gentoo_patches//openjdk-8-jdk-revert-improve-stub-classes.patch"
+
+	cp -v "${FILESDIR}/${PN}${SLOT}-jdk-execinfo.patch" gentoo_patches || die
+	cp -v "${FILESDIR}/${PN}${SLOT}-jdk-fix-libjvm-load.patch" gentoo_patches || die
+	cp -v "${FILESDIR}/${PN}${SLOT}-autoconf-config.patch" gentoo_patches || die
+	cp -v "${FILESDIR}/${PN}-hotspot-stop-using-obsolete-isnanf.patch" gentoo_patches || die
+	cp -v "${FILESDIR}/${PN}-os_linux-remove-glibc-dependencies.patch" gentoo_patches || die
+	cp -v "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" gentoo_patches || die
+
+
+	DISTRIBUTION_PATCHES="gentoo_patches/openjdk-8-hotspot-arrayallocator.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/openjdk-8-jdk-revert-improve-stub-classes.patch "
+
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-jdk-execinfo.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-jdk-fix-libjvm-load.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-autoconf-config.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}-hotspot-stop-using-obsolete-isnanf.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}-os_linux-remove-glibc-dependencies.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
+
+	export DISTRIBUTION_PATCHES
 
 	# For bootstrap builds as the sandbox control file might not yet exist.
 	addpredict /proc/self/coredump_filter #nowarn
