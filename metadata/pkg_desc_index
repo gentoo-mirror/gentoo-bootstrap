@@ -1,3 +1,4 @@
+app-arch/fastjar 0.98-r3: A jar program written in C
 dev-java/ant-core 1.8.4-r1: Java-based build tool similar to 'make' that uses XML configuration files
 dev-java/eclipse-ecj 3.2 4.2.1: Eclipse Compiler for Java
 dev-java/gnu-classpath 0.93 0.99-r2 0.99_p1: Free core class libraries for use with VMs and compilers for the Java language
