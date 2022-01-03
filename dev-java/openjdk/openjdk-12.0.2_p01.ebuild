@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -90,7 +90,7 @@ openjdk_check_requirements() {
 pkg_pretend() {
 	openjdk_check_requirements
 	if [[ ${MERGE_TYPE} != binary ]]; then
-		has ccache ${FEATURES} && die "FEATURES=ccache doesn't work with ${PN}"
+		has ccache ${FEATURES} && die "FEATURES=ccache doesn't work with ${PN}, bug #677876"
 	fi
 }
 
@@ -152,6 +152,7 @@ src_prepare() {
 
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/gcc-10.patch"
 
 	chmod +x configure || die
 }
@@ -160,8 +161,11 @@ src_configure() {
 	# Work around stack alignment issue, bug #647954. in case we ever have x86
 	use x86 && append-flags -mincoming-stack-boundary=2
 
-	# Work around -fno-common ( GCC10 default ), bug #713180
-	append-flags -fcommon
+	# GCC 10 fixes
+	append-flags -fno-delete-null-pointer-checks -fno-lifetime-dse
+
+	# Strip some flags users may set, but should not. #818502
+	filter-flags -fexceptions
 
 	# Enabling full docs appears to break doc building. If not
 	# explicitly disabled, the flag will get auto-enabled if pandoc and
@@ -174,6 +178,7 @@ src_configure() {
 		--with-extra-cflags="${CFLAGS}"
 		--with-extra-cxxflags="${CXXFLAGS}"
 		--with-extra-ldflags="${LDFLAGS}"
+		--with-freetype=system
 		--with-giflib=system
 		--with-lcms=system
 		--with-libjpeg=system
@@ -191,10 +196,16 @@ src_configure() {
 		--disable-warnings-as-errors
 		--enable-dtrace=$(usex systemtap yes no)
 		--enable-headless-only=$(usex headless-awt yes no)
+		$(tc-is-clang && echo "--with-toolchain-type=clang")
 	)
 
 	if use javafx; then
-		local zip="${EROOT%/}/usr/$(get_libdir)/openjfx-${SLOT}/javafx-exports.zip"
+		# this is not useful for users, just for upstream developers
+		# build system compares mesa version in md file
+		# https://bugs.gentoo.org/822612
+		export LEGAL_EXCLUDES=mesa3d.md
+
+		local zip="${EPREFIX%/}/usr/$(get_libdir)/openjfx-${SLOT}/javafx-exports.zip"
 		if [[ -r ${zip} ]]; then
 			myconf+=( --with-import-modules="${zip}" )
 		else
