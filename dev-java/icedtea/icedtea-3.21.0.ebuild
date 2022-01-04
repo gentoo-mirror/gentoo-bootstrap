@@ -211,7 +211,7 @@ src_configure() {
 	cp -v "${FILESDIR}/${PN}${SLOT}-autoconf-config.patch" gentoo_patches || die
 	cp -v "${FILESDIR}/${PN}-hotspot-stop-using-obsolete-isnanf.patch" gentoo_patches || die
 	cp -v "${FILESDIR}/${PN}-os_linux-remove-glibc-dependencies.patch" gentoo_patches || die
-	cp -v "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" gentoo_patches || die
+	cp -v "${FILESDIR}/${PN}${SLOT}-hotspot-musl.patch" gentoo_patches || die
 
 
 	DISTRIBUTION_PATCHES="gentoo_patches/openjdk-8-hotspot-arrayallocator.patch "
@@ -222,7 +222,7 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-autoconf-config.patch "
 	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}-hotspot-stop-using-obsolete-isnanf.patch "
 	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}-os_linux-remove-glibc-dependencies.patch "
-	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
+	DISTRIBUTION_PATCHES+="gentoo_patches/${PN}${SLOT}-hotspot-musl.patch "
 
 	export DISTRIBUTION_PATCHES
 
