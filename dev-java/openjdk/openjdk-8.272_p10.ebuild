@@ -158,7 +158,7 @@ src_prepare() {
 
 	# apply this patch here as the sources are not available unless ARCH == arm64
 	if use elibc_musl && use arm64; then
-		eapply "${FILESDIR}/patches/musl/${SLOT}/0003_musl_hotspot_aarch64.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/0003_musl_hotspot_aarch64.patch"
 	fi
 
 	chmod +x configure || die
