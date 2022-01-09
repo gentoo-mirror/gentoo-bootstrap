@@ -25,7 +25,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
-IUSE="alsa debug cups doc examples gentoo-vm headless-awt +pch selinux source"
+IUSE="alsa debug cups doc examples gentoo-vm headless-awt pch selinux source"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=

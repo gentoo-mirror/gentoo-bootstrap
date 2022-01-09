@@ -15,7 +15,7 @@ SRC_URI="https://hg.${PN}.java.net/jdk-updates/jdk${SLOT}u/archive/jdk-${MY_PV}.
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
 
-IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +pch selinux source systemtap"
+IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx pch selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
