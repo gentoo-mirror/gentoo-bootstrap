@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -24,7 +24,7 @@ HOMEPAGE="https://openjdk.java.net"
 LICENSE="GPL-2"
 KEYWORDS="amd64 ~arm arm64 ~ppc64"
 
-IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +jbootstrap +pch selinux source systemtap"
+IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +pch selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -85,7 +85,6 @@ REQUIRED_USE="javafx? ( alsa !headless-awt )"
 openjdk_check_requirements() {
 	local M
 	M=2048
-	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex debug 3 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
@@ -218,7 +217,7 @@ src_compile() {
 		LOG=debug
 		ALL_NAMED_TESTS= # Build error
 		$(usex doc docs '')
-		$(usex jbootstrap bootcycle-images product-images)
+		product-images
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }

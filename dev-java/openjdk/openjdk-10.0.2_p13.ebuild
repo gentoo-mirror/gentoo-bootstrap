@@ -15,7 +15,7 @@ SRC_URI="https://hg.${PN}.java.net/jdk-updates/jdk${SLOT}u/archive/jdk-${MY_PV}.
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
 
-IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +jbootstrap +pch selinux source systemtap"
+IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +pch selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -76,7 +76,6 @@ S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV}"
 openjdk_check_requirements() {
 	local M
 	M=2048
-	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex debug 3 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
@@ -217,8 +216,8 @@ src_configure() {
 src_compile() {
 	emake -j1 \
 		$(usex doc docs '') \
-		$(usex jbootstrap bootcycle-images product-images) \
-		JOBS=$(makeopts_jobs) LOG=debug
+		JOBS=$(makeopts_jobs) LOG=debug \
+		product-images
 }
 
 src_install() {
