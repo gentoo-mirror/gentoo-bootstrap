@@ -214,10 +214,13 @@ src_configure() {
 }
 
 src_compile() {
-	emake -j1 \
-		$(usex doc docs '') \
-		JOBS=$(makeopts_jobs) LOG=debug \
+	local myemakeargs=(
+		JOBS=$(makeopts_jobs)
+		LOG=debug
+		$(usex doc docs '')
 		product-images
+	)
+	emake "${myemakeargs[@]}" -j1 #nowarn
 }
 
 src_install() {
