@@ -10,3 +10,14 @@
    "CHLD",       SIGCHLD,        /* Child status has changed (POSIX).  */
    "CONT",       SIGCONT,        /* Continue (POSIX).  */
    "STOP",       SIGSTOP,        /* Stop, unblockable (POSIX).  */
+--- openjdk.orig/hotspot/src/os_cpu/linux_aarch64/vm/os_linux_aarch64.cpp
++++ openjdk/hotspot/src/os_cpu/linux_aarch64/vm/os_linux_aarch64.cpp
+@@ -72,7 +72,7 @@
+ # include <pwd.h>
+ # include <poll.h>
+ # include <ucontext.h>
+-# include <fpu_control.h>
++# include <linux/types.h>  /* provides __u64 */
+ 
+ #define REG_FP 29
+ 
