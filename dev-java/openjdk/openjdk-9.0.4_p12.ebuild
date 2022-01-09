@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -25,7 +25,7 @@ SRC_URI="
 
 LICENSE="GPL-2"
 KEYWORDS="amd64 arm64"
-IUSE="alsa debug cups doc examples gentoo-vm headless-awt +pch selinux source +webstart"
+IUSE="alsa debug cups doc examples gentoo-vm headless-awt +pch selinux source"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -68,10 +68,6 @@ DEPEND="
 		dev-java/openjdk:$((SLOT-1))
 		dev-java/icedtea:$((SLOT-1))
 	)
-"
-
-PDEPEND="
-	webstart? ( >=dev-java/icedtea-web-1.6.1:0 )
 "
 
 S="${WORKDIR}/${PN}-${PV}"
