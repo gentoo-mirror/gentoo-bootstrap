@@ -1,4 +1,4 @@
-# Copyright 1999-2020 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -17,7 +17,7 @@ SRC_URI="https://hg.${PN}.java.net/jdk-updates/jdk${SLOT}u/archive/jdk-${MY_PV}.
 LICENSE="GPL-2"
 KEYWORDS="amd64 ~arm arm64 ~ppc64"
 
-IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +jbootstrap +pch selinux source systemtap"
+IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx +pch selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -80,7 +80,6 @@ S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV}"
 openjdk_check_requirements() {
 	local M
 	M=2048
-	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex debug 3 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
@@ -134,13 +133,13 @@ pkg_setup() {
 src_prepare() {
 	default
 
-    # conditionally apply patches for musl compatibility
-    if use elibc_musl; then
-        eapply "${FILESDIR}/musl/${SLOT}/build.patch"
-        eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
-        eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
-        eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
-    fi
+	# conditionally apply patches for musl compatibility
+	if use elibc_musl; then
+		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/fix-bootjdk-check.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
+	fi
 
 	# conditionally remove not compilable module (hotspot jdk.hotspot.agent)
 	# this needs libthread_db which is only provided by glibc
@@ -220,7 +219,7 @@ src_compile() {
 		LOG=debug
 		ALL_NAMED_TESTS= # Build error
 		$(usex doc docs '')
-		$(usex jbootstrap bootcycle-images product-images)
+		product-images
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
@@ -289,4 +288,3 @@ pkg_postinst() {
 		ewarn "absolute location under ${EPREFIX}/usr/$(get_libdir)/${PN}-${SLOT}."
 	fi
 }
-
