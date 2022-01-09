@@ -239,10 +239,6 @@ src_install() {
 
 	cd "${S}"/build/*-release/images/jdk || die
 
-	if ! use alsa; then
-		rm -v jre/lib/$(get_system_arch)/libjsoundalsa.* || die
-	fi
-
 	# build system does not remove that
 	if use headless-awt ; then
 		rm -fvr jre/lib/$(get_system_arch)/lib*{[jx]awt,splashscreen}* \
