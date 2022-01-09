@@ -50,7 +50,7 @@ diff -Naur openjdk.orig/jdk/src/solaris/native/common/jdk_util_md.h openjdk/jdk/
 diff -Naur openjdk.orig/jdk/src/solaris/native/java/net/Inet4AddressImpl.c openjdk/jdk/src/solaris/native/java/net/Inet4AddressImpl.c
 --- openjdk.orig/jdk/src/solaris/native/java/net/Inet4AddressImpl.c	2017-01-30 11:02:08.137403055 -0800
 +++ openjdk/jdk/src/solaris/native/java/net/Inet4AddressImpl.c	2017-01-30 11:05:52.541453901 -0800
-@@ -47,7 +47,7 @@
+@@ -37,7 +37,7 @@
  
  #include "java_net_Inet4AddressImpl.h"
  
@@ -59,32 +59,10 @@ diff -Naur openjdk.orig/jdk/src/solaris/native/java/net/Inet4AddressImpl.c openj
  #define HAS_GLIBC_GETHOSTBY_R   1
  #endif
  
-diff -Naur openjdk.orig/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c openjdk/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c
---- openjdk.orig/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c	2017-01-30 11:02:08.137403055 -0800
-+++ openjdk/jdk/src/solaris/native/java/net/PlainDatagramSocketImpl.c	2017-01-30 11:06:33.725833488 -0800
-@@ -41,7 +41,6 @@
- #endif
- #ifdef __linux__
- #include <unistd.h>
--#include <sys/sysctl.h>
- #include <sys/utsname.h>
- #include <netinet/ip.h>
- 
-diff -Naur openjdk.orig/jdk/src/solaris/native/java/net/PlainSocketImpl.c openjdk/jdk/src/solaris/native/java/net/PlainSocketImpl.c
---- openjdk.orig/jdk/src/solaris/native/java/net/PlainSocketImpl.c	2017-01-30 11:02:08.138403064 -0800
-+++ openjdk/jdk/src/solaris/native/java/net/PlainSocketImpl.c	2017-01-30 11:06:42.985918836 -0800
-@@ -43,7 +43,6 @@
- #endif
- #ifdef __linux__
- #include <unistd.h>
--#include <sys/sysctl.h>
- #endif
- 
- #include "jvm.h"
 diff -Naur openjdk.orig/jdk/src/solaris/native/java/net/linux_close.c openjdk/jdk/src/solaris/native/java/net/linux_close.c
 --- openjdk.orig/jdk/src/solaris/native/java/net/linux_close.c	2017-01-30 11:02:08.139403072 -0800
 +++ openjdk/jdk/src/solaris/native/java/net/linux_close.c	2017-01-30 11:07:52.952560164 -0800
-@@ -56,7 +56,7 @@
+@@ -58,7 +58,7 @@
  /*
   * Signal to unblock thread
   */
@@ -92,8 +70,8 @@ diff -Naur openjdk.orig/jdk/src/solaris/native/java/net/linux_close.c openjdk/jd
 +static int sigWakeup;
  
  /*
-  * The fd table and the number of file descriptors
-@@ -95,6 +95,9 @@
+  * fdTable holds one entry per file descriptor, up to a certain
+@@ -147,6 +147,9 @@
      /*
       * Setup the signal handler
       */
