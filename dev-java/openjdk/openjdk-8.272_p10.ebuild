@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=6
@@ -44,7 +44,7 @@ SRC_URI="
 LICENSE="GPL-2"
 SLOT="$(ver_cut 1)"
 KEYWORDS="amd64 arm64 ppc64 x86"
-IUSE="alsa debug cups doc examples headless-awt javafx +jbootstrap +pch selinux source"
+IUSE="alsa debug cups doc examples headless-awt javafx pch selinux source"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -97,7 +97,6 @@ openjdk_check_requirements() {
 	local M
 	M=2048
 	M=$(( $(usex debug 3 1) * $M ))
-	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
 	CHECKREQS_DISK_BUILD=${M}M check-reqs_pkg_${EBUILD_PHASE}
@@ -221,7 +220,7 @@ src_compile() {
 		JOBS=$(makeopts_jobs)
 		LOG=debug
 		$(usex doc docs '')
-		$(usex jbootstrap bootcycle-images images)
+		images
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
