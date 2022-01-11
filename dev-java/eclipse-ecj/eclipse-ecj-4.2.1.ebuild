@@ -1,9 +1,9 @@
-# Copyright 1999-2018 Gentoo Foundation
+# Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI="6"
 
-inherit java-pkg-2 java-vm-2 
+inherit java-pkg-2 java-vm-2
 
 MY_PN="ecj"
 DMF="R-${PV}-201209141800"
@@ -34,7 +34,7 @@ src_prepare() {
 	rm -f org/eclipse/jdt/core/JDTCompilerAdapter.java || die
 	rm -fr org/eclipse/jdt/internal/antadapter || die
 
-	epatch "${FILESDIR}"/override.patch
+	find . -name '*.java' -exec sed -i 's/@Override//g' {} \;
 	default
 }
 
