@@ -1,14 +1,17 @@
 ## Bootstrapping OpenJDK 8
 
 ```sh
-# If you are on arm64, you first need to unmask app-arch/fastjar
-sudo emerge -a1v =dev-java/icedtea-3.7.0
+sudo emerge -a1v =dev-java/icedtea-3.21.0
 sudo emerge -av dev-java/openjdk:8
 sudo emerge -a --depclean # Remove old software that was used for bootstrapping
 ```
 
-Note: you need to do it in two steps as currently ant-core:bootstrap is not co-installable
+Notes:
+1. you need to do it in two steps as currently ant-core:bootstrap is not co-installable
 with ant-core:0 from the Gentoo tree.
+2. Last tested on GCC 11. New version of GCC are known to occasionally break builds
+and might need additional patches.
+
 
 ## Bootstrapping OpenJDK 11
 ```sh
