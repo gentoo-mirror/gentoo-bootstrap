@@ -85,6 +85,7 @@ DEPEND="
 		dev-java/openjdk:${SLOT}
 		dev-java/icedtea:${SLOT}
 		dev-java/icedtea:$((SLOT-1))
+		dev-java/openjdk-bin:${SLOT}
 	)
 "
 
@@ -112,7 +113,7 @@ pkg_pretend() {
 pkg_setup() {
 	openjdk_check_requirements
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} icedtea-${SLOT} icedtea-$((SLOT-1))"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} icedtea-${SLOT} openjdk-bin-${SLOT}"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
