@@ -46,7 +46,7 @@ src_prepare()
 		sed -i -e 's#"-Werror",##g' src/cmd/dist/build.c ||
 			die "sed failed"
 	fi
-	epatch_user
+	default
 }
 
 src_compile()
