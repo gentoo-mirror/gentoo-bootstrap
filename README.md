@@ -36,3 +36,10 @@ Finally, we compile git snapshot of GNU Classpath which has a much better suppor
 Then we compile a slightly patched ecj-4.2. Together with JamVM 2.0.0 this will serve as
 Java environment that can bootstrap Icedtea 2 (Java 7). Then we use it to build Icedtea 3
 and subsequent OpenJDK versions.
+
+## Bootstrapping rust
+
+We use `mrustc` to build rustc-1.54 and then we build each subsequent rustc version until
+we reach up to date rustc.
+
+mrustc is ocasionally broken on some versions of GCC. Last tested with GCC 12.2.1.
