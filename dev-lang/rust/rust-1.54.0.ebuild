@@ -45,9 +45,11 @@ src_unpack() {
 src_prepare() {
 	cd ${S}
 
-	cd ${S}/rustc-${PV}-src
+	pushd ${S}/rustc-${PV}-src
+	rm "vendor/vte/vim10m_"{match,table}
 	eapply -p0 ${S}/rustc-${PV}-src.patch
 	sed -i 's/ $(RUSTC_SRC_DL)//' "${S}/minicargo.mk"
+	popd
 
 	eapply_user
 }
@@ -57,15 +59,17 @@ src_configure() {
 }
 
 src_compile() {
-	emake RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) || die "compile problem"
-	emake -j1 RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) -f minicargo.mk LIBS || die "compile problem"
+	local -a make_opts
+	make_opts=(RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi))
+	emake ${make_opts[@]} || die "compile problem"
+	emake -j1 ${make_opts[@]} -f minicargo.mk LIBS || die "compile problem"
 RUSTC_TARGET=$(rust_abi) || die "compile problem"
-	emake -j1 RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) test || die "compile problem"
-	emake -j1 RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) local_tests || die "compile problem"
-	emake -j1 RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) RUSTC_INSTALL_BINDIR=bin -f minicargo.mk "output/rustc" || die "compile problem"
-	emake -j1 RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) LIBGIT2_SYS_USE_PKG_CONFIG=1 -f minicargo.mk "output${OUTDIR_SUF}/cargo" || die "compile problem"
+	emake -j1 ${make_opts[@]} test || die "compile problem"
+	emake -j1 ${make_opts[@]} local_tests || die "compile problem"
+	emake -j1 ${make_opts[@]} RUSTC_INSTALL_BINDIR=bin -f minicargo.mk "output/rustc" || die "compile problem"
+	emake -j1 ${make_opts[@]} LIBGIT2_SYS_USE_PKG_CONFIG=1 -f minicargo.mk "output${OUTDIR_SUF}/cargo" || die "compile problem"
 
-	emake -C run_rustc -j1 RUSTC_VERSION=${RUSTC_VERSION} MRUSTC_TARGET_VER=${MRUSTC_TARGET_VER} OUTDIR_SUF=${OUTDIR_SUF} RUSTC_TARGET=$(rust_abi) || die "compile problem"
+	emake -C run_rustc -j1 ${make_opts[@]} || die "compile problem"
 }
 
 src_install() {
