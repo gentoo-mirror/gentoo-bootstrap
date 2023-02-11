@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{7..10} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit bash-completion-r1 check-reqs estack flag-o-matic llvm multiprocessing \
 	multilib multilib-build python-any-r1 rust-toolchain toolchain-funcs verify-sig
@@ -22,7 +22,7 @@ else
 	KEYWORDS="amd64 arm arm64 ppc64 ~riscv x86"
 fi
 
-RUST_STAGE0_VERSION="1.$(($(ver_cut 2) - 1)).0"
+RUST_STAGE0_VERSION="1.$(($(ver_cut 2) - 1)).1"
 
 DESCRIPTION="Systems programming language from Mozilla"
 HOMEPAGE="https://www.rust-lang.org/"
@@ -40,7 +40,7 @@ LLVM_TARGET_USEDEPS=${ALL_LLVM_TARGETS[@]/%/(-)?}
 
 LICENSE="|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA"
 
-IUSE="clippy cpu_flags_x86_sse2 debug dist doc miri nightly parallel-compiler rls rustfmt rust-src system-llvm test wasm ${ALL_LLVM_TARGETS[*]}"
+IUSE="clippy cpu_flags_x86_sse2 debug dist doc miri nightly parallel-compiler rls rustfmt rust-src +system-bootstrap system-llvm test wasm ${ALL_LLVM_TARGETS[*]}"
 
 # Please keep the LLVM dependency block separate. Since LLVM is slotted,
 # we need to *really* make sure we're not pulling more than one slot
@@ -75,7 +75,12 @@ LLVM_DEPEND+=" )
 # https://github.com/rust-lang/rust/blob/${PV}/src/stage0.txt
 RUST_DEP_PREV="$(ver_cut 1).$(($(ver_cut 2) - 1))*"
 RUST_DEP_CURR="$(ver_cut 1).$(ver_cut 2)*"
-BOOTSTRAP_DEPEND="=dev-lang/rust-${RUST_DEP_PREV}"
+BOOTSTRAP_DEPEND="||
+	(
+		=dev-lang/rust-"${RUST_DEP_PREV}"
+		=dev-lang/rust-"${RUST_DEP_CURR}"
+	)
+"
 
 BDEPEND="${PYTHON_DEPS}
 	app-eselect/eselect-rust
@@ -83,7 +88,7 @@ BDEPEND="${PYTHON_DEPS}
 		>=sys-devel/gcc-4.7
 		>=sys-devel/clang-3.5
 	)
-	${BOOTSTRAP_DEPEND}
+	system-bootstrap? ( ${BOOTSTRAP_DEPEND} )
 	!system-llvm? (
 		>=dev-util/cmake-3.13.4
 		dev-util/ninja
@@ -183,10 +188,10 @@ bootstrap_rust_version_check() {
 }
 
 pre_build_checks() {
-	local M=4096
-	# multiply requirements by 1.5 if we are doing x86-multilib
+	local M=8192
+	# multiply requirements by 1.3 if we are doing x86-multilib
 	if use amd64; then
-		M=$(( $(usex abi_x86_32 15 10) * ${M} / 10 ))
+		M=$(( $(usex abi_x86_32 13 10) * ${M} / 10 ))
 	fi
 	M=$(( $(usex clippy 128 0) + ${M} ))
 	M=$(( $(usex miri 128 0) + ${M} ))
@@ -207,6 +212,7 @@ pre_build_checks() {
 		M=$(( 15 * ${M} / 10 ))
 	fi
 	eshopts_pop
+	M=$(( $(usex system-bootstrap 0 1024) + ${M} ))
 	M=$(( $(usex doc 256 0) + ${M} ))
 	CHECKREQS_DISK_BUILD=${M}M check-reqs_pkg_${EBUILD_PHASE}
 }
@@ -225,7 +231,7 @@ pkg_setup() {
 
 	export LIBGIT2_NO_PKG_CONFIG=1 #749381
 
-	bootstrap_rust_version_check
+	use system-bootstrap && bootstrap_rust_version_check
 
 	if use system-llvm; then
 		llvm_pkg_setup
@@ -236,7 +242,33 @@ pkg_setup() {
 	fi
 }
 
+src_prepare() {
+	if ! use system-bootstrap; then
+		local rust_stage0_root="${WORKDIR}"/rust-stage0
+		local rust_stage0="rust-${RUST_STAGE0_VERSION}-$(rust_abi)"
+
+		"${WORKDIR}/${rust_stage0}"/install.sh --disable-ldconfig \
+			--without=rust-docs --destdir="${rust_stage0_root}" --prefix=/ || die
+	fi
+
+	default
+
+	rm "${S}/vendor/vte/vim10m_"{match,table}
+	python3 <<EOF
+import json, pathlib
+for path in pathlib.Path('.').rglob('.cargo-checksum.json'):
+	   with open(path, 'r+') as f:
+			   j = json.load(f)
+			   j['files'] = {}
+			   f.seek(0)
+			   f.truncate()
+			   json.dump(j, f)
+EOF
+}
+
 src_configure() {
+	use system-llvm && filter-flags '-flto*' # https://bugs.gentoo.org/862109
+
 	local rust_target="" rust_targets="" arch_cflags
 
 	# Collect rust target names to compile standard libs for all ABIs.
@@ -271,8 +303,13 @@ src_configure() {
 	fi
 
 	local rust_stage0_root
-	rust_stage0_root="$(rustc --print sysroot || die "Can't determine rust's sysroot")"
-	
+	if use system-bootstrap; then
+		local printsysroot
+		printsysroot="$(rustc --print sysroot || die "Can't determine rust's sysroot")"
+		rust_stage0_root="${printsysroot}"
+	else
+		rust_stage0_root="${WORKDIR}"/rust-stage0
+	fi
 	# in case of prefix it will be already prefixed, as --print sysroot returns full path
 	[[ -d ${rust_stage0_root} ]] || die "${rust_stage0_root} is not a directory"
 

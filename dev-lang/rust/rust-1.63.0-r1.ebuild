@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{8..11} )
+PYTHON_COMPAT=( python3_{9..11} )
 
 inherit bash-completion-r1 check-reqs estack flag-o-matic llvm multiprocessing \
 	multilib multilib-build python-any-r1 rust-toolchain toolchain-funcs verify-sig
@@ -19,7 +19,7 @@ else
 	SLOT="stable/${ABI_VER}"
 	MY_P="rustc-${PV}"
 	SRC="${MY_P}-src.tar.xz"
-	KEYWORDS="~amd64 ~arm ~arm64 ~mips ~ppc64 ~riscv ~sparc ~x86"
+	KEYWORDS="amd64 ~arm ~arm64 ~mips ~ppc64 ~riscv ~sparc ~x86"
 fi
 
 RUST_STAGE0_VERSION="1.$(($(ver_cut 2) - 1)).0"
@@ -40,7 +40,7 @@ LLVM_TARGET_USEDEPS=${ALL_LLVM_TARGETS[@]/%/(-)?}
 
 LICENSE="|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA"
 
-IUSE="clippy cpu_flags_x86_sse2 debug dist doc llvm-libunwind miri nightly parallel-compiler profiler rls rustfmt rust-src system-llvm test wasm ${ALL_LLVM_TARGETS[*]}"
+IUSE="clippy cpu_flags_x86_sse2 debug dist doc llvm-libunwind miri nightly parallel-compiler profiler rls rustfmt rust-src +system-bootstrap system-llvm test wasm ${ALL_LLVM_TARGETS[*]}"
 
 # Please keep the LLVM dependency block separate. Since LLVM is slotted,
 # we need to *really* make sure we're not pulling more than one slot
@@ -88,7 +88,7 @@ BDEPEND="${PYTHON_DEPS}
 		>=sys-devel/gcc-4.7
 		>=sys-devel/clang-3.5
 	)
-	${BOOTSTRAP_DEPEND}
+	system-bootstrap? ( ${BOOTSTRAP_DEPEND} )
 	!system-llvm? (
 		>=dev-util/cmake-3.13.4
 		dev-util/ninja
@@ -220,7 +220,7 @@ pre_build_checks() {
 		M=$(( 15 * ${M} / 10 ))
 	fi
 	eshopts_pop
-	M=$(( 1024 + ${M} ))
+	M=$(( $(usex system-bootstrap 0 1024) + ${M} ))
 	M=$(( $(usex doc 256 0) + ${M} ))
 	CHECKREQS_DISK_BUILD=${M}M check-reqs_pkg_${EBUILD_PHASE}
 }
@@ -250,7 +250,7 @@ pkg_setup() {
 
 	export LIBGIT2_NO_PKG_CONFIG=1 #749381
 
-	bootstrap_rust_version_check
+	use system-bootstrap && bootstrap_rust_version_check
 
 	if use system-llvm; then
 		llvm_pkg_setup
@@ -278,6 +278,31 @@ esetup_unwind_hack() {
 	# crates ignore RUSTFLAGS.
 	# this variable can not contain leading space.
 	export MAGIC_EXTRA_RUSTFLAGS+="${MAGIC_EXTRA_RUSTFLAGS:+ }-L${fakelib}"
+}
+
+src_prepare() {
+	if ! use system-bootstrap; then
+		has_version sys-devel/gcc || esetup_unwind_hack
+		local rust_stage0_root="${WORKDIR}"/rust-stage0
+		local rust_stage0="rust-${RUST_STAGE0_VERSION}-$(rust_abi)"
+
+		"${WORKDIR}/${rust_stage0}"/install.sh --disable-ldconfig \
+			--without=rust-docs --destdir="${rust_stage0_root}" --prefix=/ || die
+	fi
+
+	default
+
+	rm "${S}/vendor/vte/vim10m_"{match,table}
+	python3 <<EOF
+import json, pathlib
+for path in pathlib.Path('.').rglob('.cargo-checksum.json'):
+	   with open(path, 'r+') as f:
+			   j = json.load(f)
+			   j['files'] = {}
+			   f.seek(0)
+			   f.truncate()
+			   json.dump(j, f)
+EOF
 }
 
 src_configure() {
@@ -320,10 +345,13 @@ src_configure() {
 	fi
 
 	local rust_stage0_root
-
-	local printsysroot
-	printsysroot="$(rustc --print sysroot || die "Can't determine rust's sysroot")"
-	rust_stage0_root="${printsysroot}"
+	if use system-bootstrap; then
+		local printsysroot
+		printsysroot="$(rustc --print sysroot || die "Can't determine rust's sysroot")"
+		rust_stage0_root="${printsysroot}"
+	else
+		rust_stage0_root="${WORKDIR}"/rust-stage0
+	fi
 	# in case of prefix it will be already prefixed, as --print sysroot returns full path
 	[[ -d ${rust_stage0_root} ]] || die "${rust_stage0_root} is not a directory"
 
