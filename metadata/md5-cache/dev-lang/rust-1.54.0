@@ -11,5 +11,5 @@ LICENSE=|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA
 PROPERTIES=live
 SLOT=stable/1.54
 SRC_URI=https://static.rust-lang.org/dist/rustc-1.54.0-src.tar.xz
-_eclasses_=toolchain-funcs	513c31b3346458ed1f3878b57da6d61c	multilib	c19072c3cd7ac5cb21de013f7e9832e0	flag-o-matic	ad475baa777c9978fa035216c8264a10	git-r3	97f7f638070d17e4c2b6542589bb4575	llvm	5b4ee8759b4e9eec5cb48b46975ca56c	out-of-source-utils	1a9007554652a6e627edbccb3c25a439	multibuild	30dbf3c5a31db09a19f31ad0a68f2405	multilib-build	e8aed98bd43dbd25694310a660ad562c	rust-toolchain	5240c941287da6157cbaccd40b91a53c
+_eclasses_=toolchain-funcs	67b3e3d8916d690003f645486ed86aac	multilib	c19072c3cd7ac5cb21de013f7e9832e0	flag-o-matic	ad475baa777c9978fa035216c8264a10	git-r3	97f7f638070d17e4c2b6542589bb4575	llvm	5b4ee8759b4e9eec5cb48b46975ca56c	out-of-source-utils	1a9007554652a6e627edbccb3c25a439	multibuild	30dbf3c5a31db09a19f31ad0a68f2405	multilib-build	e8aed98bd43dbd25694310a660ad562c	rust-toolchain	5240c941287da6157cbaccd40b91a53c
 _md5_=545d0f7b4a778be9fce69a5fb0899378
