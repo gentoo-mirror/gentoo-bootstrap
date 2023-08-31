@@ -1,9 +1,9 @@
 # Copyright 1999-2019 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-inherit flag-o-matic eutils
+inherit flag-o-matic
 
 DESCRIPTION="IBM's open source, high performance Java compiler"
 HOMEPAGE="http://jikes.sourceforge.net/"
