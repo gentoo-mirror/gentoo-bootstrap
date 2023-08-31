@@ -1,0 +1,13 @@
+DEFINED_PHASES=compile configure install preinst prepare setup
+DEPEND=sys-libs/zlib app-arch/fastjar dev-java/java-config dev-java/jikes dev-libs/libltdl >=dev-java/java-config-2.2.0-r3
+DESCRIPTION=Free core class libraries for use with VMs and compilers for the Java language
+EAPI=8
+HOMEPAGE=https://www.gnu.org/software/classpath
+INHERIT=java-pkg-2 multilib
+KEYWORDS=amd64 arm64
+LICENSE=GPL-2-with-linking-exception
+RDEPEND=>=dev-java/java-config-2.2.0-r3
+SLOT=0.93
+SRC_URI=mirror://gnu/classpath/classpath-0.93.tar.gz
+_eclasses_=java-utils-2	8c72ea36a4935f626b13a30141d0d39c	java-pkg-2	1794573de2f5124d88b64ee5dc9aabb4	multilib	c19072c3cd7ac5cb21de013f7e9832e0	toolchain-funcs	862d337d98edb576796827be2c6b11ca
+_md5_=75b1236d8a2155099856b7a467c68da6

@@ -1,0 +1,12 @@
+DEFINED_PHASES=compile configure install unpack
+DESCRIPTION=IBM's open source, high performance Java compiler
+EAPI=8
+HOMEPAGE=http://jikes.sourceforge.net/
+INHERIT=flag-o-matic
+KEYWORDS=amd64 arm64
+LICENSE=IBM
+RDEPEND=>=dev-java/java-config-2.0.0
+SLOT=0
+SRC_URI=mirror://sourceforge/jikes/jikes-1.22.tar.bz2
+_eclasses_=toolchain-funcs	862d337d98edb576796827be2c6b11ca	multilib	c19072c3cd7ac5cb21de013f7e9832e0	flag-o-matic	be27a904c614cb93ae037762dc69bcc2
+_md5_=d37ce953c6e25d23b0fd1f2f6120f1c8
