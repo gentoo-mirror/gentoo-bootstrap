@@ -9,11 +9,12 @@ sudo emerge -a --depclean # Remove old software that was used for bootstrapping
 Notes:
 1. you need to do it in two steps as currently ant-core:bootstrap is not co-installable
 with ant-core:0 from the Gentoo tree.
-2. Last tested on GCC 11. New version of GCC are known to occasionally break builds
+2. Last tested on GCC 12. New versions of GCC are known to occasionally break builds
 and might need additional patches.
 
 
 ## Bootstrapping OpenJDK 11
+
 ```sh
 sudo emerge -a1v =dev-java/openjdk-11.0.9_p11
 ```
@@ -43,3 +44,11 @@ We use `mrustc` to build rustc-1.54 and then we build each subsequent rustc vers
 we reach up to date rustc.
 
 mrustc is ocasionally broken on some versions of GCC. Last tested with GCC 12.2.1.
+
+## Bootstrapping go
+
+```sh
+sudo emerge -a1v =dev-lang/go-1.4
+sudo emerge -a1v =dev-lang/go-1.17.13
+sudo emerge -a1uv dev-lang/go
+```
