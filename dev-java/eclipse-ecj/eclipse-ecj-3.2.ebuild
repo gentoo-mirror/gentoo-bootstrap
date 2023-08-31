@@ -1,12 +1,12 @@
 # Copyright 1999-2006 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
 # depend on bootstrap slot
 JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 
-inherit eutils java-pkg-2 java-vm-2 java-ant-2
+inherit java-pkg-2 java-vm-2 java-ant-2
 
 DESCRIPTION="Eclipse Compiler for Java"
 HOMEPAGE="http://www.eclipse.org/"
@@ -26,7 +26,7 @@ src_unpack() {
 	cd "${S}"
     
 	# remove unzip, add javadoc target, put final ecj.jar and javadocs in dist/ and not ../
-	epatch "${FILESDIR}/${P}-build-gentoo.patch"
+	eapply "${FILESDIR}/${P}-build-gentoo.patch"
 }
 
 pkg_setup() {

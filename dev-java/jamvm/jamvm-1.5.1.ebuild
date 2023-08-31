@@ -1,9 +1,9 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
-inherit autotools eutils flag-o-matic multilib java-vm-2
+inherit autotools flag-o-matic multilib java-vm-2
 
 DESCRIPTION="An extremely small and specification-compliant virtual machine."
 HOMEPAGE="http://jamvm.sourceforge.net/"

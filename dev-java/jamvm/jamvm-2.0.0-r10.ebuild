@@ -1,9 +1,9 @@
 # Copyright 1999-2021 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
-inherit eutils flag-o-matic multilib java-pkg-2 java-vm-2 autotools
+inherit flag-o-matic multilib java-pkg-2 java-vm-2 autotools
 
 DESCRIPTION="An extremely small and specification-compliant virtual machine"
 HOMEPAGE="http://jamvm.sourceforge.net/"
@@ -95,8 +95,8 @@ src_install() {
 	set_java_env "${FILESDIR}/${P}-2-env.file"
 
 	dodir ${JDK_DIR}/bin
-	mv "${ED}"usr/bin/jamvm "${ED}"usr/bin/jamvm-2.0-2
-	mv "${ED}"usr/share/jamvm/classes.zip "${ED}"usr/share/jamvm/classes-2.zip
+	mv "${ED}/usr/bin/jamvm" "${ED}/usr/bin/jamvm-2.0-2"
+	mv "${ED}/usr/share/jamvm/classes.zip" "${ED}/usr/share/jamvm/classes-2.zip"
 	dosym "${EPREFIX}"/usr/bin/jamvm-2.0-2 ${JDK_DIR}/bin/java
 	for files in ${CLASSPATH_DIR}/g*; do
 		if [ $files = "${CLASSPATH_DIR}/bin/gjdoc" ] ; then

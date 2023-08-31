@@ -1,12 +1,12 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2023 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=7
+EAPI=8
 
 export CTARGET=${CTARGET:-${CHOST}}
 
-inherit eutils toolchain-funcs
+inherit toolchain-funcs
 
 SRC_URI="https://storage.googleapis.com/golang/go1.4-bootstrap-20171003.tar.gz"
 # Upstream only supports go on amd64, arm and x86 architectures.
@@ -106,8 +106,8 @@ pkg_postinst()
 	# linker are also checked - so we need to fix them too.
 	ebegin "fixing timestamps to avoid unnecessary rebuilds"
 	tref="usr/lib/go/pkg/*/runtime.a"
-	find "${EROOT}"usr/lib/go -type f \
-		-exec touch -r "${EROOT}"${tref} {} \;
+	find "${EROOT}/usr/lib/go" -type f \
+		-exec touch -r "${EROOT}/"${tref} {} \;
 	eend $?
 
 	if [[ ${PV} != 9999 && -n ${REPLACING_VERSIONS} &&

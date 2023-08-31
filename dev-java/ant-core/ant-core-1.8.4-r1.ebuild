@@ -1,13 +1,13 @@
 # Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=8
 
 # don't depend on itself
 JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 # rewriting build.xml files for the testcases has no reason atm
 JAVA_PKG_BSFIX_ALL=no
-inherit eutils java-pkg-2 java-vm-2 java-ant-2
+inherit java-pkg-2 java-vm-2 java-ant-2
 
 MY_P="apache-ant-${PV}"
 
