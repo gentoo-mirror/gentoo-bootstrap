@@ -12,7 +12,6 @@ MRUSTC_VERSION="0.10"
 EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
 EGIT_COMMIT="1b1416bb2b44e2c331c7201833305cac29d571e8"
 
-
 SRC_URI="
 	https://static.rust-lang.org/dist/rustc-${PV}-src.tar.xz"
 	#https://github.com/thepowersgang/mrustc/archive/v${MRUSTC_VERSION}.tar.gz"
@@ -23,6 +22,7 @@ KEYWORDS="amd64"
 DEPEND="
 	dev-util/cmake
 	sys-process/time
+	dev-libs/openssl:0/1.1
 "
 
 RDEPEND=""
