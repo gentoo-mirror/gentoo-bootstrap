@@ -13,7 +13,7 @@ SLOT=$(ver_cut 1)
 DESCRIPTION="Open source implementation of the Java programming language"
 HOMEPAGE="https://openjdk.org"
 SRC_URI="
-	https://github.com/${PN}/jdk${SLOT}u/archive/refs/tags/jdk-${MY_PV}.tar.gz
+	https://github.com/${PN}/jdk${SLOT}u/archive/refs/tags/jdk-${SLOT}-ga.tar.gz
 		-> ${P}.tar.gz
 "
 
