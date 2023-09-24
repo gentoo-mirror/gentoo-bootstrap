@@ -5,14 +5,10 @@ EAPI=7
 
 inherit check-reqs eapi8-dosym flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
-# don't change versioning scheme
-# to find correct _p number, look at
-# https://github.com/openjdk/jdk${SLOT}u/tags
-# you will see, for example, jdk-17.0.4.1-ga and jdk-17.0.4.1+1, both point
-# to exact same commit sha. we should always use the full version.
-# -ga tag is just for humans to easily identify General Availability release tag.
-MY_PV="${PV%.0.0_p*}-ga"
-SLOT="${MY_PV%%[-+]*}"
+MY_PV="${PV/_p/+}"
+FULL_VERSION="${PV%_p*}"
+SLOT=$(ver_cut 1)
+# First release of major jdk releases do not contain u at end jdk<slot>.
 
 DESCRIPTION="Open source implementation of the Java programming language"
 HOMEPAGE="https://openjdk.org"
@@ -25,7 +21,7 @@ SRC_URI="
 # https://raw.githubusercontent.com/felixonmars/archriscv-packages/master/java17-openjdk/java17-riscv64.patch
 
 LICENSE="GPL-2-with-classpath-exception"
-KEYWORDS="amd64 ~arm ~arm64 ~ppc64 ~riscv ~x86"
+KEYWORDS="amd64 ~arm arm64 ~ppc64 ~riscv ~x86"
 
 IUSE="alsa big-endian cups debug doc examples headless-awt javafx +jbootstrap lto selinux source +system-bootstrap systemtap"
 

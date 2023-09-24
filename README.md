@@ -13,14 +13,14 @@ with ant-core:0 from the Gentoo tree.
 and might need additional patches.
 
 
-## Bootstrapping OpenJDK 11
+## Bootstrapping OpenJDK 17
 
 ```sh
-sudo emerge -a1v =dev-java/openjdk-11.0.9_p11
+sudo emerge -a1v =dev-java/openjdk-17.0.0_p35
 ```
 At this point you can remove this overlay and install OpenJDK from main tree:
 ```sh
-sudo emerge -a dev-java/openjdk:11
+sudo emerge -a dev-java/openjdk:17
 ```
 
 ## Bootstrapping story
