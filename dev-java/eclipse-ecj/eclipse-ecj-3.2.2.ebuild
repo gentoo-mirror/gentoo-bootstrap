@@ -8,9 +8,13 @@ JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 
 inherit java-pkg-2 java-vm-2 java-ant-2
 
+DMF="R-${PV}-200702121330"
+
 DESCRIPTION="Eclipse Compiler for Java"
 HOMEPAGE="http://www.eclipse.org/"
-SRC_URI="${P}.tar.bz2"
+#SRC_URI="https://archive.eclipse.org/eclipse/downloads/drops/${DMF}/ecjsrc.zip"
+SRC_URI="https://archive.eclipse.org/eclipse/downloads/drops/${DMF}/eclipse-sourceBuild-srcIncluded-${PV}.zip"
+
 LICENSE="EPL-1.0"
 KEYWORDS="amd64 arm64"
 SLOT="3.2"
@@ -23,7 +27,9 @@ DEPEND="${RDEPEND}
 
 src_unpack() {
 	unpack ${A}
-	cd "${S}"
+	mv jdtcoresrc eclipse-ecj-3.2.2
+	cd ${S}
+	unzip -d src -q src/ecj.zip
     
 	# remove unzip, add javadoc target, put final ecj.jar and javadocs in dist/ and not ../
 	eapply "${FILESDIR}/${P}-build-gentoo.patch"
