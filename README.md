@@ -1,6 +1,7 @@
 ## Bootstrapping OpenJDK 8
 
 ```sh
+sudo emerge -a1 =dev-java/openjdk-8.272_p10
 sudo emerge -av dev-java/openjdk:8
 sudo emerge -a1v =dev-java/icedtea-3.21.0
 sudo emerge -a --depclean # Remove old software that was used for bootstrapping
