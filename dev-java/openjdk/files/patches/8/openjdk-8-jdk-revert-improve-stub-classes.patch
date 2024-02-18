@@ -1,0 +1,33 @@
+--- openjdk/corba/src/share/classes/com/sun/corba/se/impl/ior/StubIORImpl.java	Wed Feb 07 00:10:57 2018 -0800
++++ openjdk/corba/src/share/classes/com/sun/corba/se/impl/ior/StubIORImpl.java	Tue Feb 13 12:14:04 2018 -0800
+@@ -33,7 +33,7 @@
+ 
+ import java.io.IOException;
+ import java.io.ObjectOutputStream;
+-import sun.corba.SharedSecrets;
++import java.io.StringWriter ;
+ 
+ import org.omg.CORBA.ORB ;
+ 
+@@ -124,20 +124,15 @@
+     {
+         // read the IOR from the ObjectInputStream
+         int typeLength = stream.readInt();
+-        SharedSecrets.getJavaOISAccess().checkArray(stream, byte[].class, typeLength);
+         typeData = new byte[typeLength];
+         stream.readFully(typeData);
+ 
+         int numProfiles = stream.readInt();
+-        SharedSecrets.getJavaOISAccess().checkArray(stream, int[].class, numProfiles);
+-        SharedSecrets.getJavaOISAccess().checkArray(stream, byte[].class, numProfiles);
+         profileTags = new int[numProfiles];
+         profileData = new byte[numProfiles][];
+         for (int i = 0; i < numProfiles; i++) {
+             profileTags[i] = stream.readInt();
+-            int dataSize = stream.readInt();
+-            SharedSecrets.getJavaOISAccess().checkArray(stream, byte[].class, dataSize);
+-            profileData[i] = new byte[dataSize];
++            profileData[i] = new byte[stream.readInt()];
+             stream.readFully(profileData[i]);
+         }
+     }

@@ -1,50 +1,30 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit check-reqs eapi7-ver flag-o-matic java-pkg-2 java-vm-2 multiprocessing pax-utils toolchain-funcs
+inherit check-reqs eapi8-dosym flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
-# we need latest -ga tag from hg, but want to keep build number as well
-# as _p component of the gentoo version string.
+# don't change versioning scheme
+# to find correct _p number, look at
+# https://github.com/openjdk/jdk${SLOT}u/tags
+# you will see, for example, jdk-17.0.4.1-ga and jdk-17.0.4.1+1, both point
+# to exact same commit sha. we should always use the full version.
+# -ga tag is just for humans to easily identify General Availability release tag.
+# we need -ga tag to fetch tarball and unpack it, but exact number everywhere else to
+# set build version properly
 
-MY_PV=$(ver_rs 1 'u' 2 '-' ${PV%_p*}-ga)
-MY_PN_AARCH64="${PN}-aarch64-shenandoah"
-MY_PV_AARCH64="$(ver_rs 1 'u' 2 '-' ${PV/_p/-b})"
-MY_P_AARCH64="${MY_PN_AARCH64/#${PN}-}-jdk${MY_PV_AARCH64}"
-
-BASE_URI="https://hg.${PN}.java.net/jdk8u/jdk8u"
-AARCH64_URI="https://hg.${PN}.java.net/aarch64-port/jdk8u-shenandoah"
+MY_PV="$(ver_rs 1 'u' 2 '-' ${PV%_p*}-ga)"
+SLOT="${PV%%[.+]*}"
 
 DESCRIPTION="Open source implementation of the Java programming language"
-HOMEPAGE="https://openjdk.java.net"
-SRC_URI="
-	!arm64? (
-		${BASE_URI}/archive/jdk${MY_PV}.tar.bz2 -> ${P}.tar.bz2
-		${BASE_URI}/corba/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-corba-${PV}.tar.bz2
-		${BASE_URI}/hotspot/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-hotspot-${PV}.tar.bz2
-		${BASE_URI}/jaxp/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-jaxp-${PV}.tar.bz2
-		${BASE_URI}/jaxws/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-jaxws-${PV}.tar.bz2
-		${BASE_URI}/jdk/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-jdk-${PV}.tar.bz2
-		${BASE_URI}/langtools/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-langtools-${PV}.tar.bz2
-		${BASE_URI}/nashorn/archive/jdk${MY_PV}.tar.bz2 -> ${PN}-nashorn-${PV}.tar.bz2
-	)
-	arm64? (
-		${AARCH64_URI}/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-${PV}.tar.bz2
-		${AARCH64_URI}/corba/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-corba-${PV}.tar.bz2
-		${AARCH64_URI}/hotspot/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-hotspot-${PV}.tar.bz2
-		${AARCH64_URI}/jaxp/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-jaxp-${PV}.tar.bz2
-		${AARCH64_URI}/jaxws/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-jaxws-${PV}.tar.bz2
-		${AARCH64_URI}/jdk/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-jdk-${PV}.tar.bz2
-		${AARCH64_URI}/langtools/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-langtools-${PV}.tar.bz2
-		${AARCH64_URI}/nashorn/archive/${MY_P_AARCH64}.tar.bz2 -> ${MY_PN_AARCH64}-nashorn-jdk${PV}.tar.bz2
-	)
-"
+HOMEPAGE="https://openjdk.org"
+SRC_URI="https://github.com/openjdk/jdk${SLOT}u/archive/refs/tags/jdk${MY_PV}.tar.gz -> ${P}.tar.gz"
+
 
 LICENSE="GPL-2"
-SLOT="$(ver_cut 1)"
 KEYWORDS="amd64 arm64 ppc64 x86"
-IUSE="alsa debug cups doc examples headless-awt javafx pch selinux source"
+IUSE="alsa debug cups doc examples headless-awt javafx +jbootstrap pch selinux source"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -74,6 +54,7 @@ DEPEND="
 	app-arch/zip
 	media-libs/alsa-lib
 	net-print/cups
+	virtual/pkgconfig
 	x11-base/xorg-proto
 	x11-libs/libX11
 	x11-libs/libXext
@@ -90,7 +71,17 @@ DEPEND="
 	)
 "
 
+BDEPEND="
+	virtual/pkgconfig
+"
+
 PDEPEND="javafx? ( dev-java/openjfx:${SLOT} )"
+
+S="${WORKDIR}/jdk${SLOT}u-jdk${MY_PV}"
+
+PATCHES=( "${FILESDIR}/patches/${SLOT}/openjdk-${SLOT}-insantiate-arrayallocator.patch"
+	  "${FILESDIR}/patches/${SLOT}/openjdk-${SLOT}-jdk-revert-improve-stub-classes.patch"
+)
 
 # The space required to build varies wildly depending on USE flags,
 # ranging from 2GB to 16GB. This function is certainly not exact but
@@ -99,6 +90,7 @@ openjdk_check_requirements() {
 	local M
 	M=2048
 	M=$(( $(usex debug 3 1) * $M ))
+	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
 	CHECKREQS_DISK_BUILD=${M}M check-reqs_pkg_${EBUILD_PHASE}
@@ -114,7 +106,7 @@ pkg_pretend() {
 pkg_setup() {
 	openjdk_check_requirements
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} icedtea-${SLOT} openjdk-bin-${SLOT} icedtea-bin-${SLOT}"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} icedtea-${SLOT} icedtea-$((SLOT-1)) openjdk-bin-${SLOT} icedtea-bin-${SLOT}"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
@@ -126,16 +118,9 @@ src_unpack() {
 	default
 
 	# Delete pre-built files
-	find . -name '*.jar' -delete
-	find . -name '*.bin' -delete
-	find . -name '*.exe' -delete
-
-	mv -v "jdk${SLOT}u"* "${P}" || die
-
-	local repo
-	for repo in corba hotspot jdk jaxp jaxws langtools nashorn; do
-		mv -v "${repo}-"* "${P}/${repo}" || die
-	done
+	find . -name '*.jar' -type f -delete
+	find . -name '*.bin' -type f -delete
+	find . -name '*.exe' -type f -delete
 }
 
 src_prepare() {
@@ -176,15 +161,28 @@ src_configure() {
 	# Work around -fno-common ( GCC10 default ), bug #706638
 	append-flags -fcommon
 
+	# Strip some flags users may set, but should not. #818502
+	filter-flags -fexceptions
+
+	# Strip lto related flags, no support in this version.
+	# https://bugs.gentoo.org/833097
+	# https://bugs.gentoo.org/833098
+	filter-lto
+	filter-flags -fdevirtualize-at-ltrans
+
 	tc-export_build_env CC CXX PKG_CONFIG STRIP
 
 	local myconf=(
 			--disable-ccache
+			--disable-freetype-bundling
+			--disable-precompiled-headers
 			--enable-unlimited-crypto
 			--with-boot-jdk="${JDK_HOME}"
 			--with-extra-cflags="${CFLAGS}"
 			--with-extra-cxxflags="${CXXFLAGS}"
 			--with-extra-ldflags="${LDFLAGS}"
+			--with-freetype-lib="$( $(tc-getPKG_CONFIG) --variable=libdir freetype2 )"
+			--with-freetype-include="$( $(tc-getPKG_CONFIG) --variable=includedir freetype2)/freetype2"
 			--with-giflib=system
 			--with-jtreg=no
 			--with-jobs=1
@@ -199,37 +197,37 @@ src_configure() {
 			--with-zlib=system
 			--with-native-debug-symbols=$(usex debug internal none)
 			$(usex headless-awt --disable-headful '')
+			$(tc-is-clang && echo "--with-toolchain-type=clang")
 		)
 
-	# PaX breaks pch, bug #601016
-	if use pch && ! host-is-pax; then
-		myconf+=( --enable-precompiled-headers )
-	else
-		myconf+=( --disable-precompiled-headers )
-	fi
-
 	(
-		unset _JAVA_OPTIONS JAVA JAVA_TOOL_OPTIONS JAVAC XARGS
+		unset _JAVA_OPTIONS JAVA JAVA_TOOL_OPTIONS JAVAC MAKE XARGS
 		CFLAGS= CXXFLAGS= LDFLAGS= \
 		CONFIG_SITE=/dev/null \
-		CONFIG_SHELL="${EPREFIX}/bin/bash"
+		CONFIG_SHELL="${BROOT}/bin/bash"
 		econf "${myconf[@]}"
 	)
 }
 
 src_compile() {
+	# Too brittle - gets confused by e.g. -Oline
+	export MAKEOPTS="-j$(makeopts_jobs) -l$(makeopts_loadavg)"
+	unset GNUMAKEFLAGS MAKEFLAGS
+
 	local myemakeargs=(
 		JOBS=$(makeopts_jobs)
 		LOG=debug
+		CFLAGS_WARNINGS_ARE_ERRORS= # No -Werror
+		NICE= # Use PORTAGE_NICENESS, don't adjust further down
 		$(usex doc docs '')
-		images
+		$(usex jbootstrap bootcycle-images images)
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
 
 src_install() {
 	local dest="/usr/$(get_libdir)/${PN}-${SLOT}"
-	local ddest="${ED%/}/${dest#/}"
+	local ddest="${ED}/${dest#/}"
 
 	cd "${S}"/build/*-release/images/j2sdk-image || die
 
@@ -254,7 +252,7 @@ src_install() {
 	dodir "${dest}"
 	cp -pPR * "${ddest}" || die
 
-	dosym ../../../../../../etc/ssl/certs/java/cacerts "${dest}"/jre/lib/security/cacerts
+	dosym8 -r /etc/ssl/certs/java/cacerts "${dest}"/jre/lib/security/cacerts
 
 	java-vm_install-env "${FILESDIR}"/${PN}-${SLOT}.env.sh
 	java-vm_set-pax-markings "${ddest}"
