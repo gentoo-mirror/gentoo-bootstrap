@@ -177,6 +177,7 @@ src_unpack() {
 	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-freetype.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-pointer-comparison.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-fcommon.patch" "${S}/patches" || die
+	ln -s "${FILESDIR}/${PN}${SLOT}-jdk-currency-timebomb.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}${SLOT}-hotspot-miscompile.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-hotspot-musl.patch" "${S}/patches" || die
 	ln -s "${FILESDIR}/${PN}-os_linux-remove-glibc-dependencies.patch" "${S}/patches" || die
@@ -217,6 +218,7 @@ src_configure() {
 	DISTRIBUTION_PATCHES+="patches/${PN}-hotspot-stop-using-obsolete-isnanf.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-freetype.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-fcommon.patch "
+	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-jdk-currency-timebomb.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-pointer-comparison.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}${SLOT}-hotspot-miscompile.patch "
 	DISTRIBUTION_PATCHES+="patches/${PN}-hotspot-musl.patch "
