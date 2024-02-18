@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
@@ -120,7 +120,7 @@ DEPEND="${COMMON_DEP} ${ALSA_COMMON_DEP} ${CUPS_COMMON_DEP} ${X_COMMON_DEP} ${X_
 		dev-java/jamvm:2.0-3
 		dev-java/icedtea:7
 	)
-	sys-devel/automake:1.16
+	dev-build/automake:1.16
 	app-arch/cpio
 	app-arch/unzip
 	app-arch/zip
