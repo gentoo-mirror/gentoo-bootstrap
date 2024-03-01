@@ -1,6 +1,6 @@
 BDEPEND=>=dev-vcs/git-1.8.2.1[curl]
 DEFINED_PHASES=compile configure install prepare setup unpack
-DEPEND=dev-build/cmake sys-process/time dev-libs/openssl:0/1.1 !!sys-devel/llvm:0
+DEPEND=dev-build/cmake sys-process/time dev-libs/openssl:0= !!sys-devel/llvm:0
 DESCRIPTION=Systems programming language from Mozilla
 EAPI=8
 HOMEPAGE=https://www.rust-lang.org/
@@ -10,6 +10,6 @@ KEYWORDS=amd64
 LICENSE=|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA
 PROPERTIES=live
 SLOT=stable/1.54
-SRC_URI=https://static.rust-lang.org/dist/rustc-1.54.0-src.tar.xz
+SRC_URI=https://static.rust-lang.org/dist/rustc-1.54.0-src.tar.xz https://github.com/thepowersgang/mrustc/archive/v0.10.1.tar.gz
 _eclasses_=toolchain-funcs	e56c7649b804f051623c8bc1a1c44084	multilib	c19072c3cd7ac5cb21de013f7e9832e0	flag-o-matic	24c947ff5f858625cf0b33c15eed4425	git-r3	86fa1f157b70b9d2ff340c4633b1cf4b	llvm-utils	e59dc622da7e7e7f16879105bed34858	llvm	1eea65d11f743b8e256ef279b652a2e6	out-of-source-utils	1a9007554652a6e627edbccb3c25a439	multibuild	d67e78a235f541871c7dfe4cf7931489	multilib-build	e8aed98bd43dbd25694310a660ad562c	rust-toolchain	ab72acc17f5dea7b8fadd410d34b798c
-_md5_=4560df92dba1aa1a48bdcafac91adcfe
+_md5_=dca0600577aff2b8c0fab0e82eb4ed95
