@@ -1,0 +1,20 @@
+--- openjdk/jdk/make/data/currency/CurrencyData.properties   2024-02-18 13:38:19.525666416 +0000
++++ openjdk/jdk/make/data/currency/CurrencyData.properties   2024-02-18 13:38:40.436243388 +0000
+@@ -324,7 +324,7 @@
+ # LAO PEOPLE'S DEMOCRATIC REPUBLIC
+ LA=LAK
+ # LATVIA
+-LV=LVL;2013-12-31-22-00-00;EUR
++LV=LVL
+ # LEBANON
+ LB=LBP
+ # LESOTHO
+@@ -336,7 +336,7 @@
+ # LIECHTENSTEIN
+ LI=CHF
+ # LITHUANIA
+-LT=LTL;2014-12-31-22-00-00;EUR
++LT=LTL
+ # LUXEMBOURG
+ LU=EUR
+ # MACAU
