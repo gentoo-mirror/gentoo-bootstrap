@@ -1,31 +1,29 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit check-reqs eapi7-ver flag-o-matic java-pkg-2 java-vm-2 multiprocessing pax-utils toolchain-funcs
+inherit check-reqs eapi8-dosym flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
-MY_PV=${PV/_p/+}
-SLOT=${MY_PV%%[.+]*}
-
-BASE_URI="https://hg.${PN}.java.net/jdk-updates/jdk9u"
+# don't change versioning scheme
+# to find correct _p number, look at
+# https://github.com/openjdk/jdk${SLOT}u/tags
+# you will see, for example, jdk-17.0.4.1-ga and jdk-17.0.4.1+1, both point
+# to exact same commit sha. we should always use the full version.
+# -ga tag is just for humans to easily identify General Availability release tag.
+# we need -ga tag to fetch tarball and unpack it, but exact number everywhere else to
+# set build version properly
+MY_PV="$(ver_rs 1 'u' 2 '-' ${PV%_p*}-ga)"
+FULL_VERSION="${PV/_p/+}"
+SLOT="${PV%%[.+]*}"
 
 DESCRIPTION="Open source implementation of the Java programming language"
 HOMEPAGE="https://openjdk.java.net"
-SRC_URI="
-	${BASE_URI}/archive/jdk-${MY_PV}.tar.bz2 -> ${P}.tar.bz2
-	${BASE_URI}/corba/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-corba-${PV}.tar.bz2
-	${BASE_URI}/hotspot/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-hotspot-${PV}.tar.bz2
-	${BASE_URI}/jaxp/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-jaxp-${PV}.tar.bz2
-	${BASE_URI}/jaxws/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-jaxws-${PV}.tar.bz2
-	${BASE_URI}/jdk/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-jdk-${PV}.tar.bz2
-	${BASE_URI}/langtools/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-langtools-${PV}.tar.bz2
-	${BASE_URI}/nashorn/archive/jdk-${MY_PV}.tar.bz2 -> ${PN}-nashorn-${PV}.tar.bz2
-"
+SRC_URI="https://github.com/openjdk/jdk${SLOT}u/archive/refs/tags/jdk-${FULL_VERSION}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="GPL-2"
+LICENSE="GPL-2-with-classpath-exception"
 KEYWORDS="amd64 arm64"
-IUSE="alsa debug cups doc examples gentoo-vm headless-awt pch selinux source"
+IUSE="alsa debug cups doc examples +gentoo-vm headless-awt pch selinux source"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -128,12 +126,7 @@ pkg_setup() {
 
 src_unpack() {
 	default
-	mv -v "jdk${SLOT}u"* "${P}" || die
-
-	local repo
-	for repo in corba hotspot jdk jaxp jaxws langtools nashorn; do
-		mv -v "${repo}-"* "${P}/${repo}" || die
-	done
+	mv -v "jdk${SLOT}"* "${P}" || die
 }
 
 src_prepare() {
@@ -169,6 +162,7 @@ src_prepare() {
 	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/fix-no-such-field-ipv6-error.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/jdk-currency-timebomb.patch"
 }
 
 src_configure() {
@@ -187,16 +181,18 @@ src_configure() {
 	use x86 && append-flags -mincoming-stack-boundary=2
 
 	local myconf=(
-			--disable-ccache
 			--disable-warnings-as-errors
+			--disable-ccache
+			--disable-freetype-bundling
+			--disable-precompiled-headers
 			--enable-unlimited-crypto
 			--with-boot-jdk="${JDK_HOME}"
 			--with-extra-cflags="${CFLAGS}"
 			--with-extra-cxxflags="${CXXFLAGS}"
 			--with-extra-ldflags="${LDFLAGS}"
+			--with-freetype-lib="$( $(tc-getPKG_CONFIG) --variable=libdir freetype2 )"
+			--with-freetype-include="$( $(tc-getPKG_CONFIG) --variable=includedir freetype2)/freetype2"
 			--with-giflib=system
-			--disable-hotspot-gtest
-			--disable-freetype-bundling
 			--with-jtreg=no
 			--with-jobs=1
 			--with-num-cores=1
@@ -206,6 +202,7 @@ src_configure() {
 			--with-zlib=system
 			--with-native-debug-symbols=$(usex debug internal none)
 			$(usex headless-awt --disable-headful '')
+			$(tc-is-clang && echo "--with-toolchain-type=clang")
 		)
 
 	# PaX breaks pch, bug #601016
