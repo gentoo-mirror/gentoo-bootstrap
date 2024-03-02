@@ -9,12 +9,12 @@ DESCRIPTION="Systems programming language from Mozilla"
 HOMEPAGE="https://www.rust-lang.org/"
 
 MRUSTC_VERSION="0.10.1"
-#EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
-#EGIT_COMMIT="1b1416bb2b44e2c331c7201833305cac29d571e8"
+EGIT_REPO_URI="https://github.com/thepowersgang/mrustc.git"
+EGIT_COMMIT="666bda127d316e18cce5efc256742899ee2b23a4"
 
 SRC_URI="
-	https://static.rust-lang.org/dist/rustc-${PV}-src.tar.xz
-	https://github.com/thepowersgang/mrustc/archive/v${MRUSTC_VERSION}.tar.gz"
+	https://static.rust-lang.org/dist/rustc-${PV}-src.tar.xz"
+	#https://github.com/thepowersgang/mrustc/archive/v${MRUSTC_VERSION}.tar.gz"
 
 LICENSE="|| ( MIT Apache-2.0 ) BSD-1 BSD-2 BSD-4 UoI-NCSA"
 SLOT="stable/1.54"
@@ -36,8 +36,8 @@ MRUSTC_TARGET_VER=1.54
 OUTDIR_SUF=
 
 src_unpack() {
-	#git-r3_fetch "${EGIT_REPO_URI}" "${EGIT_COMMIT}"
-	#git-r3_checkout "${EGIT_REPO_URI}" "${S}"
+	git-r3_fetch "${EGIT_REPO_URI}" "${EGIT_COMMIT}"
+	git-r3_checkout "${EGIT_REPO_URI}" "${S}"
 	unpack ${A}
 	mv rustc-${PV}-src ${S}
 }
@@ -45,12 +45,11 @@ src_unpack() {
 src_prepare() {
 	cd ${S}
 
-	pushd ${S}/rustc-${PV}-src
+	pushd rustc-${PV}-src
 	rm "vendor/vte/vim10m_"{match,table}
 	eapply -p0 ${S}/rustc-${PV}-src.patch
 	sed -i 's/ $(RUSTC_SRC_DL)//' "${S}/minicargo.mk"
 	cd src/llvm-project
-	eapply ${FILESDIR}/${PV}-llvm-add-missing-cstdint.patch
 	popd
 
 	eapply_user
