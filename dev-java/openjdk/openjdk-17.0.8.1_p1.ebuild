@@ -1,39 +1,47 @@
-# Copyright 1999-2022 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit autotools check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing pax-utils toolchain-funcs
+inherit check-reqs eapi8-dosym flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
-MY_PV="${PV/_p/+}"
-FULL_VERSION="${PV%_p*}"
-SLOT=$(get_major_version)
-# First release of major jdk releases do not contain u at end jdk<slot>.
-# so 15.0.0 would fetch jdk-15-ga.tar.gz  from jdk15, 15.0.1 jdk-15.0.1-ga.tar.gz from jdk15u
-if [ $(get_after_major_version $FULL_VERSION) = "0.0" ]; then
-	SRC_URI="https://github.com/openjdk/jdk${SLOT}/archive/jdk-${SLOT}-ga.tar.gz -> ${P}.tar.gz"
-	S="${WORKDIR}/jdk${SLOT}-jdk-${SLOT}-ga"
-else
-	SRC_URI="https://github.com/openjdk/jdk${SLOT}u/archive/jdk-${FULL_VERSION}-ga.tar.gz -> ${P}.tar.gz"
-	S="${WORKDIR}/jdk${SLOT}u-jdk-${FULL_VERSION}-ga"
-fi
+# don't change versioning scheme
+# to find correct _p number, look at
+# https://github.com/openjdk/jdk${SLOT}u/tags
+# you will see, for example, jdk-17.0.4.1-ga and jdk-17.0.4.1+1, both point
+# to exact same commit sha. we should always use the full version.
+# -ga tag is just for humans to easily identify General Availability release tag.
+MY_PV="${PV%_p*}-ga"
+SLOT="${MY_PV%%[.+]*}"
 
 DESCRIPTION="Open source implementation of the Java programming language"
-HOMEPAGE="https://openjdk.java.net"
+HOMEPAGE="https://openjdk.org"
+SRC_URI="
+	https://github.com/${PN}/jdk${SLOT}u/archive/refs/tags/jdk-${MY_PV}.tar.gz
+		-> ${P}.tar.gz
+	riscv? ( https://dev.gentoo.org/~gyakovlev/distfiles/dev-java/openjdk/java17-riscv64.patch )
+"
+# riscv patch origin:
+# https://raw.githubusercontent.com/felixonmars/archriscv-packages/master/java17-openjdk/java17-riscv64.patch
 
-LICENSE="GPL-2"
-KEYWORDS="amd64 ~arm arm64 ~ppc64"
+LICENSE="GPL-2-with-classpath-exception"
+KEYWORDS="amd64 ~arm arm64 ppc64 ~riscv x86"
 
-IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx pch selinux source systemtap"
+IUSE="alsa big-endian cups debug doc examples headless-awt javafx lto selinux source systemtap"
+
+REQUIRED_USE="
+	javafx? ( alsa !headless-awt )
+"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
 	media-libs/giflib:0/7
+	media-libs/harfbuzz:=
 	media-libs/libpng:0=
 	media-libs/lcms:2=
 	sys-libs/zlib
-	virtual/jpeg:0=
-	systemtap? ( dev-util/systemtap )
+	media-libs/libjpeg-turbo:0=
+	systemtap? ( dev-debug/systemtap )
 "
 
 # Many libs are required to build, but not to run, make is possible to remove
@@ -70,14 +78,12 @@ DEPEND="
 	x11-libs/libXtst
 	javafx? ( dev-java/openjfx:${SLOT}= )
 	|| (
-		dev-java/openjdk-bin:${SLOT}
-		dev-java/openjdk:${SLOT}
-		dev-java/openjdk-bin:$((SLOT-1))
 		dev-java/openjdk:$((SLOT-1))
+		dev-java/openjdk:${SLOT}
 	)
 "
 
-REQUIRED_USE="javafx? ( alsa !headless-awt )"
+S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV//+/-}"
 
 # The space required to build varies wildly depending on USE flags,
 # ranging from 2GB to 16GB. This function is certainly not exact but
@@ -94,7 +100,7 @@ openjdk_check_requirements() {
 pkg_pretend() {
 	openjdk_check_requirements
 	if [[ ${MERGE_TYPE} != binary ]]; then
-		has ccache ${FEATURES} && die "FEATURES=ccache doesn't work with ${PN}"
+		has ccache ${FEATURES} && die "FEATURES=ccache doesn't work with ${PN}, bug #677876"
 	fi
 }
 
@@ -102,7 +108,9 @@ pkg_setup() {
 	openjdk_check_requirements
 	java-vm-2_pkg_setup
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT} openjdk-$((SLOT-1)) openjdk-bin-$((SLOT-1))"
+	[[ ${MERGE_TYPE} == "binary" ]] && return
+
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-$((SLOT-1))"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
@@ -116,36 +124,16 @@ pkg_setup() {
 
 	local vm
 	for vm in ${JAVA_PKG_WANT_BUILD_VM}; do
-		if [[ -d ${EPREFIX}/usr/lib/jvm/${vm} ]]; then
+		if [[ -d ${BROOT}/usr/lib/jvm/${vm} ]]; then
 			java-pkg-2_pkg_setup
 			return
 		fi
 	done
-
-	if has_version --host-root dev-java/openjdk:${SLOT}; then
-		export JDK_HOME=${EPREFIX}/usr/$(get_libdir)/openjdk-${SLOT}
-	else
-		if [[ ${MERGE_TYPE} != "binary" ]]; then
-			JDK_HOME=$(best_version --host-root dev-java/openjdk-bin:${SLOT})
-			[[ -n ${JDK_HOME} ]] || die "Build VM not found!"
-			JDK_HOME=${JDK_HOME#*/}
-			JDK_HOME=${EPREFIX}/opt/${JDK_HOME%-r*}
-			export JDK_HOME
-		fi
-	fi
 }
 
 src_prepare() {
+	use riscv && eapply "${DISTDIR}"/java17-riscv64.patch
 	default
-
-		if use elibc_musl ; then
-				eapply "${FILESDIR}/patches/${SLOT}/1001_ppc64le.patch"
-
-				# this needs libthread_db which is only provided by glibc
-				# haven't found any way to disable this module so just remove it.
-				rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
-		fi
-
 	chmod +x configure || die
 }
 
@@ -156,21 +144,34 @@ src_configure() {
 	# Work around -fno-common ( GCC10 default ), bug #713180
 	append-flags -fcommon
 
+	# Strip some flags users may set, but should not. #818502
+	filter-flags -fexceptions
+
+	# Strip lto related flags, we rely on USE=lto and --with-jvm-features=link-time-opt
+	# https://bugs.gentoo.org/833097
+	# https://bugs.gentoo.org/833098
+	filter-lto
+	filter-flags -fdevirtualize-at-ltrans
+
 	# Enabling full docs appears to break doc building. If not
 	# explicitly disabled, the flag will get auto-enabled if pandoc and
 	# graphviz are detected. pandoc has loads of dependencies anyway.
 
 	local myconf=(
 		--disable-ccache
+		--disable-precompiled-headers
+		--disable-warnings-as-errors
 		--enable-full-docs=no
 		--with-boot-jdk="${JDK_HOME}"
 		--with-extra-cflags="${CFLAGS}"
 		--with-extra-cxxflags="${CXXFLAGS}"
 		--with-extra-ldflags="${LDFLAGS}"
-		--with-giflib=system
-		--with-lcms=system
-		--with-libjpeg=system
-		--with-libpng=system
+		--with-freetype="${XPAK_BOOTSTRAP:-system}"
+		--with-giflib="${XPAK_BOOTSTRAP:-system}"
+		--with-harfbuzz="${XPAK_BOOTSTRAP:-system}"
+		--with-lcms="${XPAK_BOOTSTRAP:-system}"
+		--with-libjpeg="${XPAK_BOOTSTRAP:-system}"
+		--with-libpng="${XPAK_BOOTSTRAP:-system}"
 		--with-native-debug-symbols=$(usex debug internal none)
 		--with-vendor-name="Gentoo"
 		--with-vendor-url="https://gentoo.org"
@@ -180,27 +181,23 @@ src_configure() {
 		--with-version-pre=""
 		--with-version-string="${PV%_p*}"
 		--with-version-build="${PV#*_p}"
-		--with-zlib=system
-		--disable-warnings-as-errors
-		--enable-dtrace=$(usex systemtap yes no)
+		--with-zlib="${XPAK_BOOTSTRAP:-system}"
+		--enable-jvm-feature-dtrace=$(usex systemtap yes no)
 		--enable-headless-only=$(usex headless-awt yes no)
 		$(tc-is-clang && echo "--with-toolchain-type=clang")
 	)
 
+	use riscv && myconf+=( --with-boot-jdk-jvmargs="-Djdk.lang.Process.launchMechanism=vfork" )
+
+	use lto && myconf+=( --with-jvm-features=link-time-opt )
+
 	if use javafx; then
-		local zip="${EPREFIX%/}/usr/$(get_libdir)/openjfx-${SLOT}/javafx-exports.zip"
+		local zip="${EPREFIX}/usr/$(get_libdir)/openjfx-${SLOT}/javafx-exports.zip"
 		if [[ -r ${zip} ]]; then
 			myconf+=( --with-import-modules="${zip}" )
 		else
 			die "${zip} not found or not readable"
 		fi
-	fi
-
-	# PaX breaks pch, bug #601016
-	if use pch && ! host-is-pax; then
-		myconf+=( --enable-precompiled-headers )
-	else
-		myconf+=( --disable-precompiled-headers )
 	fi
 
 	(
@@ -212,19 +209,23 @@ src_configure() {
 }
 
 src_compile() {
+	# Too brittle - gets confused by e.g. -Oline
+	export MAKEOPTS="-j$(makeopts_jobs) -l$(makeopts_loadavg)"
+	unset GNUMAKEFLAGS MAKEFLAGS
+
 	local myemakeargs=(
 		JOBS=$(makeopts_jobs)
 		LOG=debug
-		ALL_NAMED_TESTS= # Build error
+		NICE= # Use PORTAGE_NICENESS, don't adjust further down
 		$(usex doc docs '')
-		product-images
+		$(usex jbootstrap bootcycle-images product-images)
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
 
 src_install() {
 	local dest="/usr/$(get_libdir)/${PN}-${SLOT}"
-	local ddest="${ED}${dest#/}"
+	local ddest="${ED}/${dest#/}"
 
 	cd "${S}"/build/*-release/images/jdk || die
 
@@ -252,7 +253,7 @@ src_install() {
 	dodir "${dest}"
 	cp -pPR * "${ddest}" || die
 
-	dosym ../../../../../etc/ssl/certs/java/cacerts "${dest}"/lib/security/cacerts
+	dosym8 -r /etc/ssl/certs/java/cacerts "${dest}"/lib/security/cacerts
 
 	# must be done before running itself
 	java-vm_set-pax-markings "${ddest}"
@@ -260,7 +261,7 @@ src_install() {
 	einfo "Creating the Class Data Sharing archives and disabling usage tracking"
 	"${ddest}/bin/java" -server -Xshare:dump -Djdk.disableLastUsageTracking || die
 
-	use gentoo-vm && java-vm_install-env "${FILESDIR}"/${PN}-${SLOT}.env.sh
+	java-vm_install-env "${FILESDIR}"/${PN}.env.sh
 	java-vm_revdep-mask
 	java-vm_sandbox-predict /dev/random /proc/self/coredump_filter
 
@@ -273,16 +274,4 @@ src_install() {
 
 pkg_postinst() {
 	java-vm-2_pkg_postinst
-
-	if use gentoo-vm ; then
-		ewarn "WARNING! You have enabled the gentoo-vm USE flag, making this JDK"
-		ewarn "recognised by the system. This will almost certainly break"
-		ewarn "many java ebuilds as they are not ready for openjdk-11"
-	else
-		ewarn "The experimental gentoo-vm USE flag has not been enabled so this JDK"
-		ewarn "will not be recognised by the system. For example, simply calling"
-		ewarn "\"java\" will launch a different JVM. This is necessary until Gentoo"
-		ewarn "fully supports Java ${SLOT}. This JDK must therefore be invoked using its"
-		ewarn "absolute location under ${EPREFIX}/usr/$(get_libdir)/${PN}-${SLOT}."
-	fi
 }
