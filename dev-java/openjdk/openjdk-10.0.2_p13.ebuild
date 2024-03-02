@@ -1,21 +1,21 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
-inherit autotools check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing pax-utils toolchain-funcs
+inherit eapi8-dosym check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
 MY_PV=${PV/_p/+}
-SLOT=${MY_PV%%[.+]*}
+SLOT=${PV%%[.+]*}
 
 DESCRIPTION="Open source implementation of the Java programming language"
 HOMEPAGE="https://openjdk.java.net"
-SRC_URI="https://hg.${PN}.java.net/jdk-updates/jdk${SLOT}u/archive/jdk-${MY_PV}.tar.bz2"
+SRC_URI="https://github.com/openjdk/jdk${SLOT}u/archive/refs/tags/jdk-${MY_PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="GPL-2"
+LICENSE="GPL-2-with-classpath-exception"
 KEYWORDS="amd64 arm64"
 
-IUSE="alsa cups debug doc examples gentoo-vm headless-awt javafx pch selinux source systemtap"
+IUSE="alsa cups debug doc examples +gentoo-vm headless-awt javafx pch selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -68,7 +68,7 @@ DEPEND="
 
 REQUIRED_USE="javafx? ( alsa !headless-awt )"
 
-S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV}"
+S="${WORKDIR}/jdk${SLOT}u-jdk-${PV/_p/-}"
 
 # The space required to build varies wildly depending on USE flags,
 # ranging from 2GB to 16GB. This function is certainly not exact but
@@ -151,6 +151,7 @@ src_prepare() {
 	eapply "${FILESDIR}/patches/${SLOT}/make-4.3.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/pointer-comparison.patch"
 	eapply "${FILESDIR}/patches/${SLOT}/aarch64_gcc_fix.patch"
+	eapply "${FILESDIR}/patches/${SLOT}/jdk-currency-timebomb.patch"
 
 	chmod +x configure || die
 }
@@ -164,29 +165,33 @@ src_configure() {
 	# graphviz are detected. pandoc has loads of dependencies anyway.
 
 	local myconf=(
+		--disable-warnings-as-errors
 		--disable-ccache
+		--disable-precompiled-headers
 		--enable-full-docs=no
 		--with-boot-jdk="${JDK_HOME}"
 		--with-extra-cflags="${CFLAGS} -fcommon -fno-delete-null-pointer-checks -fno-lifetime-dse"
 		--with-extra-cxxflags="${CXXFLAGS}"
 		--with-extra-ldflags="${LDFLAGS}"
-		--disable-warnings-as-errors
-		--with-giflib=system
-		--with-lcms=system
-		--with-libjpeg=system
-		--with-libpng=system
+		--with-freetype-lib="$( $(tc-getPKG_CONFIG) --variable=libdir freetype2 )"
+		--with-freetype-include="$( $(tc-getPKG_CONFIG) --variable=includedir freetype2)/freetype2"
+		--with-giflib="${XPAK_BOOTSTRAP:-system}"
+		--with-lcms="${XPAK_BOOTSTRAP:-system}"
+		--with-libjpeg="${XPAK_BOOTSTRAP:-system}"
+		--with-libpng="${XPAK_BOOTSTRAP:-system}"
 		--with-native-debug-symbols=$(usex debug internal none)
 		--with-vendor-name="Gentoo"
 		--with-vendor-url="https://gentoo.org"
 		--with-vendor-bug-url="https://bugs.gentoo.org"
 		--with-vendor-vm-bug-url="https://bugs.openjdk.java.net"
-		--with-vendor-version-string="${PV}"
-		--with-version-pre=gentoo
-		--with-version-string=${MY_PV%+*}
-		--with-version-build=${MY_PV#*+}
-		--with-zlib=system
+		--with-vendor-version-string="${PVR}"
+		--with-version-pre=""
+		--with-version-string="${PV%_p*}"
+		--with-version-build="${PV#*_p}"
+		--with-zlib="${XPAK_BOOTSTRAP:-system}"
 		--enable-dtrace=$(usex systemtap yes no)
 		--enable-headless-only=$(usex headless-awt yes no)
+		$(tc-is-clang && echo "--with-toolchain-type=clang")
 	)
 
 	if use javafx; then
@@ -225,7 +230,7 @@ src_compile() {
 
 src_install() {
 	local dest="/usr/$(get_libdir)/${PN}-${SLOT}"
-	local ddest="${ED}${dest#/}"
+	local ddest="${ED}/${dest#/}"
 
 	cd "${S}"/build/*-release/images/jdk || die
 
