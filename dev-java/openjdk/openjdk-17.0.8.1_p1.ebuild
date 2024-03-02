@@ -218,7 +218,7 @@ src_compile() {
 		LOG=debug
 		NICE= # Use PORTAGE_NICENESS, don't adjust further down
 		$(usex doc docs '')
-		$(usex jbootstrap bootcycle-images product-images)
+		$(product-images)
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
