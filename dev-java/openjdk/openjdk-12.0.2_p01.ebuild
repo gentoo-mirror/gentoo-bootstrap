@@ -164,6 +164,7 @@ src_configure() {
 	local myconf=(
 		--disable-ccache
 		--disable-precompiled-headers
+		--disable-warnings-as-errors
 		--enable-full-docs=no
 		--with-boot-jdk="${JDK_HOME}"
 		--with-extra-cflags="${CFLAGS}"
@@ -221,7 +222,6 @@ src_compile() {
 	local myemakeargs=(
 		JOBS=$(makeopts_jobs)
 		LOG=debug
-		CFLAGS_WARNINGS_ARE_ERRORS= # No -Werror
 		NICE= # Use PORTAGE_NICENESS, don't adjust further down
 		ALL_NAMED_TESTS= # Build error
 		$(usex doc docs '')

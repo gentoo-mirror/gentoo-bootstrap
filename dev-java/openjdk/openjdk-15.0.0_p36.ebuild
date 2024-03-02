@@ -1,7 +1,7 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=6
+EAPI=7
 
 inherit check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
@@ -155,6 +155,7 @@ src_configure() {
 	local myconf=(
 		--disable-ccache
 		--disable-precompiled-headers
+		--disable-warnings-as-errors
 		--enable-full-docs=no
 		--with-boot-jdk="${JDK_HOME}"
 		--with-extra-cflags="${CFLAGS}"
@@ -183,7 +184,12 @@ src_configure() {
 	use lto && myconf+=( --with-jvm-features=link-time-opt )
 
 	if use javafx; then
-		local zip="${EROOT%/}/usr/$(get_libdir)/openjfx-${SLOT}/javafx-exports.zip"
+		# this is not useful for users, just for upstream developers
+		# build system compares mesa version in md file
+		# https://bugs.gentoo.org/822612
+		export LEGAL_EXCLUDES=mesa3d.md
+
+		local zip="${EPREFIX%/}/usr/$(get_libdir)/openjfx-${SLOT}/javafx-exports.zip"
 		if [[ -r ${zip} ]]; then
 			myconf+=( --with-import-modules="${zip}" )
 		else
@@ -203,7 +209,6 @@ src_compile() {
 	local myemakeargs=(
 		JOBS=$(makeopts_jobs)
 		LOG=debug
-		CFLAGS_WARNINGS_ARE_ERRORS= # No -Werror
 		NICE= # Use PORTAGE_NICENESS, don't adjust further down
 		ALL_NAMED_TESTS= # Build error
 		$(usex doc docs '')
