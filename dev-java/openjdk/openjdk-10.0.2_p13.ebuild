@@ -258,7 +258,7 @@ src_install() {
 	dodir "${dest}"
 	cp -pPR * "${ddest}" || die
 
-	dosym "${EPREFIX}"/etc/ssl/certs/java/cacerts "${dest}"/lib/security/cacerts
+	dosym8 "${EPREFIX}"/etc/ssl/certs/java/cacerts "${dest}"/lib/security/cacerts
 
 	# must be done before running itself
 	java-vm_set-pax-markings "${ddest}"
@@ -273,7 +273,7 @@ src_install() {
 	if use doc ; then
 		insinto /usr/share/doc/"${PF}"/html
 		doins -r "${S}"/build/*-release/images/docs/*
-		dosym /usr/share/doc/"${PF}" /usr/share/doc/"${PN}-${SLOT}"
+		dosym8 /usr/share/doc/"${PF}" /usr/share/doc/"${PN}-${SLOT}"
 	fi
 }
 
