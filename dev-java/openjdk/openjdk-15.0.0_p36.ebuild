@@ -7,10 +7,10 @@ inherit check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-f
 
 MY_PV="${PV/_p/+}"
 FULL_VERSION="${PV%_p*}"
-SLOT=$(get_major_version)
+SLOT=$(ver_cut 1)
 # First release of major jdk releases do not contain u at end jdk<slot>.
 # so 15.0.0 would fetch jdk-15-ga.tar.gz  from jdk15, 15.0.1 jdk-15.0.1-ga.tar.gz from jdk15u
-if [ $(get_after_major_version $FULL_VERSION) = "0.0" ]; then
+if [ $(ver_cut 2-) = "0.0" ]; then
 	SRC_URI="https://github.com/openjdk/jdk${SLOT}/archive/jdk-${SLOT}-ga.tar.gz -> ${P}.tar.gz"
 	S="${WORKDIR}/jdk${SLOT}-jdk-${SLOT}-ga"
 else
