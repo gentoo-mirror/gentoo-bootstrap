@@ -221,7 +221,7 @@ src_compile() {
 
 src_install() {
 	local dest="/usr/$(get_libdir)/${PN}-${SLOT}"
-	local ddest="${ED}${dest#/}"
+	local ddest="${ED}/${dest#/}"
 
 	cd "${S}"/build/*-release/images/jdk || die
 
