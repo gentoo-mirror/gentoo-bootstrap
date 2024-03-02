@@ -16,11 +16,6 @@ inherit eapi8-dosym check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing
 MY_PV="${PV%_p*}-ga"
 SLOT="${MY_PV%%[.+]*}"
 
-# variable name format: <UPPERCASE_KEYWORD>_XPAK
-PPC64_XPAK="11.0.13_p8" # big-endian bootstrap tarball
-RISCV_XPAK="11.0.14_p9" # lp64d bootstrap tarball
-X86_XPAK="11.0.13_p8"
-
 DESCRIPTION="Open source implementation of the Java programming language"
 HOMEPAGE="https://openjdk.org"
 SRC_URI="
