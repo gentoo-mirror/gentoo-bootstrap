@@ -1,7 +1,7 @@
 ## Bootstrapping OpenJDK 8
 
 ```sh
-sudo emerge -a1 =dev-java/openjdk-8.272_p10::gentoo-bootstrap
+sudo emerge -a1 dev-java/openjdk:8::gentoo-bootstrap
 sudo emerge -av dev-java/openjdk:8
 sudo emerge -a --depclean # Remove old software that was used for bootstrapping
 ```
@@ -9,14 +9,14 @@ sudo emerge -a --depclean # Remove old software that was used for bootstrapping
 Notes:
 1. you need to do it in two steps as currently ant-core:bootstrap is not co-installable
 with ant-core:0 from the Gentoo tree.
-2. Last tested on GCC 12. New versions of GCC are known to occasionally break builds
+2. Last tested on GCC 13. New versions of GCC are known to occasionally break builds
 and might need additional patches.
 
 
 ## Bootstrapping OpenJDK 17
 
 ```sh
-sudo emerge -a1v =dev-java/openjdk-17.0.0_p35
+sudo emerge -a1v dev-java/openjdk:17::gentoo-bootstrap
 ```
 At this point you can remove this overlay and install OpenJDK from main tree:
 ```sh
@@ -43,7 +43,7 @@ and subsequent OpenJDK versions.
 We use `mrustc` to build rustc-1.54 and then we build each subsequent rustc version until
 we reach up to date rustc.
 
-mrustc is ocasionally broken on some versions of GCC. Last tested with GCC 12.2.1.
+mrustc is ocasionally broken on some versions of GCC. Last tested with GCC 13.
 
 ## Bootstrapping go
 
