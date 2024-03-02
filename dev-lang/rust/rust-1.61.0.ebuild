@@ -91,7 +91,7 @@ BDEPEND="${PYTHON_DEPS}
 	system-bootstrap? ( ${BOOTSTRAP_DEPEND} )
 	!system-llvm? (
 		>=dev-build/cmake-3.13.4
-		dev-util/ninja
+		app-alternatives/ninja
 	)
 	test? ( sys-devel/gdb )
 	verify-sig? ( sec-keys/openpgp-keys-rust )
