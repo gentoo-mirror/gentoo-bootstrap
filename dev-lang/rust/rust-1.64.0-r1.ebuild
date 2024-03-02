@@ -162,6 +162,7 @@ PATCHES=(
 	"${FILESDIR}"/1.55.0-ignore-broken-and-non-applicable-tests.patch
 	"${FILESDIR}"/1.62.1-musl-dynamic-linking.patch
 	"${FILESDIR}"/${PV}-vendor-rustix-sparc-has-no-SIGSTKFLT.patch
+	"${FILESDIR}"/1.55.0-llvm-add-missing-cstdint.patch
 )
 
 S="${WORKDIR}/${MY_P}-src"

@@ -156,6 +156,7 @@ PATCHES=(
 	"${FILESDIR}"/1.61.0-llvm_selectInterleaveCount.patch
 	"${FILESDIR}"/1.61.0-llvm_addrspacecast.patch
 	"${FILESDIR}"/1.61.0-miri-cow.patch
+	"${FILESDIR}"/1.55.0-llvm-add-missing-cstdint.patch
 )
 
 S="${WORKDIR}/${MY_P}-src"

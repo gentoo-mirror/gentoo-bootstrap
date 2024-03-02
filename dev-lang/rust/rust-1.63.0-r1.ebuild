@@ -163,6 +163,7 @@ PATCHES=(
 	"${FILESDIR}"/1.61.0-gentoo-musl-target-specs.patch
 	"${FILESDIR}"/1.63.0-CVE-2022-36113.patch
 	"${FILESDIR}"/1.63.0-CVE-2022-36114.patch
+	"${FILESDIR}"/1.55.0-llvm-add-missing-cstdint.patch
 )
 
 S="${WORKDIR}/${MY_P}-src"
