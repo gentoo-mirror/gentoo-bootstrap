@@ -3,7 +3,7 @@
 
 EAPI=6
 
-inherit autotools check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
+inherit check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
 MY_PV="${PV/_p/+}"
 FULL_VERSION="${PV%_p*}"
@@ -24,7 +24,7 @@ HOMEPAGE="https://openjdk.java.net"
 LICENSE="GPL-2"
 KEYWORDS="amd64 ~arm arm64 ~ppc64"
 
-IUSE="alsa cups debug doc examples headless-awt javafx pch selinux source systemtap"
+IUSE="alsa cups debug doc examples headless-awt javafx lto selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
