@@ -27,10 +27,11 @@ SRC_URI="
 LICENSE="GPL-2-with-classpath-exception"
 KEYWORDS="amd64 ~arm arm64 ppc64 ~riscv x86"
 
-IUSE="alsa big-endian cups debug doc examples headless-awt javafx lto selinux source systemtap"
+IUSE="alsa big-endian cups debug doc examples headless-awt javafx +jbootstrap lto selinux source systemtap"
 
 REQUIRED_USE="
 	javafx? ( alsa !headless-awt )
+	jbootstrap
 "
 
 COMMON_DEPEND="
@@ -91,6 +92,7 @@ S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV//+/-}"
 openjdk_check_requirements() {
 	local M
 	M=2048
+	M=$(( $(usex jbootstrap 2 1) * $M ))
 	M=$(( $(usex debug 3 1) * $M ))
 	M=$(( $(usex doc 320 0) + $(usex source 128 0) + 192 + $M ))
 
@@ -218,7 +220,7 @@ src_compile() {
 		LOG=debug
 		NICE= # Use PORTAGE_NICENESS, don't adjust further down
 		$(usex doc docs '')
-		$(product-images)
+		$(usex jbootstrap bootcycle-images product-images)
 	)
 	emake "${myemakeargs[@]}" -j1 #nowarn
 }
