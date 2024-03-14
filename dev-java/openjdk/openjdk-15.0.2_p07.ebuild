@@ -5,26 +5,28 @@ EAPI=7
 
 inherit check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
-MY_PV="${PV/_p/+}"
-FULL_VERSION="${PV%_p*}"
-SLOT=$(ver_cut 1)
-# First release of major jdk releases do not contain u at end jdk<slot>.
-# so 15.0.0 would fetch jdk-15-ga.tar.gz  from jdk15, 15.0.1 jdk-15.0.1-ga.tar.gz from jdk15u
-if [ $(ver_cut 2-) = "0.0" ]; then
-	SRC_URI="https://github.com/openjdk/jdk${SLOT}/archive/jdk-${SLOT}-ga.tar.gz -> ${P}.tar.gz"
-	S="${WORKDIR}/jdk${SLOT}-jdk-${SLOT}-ga"
-else
-	SRC_URI="https://github.com/openjdk/jdk${SLOT}u/archive/jdk-${FULL_VERSION}-ga.tar.gz -> ${P}.tar.gz"
-	S="${WORKDIR}/jdk${SLOT}u-jdk-${FULL_VERSION}-ga"
-fi
+# don't change versioning scheme
+# to find correct _p number, look at
+# https://github.com/openjdk/jdk${SLOT}u/tags
+# you will see, for example, jdk-17.0.4.1-ga and jdk-17.0.4.1+1, both point
+# to exact same commit sha. we should always use the full version.
+# -ga tag is just for humans to easily identify General Availability release tag.
+# we need -ga tag to fetch tarball and unpack it, but exact number everywhere else to
+# set build version properly
+MY_PV="${PV%_p*}-ga"
+SLOT="${MY_PV%%[.+]*}"
+
 
 DESCRIPTION="Open source implementation of the Java programming language"
 HOMEPAGE="https://openjdk.java.net"
+SRC_URI="
+	https://github.com/${PN}/jdk${SLOT}u/archive/refs/tags/jdk-${MY_PV}.tar.gz
+		-> ${P}.tar.gz"
 
 LICENSE="GPL-2-with-classpath-exception"
 KEYWORDS="amd64 ~arm arm64 ~ppc64"
 
-IUSE="alsa cups debug doc examples headless-awt javafx lto selinux source systemtap"
+IUSE="alsa cups debug doc examples headless-awt javafx selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -70,14 +72,16 @@ DEPEND="
 	x11-libs/libXtst
 	javafx? ( dev-java/openjfx:${SLOT}= )
 	|| (
+		dev-java/openjdk-bin:${SLOT}
 		dev-java/openjdk:${SLOT}
+		dev-java/openjdk-bin:$((SLOT-1))
 		dev-java/openjdk:$((SLOT-1))
 	)
 "
 
 REQUIRED_USE="javafx? ( alsa !headless-awt )"
 
-S="${WORKDIR}/jdk${SLOT}-jdk-${SLOT}-ga"
+S="${WORKDIR}/jdk${SLOT}u-jdk-${MY_PV}"
 
 # The space required to build varies wildly depending on USE flags,
 # ranging from 2GB to 16GB. This function is certainly not exact but
@@ -102,7 +106,7 @@ pkg_setup() {
 	openjdk_check_requirements
 	java-vm-2_pkg_setup
 
-	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-$((SLOT-1))"
+	JAVA_PKG_WANT_BUILD_VM="openjdk-${SLOT} openjdk-bin-${SLOT} openjdk-$((SLOT-1)) openjdk-bin-$((SLOT-1))"
 	JAVA_PKG_WANT_SOURCE="${SLOT}"
 	JAVA_PKG_WANT_TARGET="${SLOT}"
 
@@ -117,13 +121,20 @@ pkg_setup() {
 src_prepare() {
 	default
 
-		if use elibc_musl ; then
-				eapply "${FILESDIR}/patches/${SLOT}/1001_ppc64le.patch"
+	# conditionally apply patches for musl compatibility
+	if use elibc_musl; then
+		eapply "${FILESDIR}/musl/${SLOT}/build.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/ppc64le.patch"
+		eapply "${FILESDIR}/musl/${SLOT}/aarch64.patch"
+	fi
 
-				# this needs libthread_db which is only provided by glibc
-				# haven't found any way to disable this module so just remove it.
-				rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
-		fi
+	# conditionally remove not compilable module (hotspot jdk.hotspot.agent)
+	# this needs libthread_db which is only provided by glibc
+	#
+	# haven't found any way to disable this module so just remove it.
+	if use elibc_musl; then
+		rm -rf "${S}"/src/jdk.hotspot.agent || die "failed to remove HotSpot agent"
+	fi
 
 	chmod +x configure || die
 }
@@ -134,6 +145,12 @@ src_configure() {
 
 	# Work around -fno-common ( GCC10 default ), bug #713180
 	append-flags -fcommon
+
+	# Strip lto related flags, we rely on USE=lto and --with-jvm-features=link-time-opt
+	# https://bugs.gentoo.org/833097
+	# https://bugs.gentoo.org/833098
+	filter-lto
+	filter-flags -fdevirtualize-at-ltrans
 
 	# Enabling full docs appears to break doc building. If not
 	# explicitly disabled, the flag will get auto-enabled if pandoc and
@@ -167,8 +184,6 @@ src_configure() {
 		--enable-headless-only=$(usex headless-awt yes no)
 		$(tc-is-clang && echo "--with-toolchain-type=clang")
 	)
-
-	use lto && myconf+=( --with-jvm-features=link-time-opt )
 
 	if use javafx; then
 		# this is not useful for users, just for upstream developers
