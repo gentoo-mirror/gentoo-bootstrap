@@ -25,7 +25,7 @@ SRC_URI="
 LICENSE="GPL-2-with-classpath-exception"
 KEYWORDS="amd64 ~arm arm64 ~ppc64"
 
-IUSE="alsa cups debug doc examples headless-awt javafx lto selinux source systemtap"
+IUSE="alsa cups debug doc examples headless-awt javafx selinux source systemtap"
 
 COMMON_DEPEND="
 	media-libs/freetype:2=
@@ -189,8 +189,6 @@ src_configure() {
 		--enable-headless-only=$(usex headless-awt yes no)
 		$(tc-is-clang && echo "--with-toolchain-type=clang")
 	)
-
-	use lto && myconf+=( --with-jvm-features=link-time-opt )
 
 	if use javafx; then
 		# this is not useful for users, just for upstream developers
