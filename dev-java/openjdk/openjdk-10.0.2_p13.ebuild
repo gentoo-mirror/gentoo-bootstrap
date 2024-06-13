@@ -1,9 +1,9 @@
 # Copyright 1999-2022 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
-EAPI=7
+EAPI=8
 
-inherit eapi8-dosym check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
+inherit check-reqs flag-o-matic java-pkg-2 java-vm-2 multiprocessing toolchain-funcs
 
 MY_PV=${PV/_p/+}
 SLOT=${PV%%[.+]*}
@@ -258,7 +258,7 @@ src_install() {
 	dodir "${dest}"
 	cp -pPR * "${ddest}" || die
 
-	dosym8 "${EPREFIX}"/etc/ssl/certs/java/cacerts "${dest}"/lib/security/cacerts
+	dosym "${EPREFIX}"/etc/ssl/certs/java/cacerts "${dest}"/lib/security/cacerts
 
 	# must be done before running itself
 	java-vm_set-pax-markings "${ddest}"
@@ -273,7 +273,7 @@ src_install() {
 	if use doc ; then
 		insinto /usr/share/doc/"${PF}"/html
 		doins -r "${S}"/build/*-release/images/docs/*
-		dosym8 /usr/share/doc/"${PF}" /usr/share/doc/"${PN}-${SLOT}"
+		dosym /usr/share/doc/"${PF}" /usr/share/doc/"${PN}-${SLOT}"
 	fi
 }
 
