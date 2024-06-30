@@ -7,7 +7,7 @@ EAPI=8
 JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 # rewriting build.xml files for the testcases has no reason atm
 JAVA_PKG_BSFIX_ALL=no
-inherit java-pkg-2 java-vm-2 java-ant-2
+inherit java-pkg-2 java-vm-2
 
 MY_P="apache-ant-${PV}"
 
