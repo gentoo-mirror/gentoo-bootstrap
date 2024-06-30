@@ -3,15 +3,14 @@
 # $Id$
 # Build written by Andrew John Hughes (gnu_andrew@member.fsf.org)
 
-EAPI="6"
+EAPI="8"
 SLOT="7"
 
-inherit autotools check-reqs eutils gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix versionator virtualx
+inherit autotools check-reqs gnome2-utils java-pkg-2 java-vm-2 multiprocessing pax-utils prefix virtualx
 
-ICEDTEA_VER=$(get_version_component_range 2-4)
-ICEDTEA_BRANCH=$(get_version_component_range 2-3)
+ICEDTEA_VER=$(ver_cut 2-4)
+ICEDTEA_BRANCH=$(ver_cut 2-3)
 ICEDTEA_PKG=icedtea-${ICEDTEA_VER}
-ICEDTEA_PRE=$(get_version_component_range _)
 CORBA_TARBALL="737fd3fbf139.tar.bz2"
 JAXP_TARBALL="aa1c302a99fb.tar.bz2"
 JAXWS_TARBALL="ea96df8beff4.tar.bz2"
