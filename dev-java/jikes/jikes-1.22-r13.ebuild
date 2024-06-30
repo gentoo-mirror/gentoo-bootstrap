@@ -3,7 +3,7 @@
 
 EAPI=8
 
-inherit flag-o-matic
+inherit autotools flag-o-matic
 
 DESCRIPTION="IBM's open source, high performance Java compiler"
 HOMEPAGE="http://jikes.sourceforge.net/"
@@ -18,8 +18,16 @@ src_unpack() {
 	cd "${S}"
 }
 
-src_configure() {
+src_prepare() {
 	eapply -p0 "${FILESDIR}"/deprecated.patch
+	eapply_user
+
+	# Workaround for a broken configure test
+	sed -i '/cygwin_win32_to_posix_path_list/d' configure.ac
+	eautoreconf -fi
+}
+
+src_configure() {
 	econf || die "configure problem"
 
 	default
