@@ -6,7 +6,7 @@ EAPI=8
 # depend on bootstrap slot
 JAVA_ANT_DISABLE_ANT_CORE_DEP=true
 
-inherit java-pkg-2 java-vm-2 java-ant-2
+inherit java-pkg-2 java-vm-2
 
 DMF="R-${PV}-200702121330"
 
