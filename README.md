@@ -11,6 +11,7 @@ Notes:
 with ant-core:0 from the Gentoo tree.
 2. Last tested on GCC 13. New versions of GCC are known to occasionally break builds
 and might need additional patches.
+3. Some of the steps rely on old packages and are not compatible with LTO.
 
 
 ## Bootstrapping OpenJDK 17
