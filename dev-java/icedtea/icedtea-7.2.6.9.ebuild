@@ -347,7 +347,7 @@ src_install() {
 	default
 
 	local dest="${EPREFIX}/usr/$(get_libdir)/icedtea${SLOT}"
-	local ddest="${ED}${dest#/}"
+	local ddest="${ED}${dest}"
 
 	if ! use alsa; then
 		rm -v "${ddest}"/jre/lib/$(get_system_arch)/libjsoundalsa.* || die
