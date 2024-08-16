@@ -9,5 +9,5 @@ LICENSE=GPL-2-with-linking-exception
 RDEPEND=>=dev-java/java-config-2.2.0-r3
 SLOT=0.93
 SRC_URI=mirror://gnu/classpath/classpath-0.93.tar.gz
-_eclasses_=java-utils-2	b2e92a8220dc7b1bd2062ca11774798a	java-pkg-2	b6d755b4f6afabfd933932be28b46368	multilib	c19072c3cd7ac5cb21de013f7e9832e0	toolchain-funcs	0c713337f7872f1a002cecaaea9bef73
+_eclasses_=java-utils-2	b2e92a8220dc7b1bd2062ca11774798a	java-pkg-2	b6d755b4f6afabfd933932be28b46368	multilib	c19072c3cd7ac5cb21de013f7e9832e0	toolchain-funcs	5f8f1dc0c94e007fa08af4e98a19d0e5
 _md5_=75b1236d8a2155099856b7a467c68da6
