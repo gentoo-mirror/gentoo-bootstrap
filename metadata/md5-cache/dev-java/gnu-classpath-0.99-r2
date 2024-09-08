@@ -11,5 +11,5 @@ LICENSE=GPL-2-with-linking-exception
 RDEPEND=app-arch/zip dev-java/eclipse-ecj:3.2 >=dev-java/java-config-2.1.11 dev-java/jamvm:1.5 virtual/jre:1.4 >=dev-java/java-config-2.2.0-r3 dev-java/java-config app-eselect/eselect-java
 SLOT=0.99
 SRC_URI=mirror://gnu/classpath/classpath-0.99.tar.gz
-_eclasses_=java-utils-2	868752320f3c0e66b5fa5dc3602d7486	java-pkg-2	9076f1296e19e8cc3f51e613f5fddbf5	multilib	c19072c3cd7ac5cb21de013f7e9832e0	toolchain-funcs	333970c740aa7b1a92e4fcdc52f612bd	pax-utils	91d47e5d20627c717aa878b9167c62a8	prefix	eab3c99d77fe00506c109c8a736186f7	xdg-utils	baea6080dd821f5562d715887954c9d3	java-vm-2	6c7243f2269a7c9b5c177579e49f89ab
+_eclasses_=java-utils-2	4d4ed3633ff7d706ae7d81e5fe4e94fc	java-pkg-2	72587187cd548a5dcdb6a13453a3614d	multilib	7e1347c006a76bb812f3a9f663b79991	toolchain-funcs	948855ec7ad9f11351edf9066708dfa9	pax-utils	6285e04fab2343992d2df0df4edf6003	prefix	629161311cdf29bf8596fdd036826a2c	xdg-utils	5465aed08f1dfc2a75f14cbea4272961	java-vm-2	6c7243f2269a7c9b5c177579e49f89ab
 _md5_=8a3c362e26b17ffab796d0b5f1dea14b
