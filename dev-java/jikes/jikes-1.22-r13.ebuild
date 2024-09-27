@@ -1,4 +1,4 @@
-# Copyright 1999-2019 Gentoo Foundation
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -7,7 +7,7 @@ inherit autotools flag-o-matic
 
 DESCRIPTION="IBM's open source, high performance Java compiler"
 HOMEPAGE="http://jikes.sourceforge.net/"
-SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2"
+SRC_URI="https://sourceforge.net/projects/${PN}/files/Jikes/${PV}/${P}.tar.bz2"
 LICENSE="IBM"
 SLOT="0"
 KEYWORDS="amd64 arm64"
