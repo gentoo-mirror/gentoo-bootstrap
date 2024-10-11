@@ -7,7 +7,7 @@ inherit flag-o-matic multilib java-pkg-2 java-vm-2 autotools
 
 DESCRIPTION="An extremely small and specification-compliant virtual machine"
 HOMEPAGE="http://jamvm.sourceforge.net/"
-SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
+SRC_URI="https://sourceforge.net/projects/${PN}/files/${PN}/JamVM%20${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="2.0-2"
@@ -92,7 +92,7 @@ src_install() {
 
 	dodoc ACKNOWLEDGEMENTS AUTHORS ChangeLog NEWS README
 
-	set_java_env "${FILESDIR}/${P}-2-env.file"
+	java-vm_install-env "${FILESDIR}/${P}-2.env.sh"
 
 	dodir ${JDK_DIR}/bin
 	mv "${ED}/usr/bin/jamvm" "${ED}/usr/bin/jamvm-2.0-2"

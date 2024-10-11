@@ -1,4 +1,4 @@
-# Copyright 1999-2021 Gentoo Authors
+# Copyright 1999-2024 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -7,7 +7,7 @@ inherit autotools flag-o-matic multilib java-vm-2
 
 DESCRIPTION="An extremely small and specification-compliant virtual machine."
 HOMEPAGE="http://jamvm.sourceforge.net/"
-SRC_URI="mirror://sourceforge/${PN}/${P}.tar.gz"
+SRC_URI="https://sourceforge.net/projects/${PN}/files/${PN}/JamVM%20${PV}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="1.5"
@@ -59,7 +59,7 @@ src_install() {
 	dodoc ACKNOWLEDGEMENTS AUTHORS ChangeLog NEWS README \
 		|| die "dodoc failed"
 
-	set_java_env "${FILESDIR}/${PN}-1.5.1.env"
+	java-vm_install-env "${FILESDIR}/${P}.env.sh"
 
 	local bindir=/usr/${PN}/bin
 	dodir ${bindir}
