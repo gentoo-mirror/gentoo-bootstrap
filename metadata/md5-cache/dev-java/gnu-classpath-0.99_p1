@@ -11,5 +11,5 @@ LICENSE=GPL-2-with-linking-exception
 PROPERTIES=live
 RDEPEND=app-arch/zip dev-java/eclipse-ecj:3.2 >=dev-java/java-config-2.1.11 virtual/jdk:1.5 virtual/jre:1.5 >=dev-java/java-config-2.2.0-r3 dev-java/java-config app-eselect/eselect-java
 SLOT=0.99-devel
-_eclasses_=java-utils-2	c610b1541a10e37cb26ab5b707a744f1	java-pkg-2	6e6478d8b78f18251c008bad32994df9	multilib	b2a329026f2e404e9e371097dda47f96	toolchain-funcs	d3d42b22a610ce81c267b644bcec9b87	pax-utils	5555f2e75744739fe100ee62c22d28fe	prefix	c3c4c93ebda319c0fa7ed6f942ba1010	xdg-utils	42869b3c8d86a70ef3cf75165a395e09	java-vm-2	6c7243f2269a7c9b5c177579e49f89ab	git-r3	875eb471682d3e1f18da124be97dcc81
+_eclasses_=java-utils-2	c610b1541a10e37cb26ab5b707a744f1	java-pkg-2	6e6478d8b78f18251c008bad32994df9	multilib	b2a329026f2e404e9e371097dda47f96	toolchain-funcs	fa554cc3cff825d21dfe3f24841e29cf	pax-utils	5555f2e75744739fe100ee62c22d28fe	prefix	c3c4c93ebda319c0fa7ed6f942ba1010	xdg-utils	42869b3c8d86a70ef3cf75165a395e09	java-vm-2	6c7243f2269a7c9b5c177579e49f89ab	git-r3	875eb471682d3e1f18da124be97dcc81
 _md5_=e68667a3264300d23d588cf182ae6745
