@@ -7,7 +7,5 @@ dev-java/jamvm 1.5.1 2.0.0 2.0.0-r10 2.0.0-r20: An extremely small and specifica
 dev-java/jikes 1.22-r13: IBM's open source, high performance Java compiler
 dev-java/openjdk 8.272_p10 9.0.4_p12 10.0.2_p13 11.0.20.1_p1 12.0.2_p01 13.0.4_p01 14.0.2_p01 15.0.2_p07 16.0.2_p07 17.0.8.1_p1 18.0.2_p05 19.0.2_p07 20.0.2_p09 21.0.0_p35: Open source implementation of the Java programming language
 dev-lang/go 1.4 1.17.13: A concurrent garbage collected and typesafe programming language
-dev-lang/rust 1.54.0 1.55.0 1.56.1 1.57.0 1.58.1 1.59.0 1.60.0 1.61.0 1.62.1 1.63.0-r1 1.64.0-r1 1.65.0 1.66.1 1.67.1 1.68.2 1.69.0-r1 1.70.0 1.71.1 1.72.0-r1 1.73.0 1.74.1 1.75.0-r1 1.76.0-r1 1.77.1 1.78.0 1.79.0: Systems programming language from Mozilla
 virtual/jdk 1.4 1.5 1.6: Virtual for Java Development Kit (JDK)
 virtual/jre 1.4 1.5 1.6: Virtual for Java Runtime Environment (JRE)
-virtual/rust 1.55.0 1.56.1 1.57.0 1.58.1 1.59.0 1.60.0 1.61.0 1.62.1 1.63.0 1.64.0 1.65.0-r1 1.66.1 1.67.1 1.68.2 1.69.0 1.70.0 1.71.1-r1 1.72.0-r1 1.73.0 1.74.1 1.75.0-r1 1.76.0 1.77.1 1.78.0 1.79.0: Virtual for Rust language compiler
