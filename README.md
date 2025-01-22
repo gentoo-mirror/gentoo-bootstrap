@@ -41,10 +41,9 @@ and subsequent OpenJDK versions.
 
 ## Bootstrapping rust
 
-We use `mrustc` to build rustc-1.54 and then we build each subsequent rustc version until
-we reach up to date rustc.
+This repository used to contain ebuilds to bootstrap rustc.
 
-mrustc is ocasionally broken on some versions of GCC. Last tested with GCC 13.
+`mrustc` has now been added to the main portage tree. Use it together with `mrustc-bootstrap` flag.
 
 ## Bootstrapping go
 
