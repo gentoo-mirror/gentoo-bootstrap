@@ -11,5 +11,5 @@ RDEPEND=arm? ( sys-devel/binutils[gold] ) arm64? ( sys-devel/binutils[gold] )
 RESTRICT=strip
 SLOT=0/1.17.13
 SRC_URI=https://storage.googleapis.com/golang/go1.17.13.src.tar.gz
-_eclasses_=toolchain-funcs	a0b29008c671a362b505f96fa80ce9c0
+_eclasses_=toolchain-funcs	98d9f464d912ae6b7316fb8a3721f5db
 _md5_=c41d6614d94c2536bbf34d4865fa4103
