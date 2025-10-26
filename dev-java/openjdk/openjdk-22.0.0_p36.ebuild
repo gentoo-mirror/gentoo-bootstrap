@@ -1,4 +1,4 @@
-# Copyright 1999-2023 Gentoo Authors
+# Copyright 1999-2025 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -130,7 +130,6 @@ pkg_setup() {
 
 src_prepare() {
 	default
-	eapply "${FILESDIR}/patches/${SLOT}/libfontmanager-build.patch"
 	chmod +x configure || die
 }
 

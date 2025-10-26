@@ -181,6 +181,7 @@ pkg_setup() {
 
 src_prepare() {
 	default
+	eapply "${FILESDIR}/patches/${SLOT}/libfontmanager-build.patch"
 	chmod +x configure || die
 }
 
